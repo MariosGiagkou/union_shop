@@ -1,17 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/home_page.dart';
 
 void main() {
-  group('ProductCard pricing', () {
-    testWidgets('shows original and sale price with correct styles (asset)',
-        (tester) async {
+  group('ProductCard', () {
+    testWidgets('renders correctly with asset image', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
             body: ProductCard(
               title: 'Test Product',
-              originalPrice: '£50.00',
               price: '£35.00',
               imageUrl: 'assets/images/pink_hoodie.webp',
               useAsset: true,
@@ -22,26 +22,17 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final originalFinder = find.text('£50.00');
-      final saleFinder = find.text('£35.00');
-      expect(originalFinder, findsOneWidget);
-      expect(saleFinder, findsOneWidget);
-
-      final originalText = tester.widget<Text>(originalFinder);
-      final saleText = tester.widget<Text>(saleFinder);
-      expect(originalText.style?.decoration, TextDecoration.lineThrough);
-      expect(originalText.style?.fontWeight, FontWeight.w600);
-      expect(saleText.style?.fontWeight, FontWeight.w600);
+      expect(find.text('Test Product'), findsOneWidget);
+      expect(find.text('£35.00'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets('shows original and sale price with correct styles (network)',
-        (tester) async {
+    testWidgets('renders correctly with network image', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
             body: ProductCard(
               title: 'Network Product',
-              originalPrice: '£20.00',
               price: '£15.00',
               imageUrl: 'https://example.com/image.jpg',
               customHeight: 100,
@@ -52,10 +43,10 @@ void main() {
       await tester.pump(); // initial frame
       await tester
           .pump(const Duration(milliseconds: 150)); // allow loadingBuilder
-      final originalFinder = find.text('£20.00');
-      final saleFinder = find.text('£15.00');
-      expect(originalFinder, findsOneWidget);
-      expect(saleFinder, findsOneWidget);
+
+      expect(find.text('Network Product'), findsOneWidget);
+      expect(find.text('£15.00'), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
     });
 
     testWidgets('without original price only shows current price',
@@ -76,6 +67,36 @@ void main() {
 
       expect(find.text('£12.00'), findsOneWidget);
       expect(find.text('£50.00'), findsNothing);
+    });
+
+    testWidgets('hover underlines title', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: ProductCard(
+              title: 'Hover Test Product',
+              price: '£9.99',
+              imageUrl: 'assets/images/pink_hoodie.webp',
+              useAsset: true,
+              customHeight: 120,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final titleFinder = find.text('Hover Test Product');
+      final beforeHover = tester.widget<Text>(titleFinder);
+      expect(beforeHover.style?.decoration, isNot(TextDecoration.underline));
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await gesture.addPointer(
+          location: tester.getCenter(find.byType(ProductCard)));
+      await gesture.moveTo(tester.getCenter(find.byType(ProductCard)));
+      await tester.pumpAndSettle();
+
+      final afterHover = tester.widget<Text>(titleFinder);
+      expect(afterHover.style?.decoration, TextDecoration.underline);
     });
   });
 }

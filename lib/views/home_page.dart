@@ -248,9 +248,9 @@ class HomePage extends StatelessWidget {
                                     final wide =
                                         MediaQuery.of(context).size.width > 600;
                                     if (wide) {
-                                      return Column(
+                                      return const Column(
                                         children: [
-                                          const Row(
+                                          Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
@@ -279,8 +279,8 @@ class HomePage extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 48),
-                                          const Row(
+                                          SizedBox(height: 48),
+                                          Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
