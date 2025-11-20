@@ -231,15 +231,128 @@ class HomePage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 48),
                                 secondRow,
-                                const SizedBox(height: 56), // was 12
+                                const SizedBox(height: 56),
                                 const Text(
                                   'PORTSMOUTH CITY COLLECTION',
                                   style: TextStyle(
-                                    fontSize: 20, // was 13
-                                    color: Colors.black, // was black54
-                                    letterSpacing: 1, // was .6
-                                    fontWeight: FontWeight.w700, // was w600
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w700,
                                   ),
+                                ),
+                                const SizedBox(height: 48),
+                                // NEW: Portsmouth City products (responsive)
+                                Builder(
+                                  builder: (context) {
+                                    final wide =
+                                        MediaQuery.of(context).size.width > 600;
+                                    if (wide) {
+                                      return Column(
+                                        children: [
+                                          const Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: ProductCard(
+                                                  title:
+                                                      'Portsmouth City Postcard',
+                                                  price: '£1.00',
+                                                  imageUrl:
+                                                      'assets/images/PortsmouthCityPostcard.webp',
+                                                  useAsset: true,
+                                                  customHeight: 300,
+                                                ),
+                                              ),
+                                              SizedBox(width: 24),
+                                              Expanded(
+                                                child: ProductCard(
+                                                  title:
+                                                      'Portsmouth City Magnet',
+                                                  price: '£4.50',
+                                                  imageUrl:
+                                                      'assets/images/PortsmouthCityMagnet.jpg',
+                                                  useAsset: true,
+                                                  customHeight: 300,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 48),
+                                          const Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: ProductCard(
+                                                  title:
+                                                      'Portsmouth City Bookmark',
+                                                  price: '£3.00',
+                                                  imageUrl:
+                                                      'assets/images/PortsmouthCityBookmark.jpg',
+                                                  useAsset: true,
+                                                  customHeight: 300,
+                                                ),
+                                              ),
+                                              SizedBox(width: 24),
+                                              Expanded(
+                                                child: ProductCard(
+                                                  title:
+                                                      'Portsmouth City Notebook',
+                                                  price: '£7.50',
+                                                  imageUrl:
+                                                      'assets/images/PortsmouthCityNotebook.webp',
+                                                  useAsset: true,
+                                                  customHeight: 300,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      return const Column(
+                                        children: [
+                                          ProductCard(
+                                            title: 'Portsmouth City Postcard',
+                                            price: '£1.00',
+                                            imageUrl:
+                                                'assets/images/PortsmouthCityPostcard.webp',
+                                            useAsset: true,
+                                            customHeight: 300,
+                                          ),
+                                          SizedBox(height: 48),
+                                          ProductCard(
+                                            title: 'Portsmouth City Magnet',
+                                            price: '£4.50',
+                                            imageUrl:
+                                                'assets/images/PortsmouthCityMagnet.jpg',
+                                            useAsset: true,
+                                            customHeight: 300,
+                                          ),
+                                          SizedBox(height: 48),
+                                          ProductCard(
+                                            title: 'Portsmouth City Bookmark',
+                                            price: '£3.00',
+                                            imageUrl:
+                                                'assets/images/PortsmouthCityBookmark.jpg',
+                                            useAsset: true,
+                                            customHeight: 300,
+                                          ),
+                                          SizedBox(height: 48),
+                                          ProductCard(
+                                            title: 'Portsmouth City Notebook',
+                                            price: '£7.50',
+                                            imageUrl:
+                                                'assets/images/PortsmouthCityNotebook.webp',
+                                            useAsset: true,
+                                            customHeight: 300,
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  },
                                 ),
                               ],
                             );
