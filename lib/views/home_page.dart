@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
                         ElevatedButton(
                           onPressed: _placeholderCallbackForButtons,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4d2963),
+                            backgroundColor: Color(0xFF4d2963),
                             foregroundColor: Colors.white,
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero,
@@ -138,20 +138,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            // FOOTER
-            Container(
-              width: double.infinity,
-              color: Colors.grey[50],
-              padding: const EdgeInsets.all(24),
-              child: const Text(
-                'Placeholder Footer',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+            const SiteFooter(),
           ],
         ),
       ),
