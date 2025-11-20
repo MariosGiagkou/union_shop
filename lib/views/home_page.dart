@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
                         ElevatedButton(
                           onPressed: _placeholderCallbackForButtons,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF4d2963),
+                            backgroundColor: const Color(0xFF4d2963),
                             foregroundColor: Colors.white,
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero,
@@ -173,21 +173,23 @@ class HomePage extends StatelessWidget {
                                     children: [
                                       Expanded(
                                         child: ProductCard(
-                                          title: 'Placeholder Product 3',
-                                          price: '£20.00',
+                                          title: 'Signiture Hoodie',
+                                          price: '£32.99',
                                           imageUrl:
-                                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                                          customHeight: 360, // was 300
+                                              'assets/images/signature_hoodie.webp',
+                                          useAsset: true,
+                                          customHeight: 360,
                                         ),
                                       ),
                                       SizedBox(width: 24),
                                       Expanded(
                                         child: ProductCard(
-                                          title: 'Placeholder Product 4',
-                                          price: '£25.00',
+                                          title: 'Signiture T-Shirt', // changed
+                                          price: '£14.99', // changed
                                           imageUrl:
-                                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                                          customHeight: 360, // was 300
+                                              'assets/images/signiture_t-shirt.webp', // changed
+                                          useAsset: true, // added
+                                          customHeight: 360,
                                         ),
                                       ),
                                     ],
@@ -195,19 +197,21 @@ class HomePage extends StatelessWidget {
                                 : const Column(
                                     children: [
                                       ProductCard(
-                                        title: 'Placeholder Product 3',
-                                        price: '£20.00',
+                                        title: 'Signiture Hoodie',
+                                        price: '£32.99',
                                         imageUrl:
-                                            'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                                        customHeight: 360, // was 300
+                                            'assets/images/signature_hoodie.webp',
+                                        useAsset: true,
+                                        customHeight: 360,
                                       ),
                                       SizedBox(height: 48),
                                       ProductCard(
-                                        title: 'Placeholder Product 4',
-                                        price: '£25.00',
+                                        title: 'Signiture T-Shirt', // changed
+                                        price: '£14.99', // changed
                                         imageUrl:
-                                            'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                                        customHeight: 360, // was 300
+                                            'assets/images/signiture_t-shirt.webp', // changed
+                                        useAsset: true, // added
+                                        customHeight: 360,
                                       ),
                                     ],
                                   );
@@ -227,6 +231,16 @@ class HomePage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 48),
                                 secondRow,
+                                const SizedBox(height: 56), // was 12
+                                const Text(
+                                  'PORTSMOUTH CITY COLLECTION',
+                                  style: TextStyle(
+                                    fontSize: 20, // was 13
+                                    color: Colors.black, // was black54
+                                    letterSpacing: 1, // was .6
+                                    fontWeight: FontWeight.w700, // was w600
+                                  ),
+                                ),
                               ],
                             );
                           },

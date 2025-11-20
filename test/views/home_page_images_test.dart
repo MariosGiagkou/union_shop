@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/home_page.dart';
-import 'package:union_shop/views/home_page.dart' show ProductCard;
 
 void main() {
   testWidgets('essential range images appear', (tester) async {
