@@ -98,5 +98,22 @@ void main() {
       final afterHover = tester.widget<Text>(titleFinder);
       expect(afterHover.style?.decoration, TextDecoration.underline);
     });
+
+    testWidgets('view all button exists and is tappable', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: HomePage()));
+      await tester.pumpAndSettle();
+
+      final buttonFinder = find.widgetWithText(ElevatedButton, 'VIEW ALL');
+      expect(buttonFinder, findsOneWidget);
+
+      // Tap and ensure no exception (placeholder callback)
+      await tester.tap(buttonFinder);
+      await tester.pump();
+
+      // Optional style assertions
+      final ElevatedButton button = tester.widget(buttonFinder);
+      expect(
+          button.style?.backgroundColor?.resolve({}), const Color(0xFF4d2963));
+    });
   });
 }
