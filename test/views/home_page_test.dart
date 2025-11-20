@@ -17,14 +17,19 @@ void main() {
       expect(find.text('Placeholder Hero Title'), findsOneWidget);
       expect(find.text('BROWSE PRODUCTS'), findsOneWidget);
 
-      // Products section heading
-      expect(find.text('PRODUCTS SECTION'), findsOneWidget);
+      // Products section heading (updated)
+      expect(find.text('ESSENTIAL RANGE - OVER 20% OFF!'), findsOneWidget);
 
-      // Product cards
-      expect(find.text('Placeholder Product 1'), findsOneWidget);
+      // Product cards (updated first title)
+      expect(
+          find.text('Limited Edition Essential Zip Hoodies'), findsOneWidget);
       expect(find.text('Placeholder Product 2'), findsOneWidget);
       expect(find.text('Placeholder Product 3'), findsOneWidget);
       expect(find.text('Placeholder Product 4'), findsOneWidget);
+
+      // Prices
+      expect(find.text('£20.00'), findsOneWidget);
+      expect(find.text('£14.99'), findsOneWidget);
 
       // Footer headings
       expect(find.text('Opening Hours'), findsOneWidget);

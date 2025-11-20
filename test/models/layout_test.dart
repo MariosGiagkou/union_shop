@@ -3,34 +3,36 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/models/layout.dart';
 
 void main() {
-  group('Layout Widgets', () {
-    testWidgets('SiteHeader shows banner and nav items', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: SiteHeader()),
-        ),
-      );
+  group('Layout (Header & Footer)', () {
+    testWidgets('SiteHeader displays nav items and icons', (tester) async {
+      await tester
+          .pumpWidget(const MaterialApp(home: Scaffold(body: SiteHeader())));
       await tester.pump();
 
+      // Banner
       expect(find.textContaining('BIG SALE!'), findsOneWidget);
-      expect(find.text('Home'), findsOneWidget);
-      expect(find.text('Shop'), findsOneWidget);
-      expect(find.text('The Printing Shack'), findsOneWidget);
-      expect(find.text('SALES!'), findsOneWidget);
-      expect(find.text('About'), findsOneWidget);
 
+      // Nav items
+      for (final label in [
+        'Home',
+        'Shop',
+        'The Printing Shack',
+        'SALES!',
+        'About',
+      ]) {
+        expect(find.text(label), findsOneWidget);
+      }
+
+      // Icons
       expect(find.byIcon(Icons.search), findsOneWidget);
       expect(find.byIcon(Icons.person_outline), findsOneWidget);
       expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
       expect(find.byIcon(Icons.menu), findsOneWidget);
     });
 
-    testWidgets('SiteFooter displays all three columns', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: SingleChildScrollView(child: SiteFooter())),
-        ),
-      );
+    testWidgets('SiteFooter displays all columns', (tester) async {
+      await tester.pumpWidget(const MaterialApp(
+          home: Scaffold(body: SingleChildScrollView(child: SiteFooter()))));
       await tester.pump();
 
       expect(find.text('Opening Hours'), findsOneWidget);

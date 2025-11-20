@@ -221,38 +221,7 @@ class SiteFooter extends StatelessWidget {
       color: Colors.black87,
     );
 
-    Widget firstCol = const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Opening Hours', style: headingStyle),
-        SizedBox(height: 14),
-        Text(
-          '❄️ Winter Break Closure Dates ❄️\n'
-          'Closing 4pm 19/12/2025\n'
-          'Reopening 10am 05/01/2026\n'
-          'Last post date: 12pm on 18/12/2025\n'
-          '------------------------\n'
-          '(Term Time)\n'
-          'Monday - Friday 10am - 4pm\n'
-          '(Outside of Term Time / Consolidation Weeks)\n'
-          'Monday - Friday 10am - 3pm\n'
-          'Purchase online 24/7',
-          style: bodyStyle,
-        ),
-      ],
-    );
 
-    Widget secondCol = const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Help and Information', style: headingStyle),
-        SizedBox(height: 14),
-        Text(
-          'Search\nTerms & Conditions of Sale Policy',
-          style: bodyStyle,
-        ),
-      ],
-    );
 
     Widget thirdCol = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
