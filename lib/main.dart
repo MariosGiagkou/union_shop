@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:union_shop/product_page.dart';
+import 'package:union_shop/views/product_page.dart';
+import 'package:union_shop/models/layout.dart';
 
 void main() {
   runApp(const UnionShopApp());
@@ -17,11 +18,10 @@ class UnionShopApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
       ),
       home: const HomeScreen(),
-      // By default, the app starts at the '/' route, which is the HomeScreen
       initialRoute: '/',
-      // When navigating to '/product', build and return the ProductPage
-      // In your browser, try this link: http://localhost:49856/#/product
-      routes: {'/product': (context) => const ProductPage()},
+      routes: {
+        '/product': (context) => const ProductPage(),
+      },
     );
   }
 }
@@ -29,17 +29,7 @@ class UnionShopApp extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  void navigateToHome(BuildContext context) {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-  }
-
-  void navigateToProduct(BuildContext context) {
-    Navigator.pushNamed(context, '/product');
-  }
-
-  void placeholderCallbackForButtons() {
-    // This is the event handler for buttons that don't work yet
-  }
+  void placeholderCallbackForButtons() {}
 
   @override
   Widget build(BuildContext context) {
@@ -47,126 +37,14 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header
-            Container(
-              height: 100,
-              color: Colors.white,
-              child: Column(
-                children: [
-                  // Top banner
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    color: const Color(0xFF4d2963),
-                    child: const Text(
-                      'PLACEHOLDER HEADER TEXT',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                  // Main header
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              navigateToHome(context);
-                            },
-                            child: Image.network(
-                              'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
-                              height: 18,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  width: 18,
-                                  height: 18,
-                                  child: const Center(
-                                    child: Icon(Icons.image_not_supported,
-                                        color: Colors.grey),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const Spacer(),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 600),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.search,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.person_outline,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.shopping_bag_outlined,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.menu,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 32,
-                                    minHeight: 32,
-                                  ),
-                                  onPressed: placeholderCallbackForButtons,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const SiteHeader(),
 
-            // Hero Section
+            // HERO SECTION
             SizedBox(
               height: 400,
               width: double.infinity,
               child: Stack(
                 children: [
-                  // Background image
                   Positioned.fill(
                     child: Container(
                       decoration: const BoxDecoration(
@@ -178,13 +56,11 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
-                        ),
+                        color: Colors.black.withOpacity(0.7),
                       ),
                     ),
                   ),
-                  // Content overlay
+
                   Positioned(
                     left: 24,
                     right: 24,
@@ -203,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          "This is placeholder text for the hero section.",
+                          'This is placeholder text for the hero section.',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.white,
@@ -233,7 +109,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Products Section
+            // PRODUCTS SECTION
             Container(
               color: Colors.white,
               child: Padding(
@@ -252,8 +128,7 @@ class HomeScreen extends StatelessWidget {
                     GridView.count(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount:
-                          MediaQuery.of(context).size.width > 600 ? 2 : 1,
+                      crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
                       crossAxisSpacing: 24,
                       mainAxisSpacing: 48,
                       children: const [
@@ -288,7 +163,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Footer
+            // FOOTER
             Container(
               width: double.infinity,
               color: Colors.grey[50],
@@ -309,6 +184,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+// PRODUCT CARD
 class ProductCard extends StatelessWidget {
   final String title;
   final String price;
@@ -324,9 +200,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, '/product');
-      },
+      onTap: () => Navigator.pushNamed(context, '/product'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -334,31 +208,24 @@ class ProductCard extends StatelessWidget {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Center(
-                    child: Icon(Icons.image_not_supported, color: Colors.grey),
-                  ),
-                );
-              },
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.grey[300],
+                child: const Center(
+                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                ),
+              ),
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 14, color: Colors.black),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                price,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-            ],
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 14, color: Colors.black),
+            maxLines: 2,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            price,
+            style: const TextStyle(fontSize: 13, color: Colors.grey),
           ),
         ],
       ),
