@@ -380,6 +380,19 @@ class HomePage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 96), // was 48
+                                const Text(
+                                  'OUR RANGE',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(
+                                    height: 70), // Space between sections
+                                // NEW: Additional products or content for "OUR RANGE" can be added here
                               ],
                             );
                           },
