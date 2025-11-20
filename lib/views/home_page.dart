@@ -354,6 +354,32 @@ class HomePage extends StatelessWidget {
                                     }
                                   },
                                 ),
+                                const SizedBox(height: 40),
+                                SizedBox(
+                                  height: 44, // was 56
+                                  child: ElevatedButton(
+                                    onPressed: _placeholderCallbackForButtons,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF4d2963),
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24, // was 32
+                                        vertical: 12, // added to thin button
+                                      ),
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.zero,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'VIEW ALL',
+                                      style: TextStyle(
+                                        fontSize: 13, // was 14
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.8, // was 1.1
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             );
                           },
@@ -411,7 +437,8 @@ class _ProductCardState extends State<ProductCard> {
         fit: BoxFit.cover,
         errorBuilder: (_, __, ___) => Container(
           color: Colors.grey[300],
-          child: const Center(child: Icon(Icons.image_not_supported, color: Colors.grey)),
+          child: const Center(
+              child: Icon(Icons.image_not_supported, color: Colors.grey)),
         ),
       );
     }
@@ -431,7 +458,8 @@ class _ProductCardState extends State<ProductCard> {
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
                   value: progress.expectedTotalBytes != null
-                      ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                      ? progress.cumulativeBytesLoaded /
+                          progress.expectedTotalBytes!
                       : null,
                   color: const Color(0xFF4d2963),
                 ),
@@ -442,7 +470,8 @@ class _ProductCardState extends State<ProductCard> {
       },
       errorBuilder: (_, __, ___) => Container(
         color: Colors.grey[300],
-        child: const Center(child: Icon(Icons.image_not_supported, color: Colors.grey)),
+        child: const Center(
+            child: Icon(Icons.image_not_supported, color: Colors.grey)),
       ),
     );
   }
@@ -500,7 +529,8 @@ class _ProductCardState extends State<ProductCard> {
                 fontSize: 14,
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
-                decoration: _hover ? TextDecoration.underline : TextDecoration.none,
+                decoration:
+                    _hover ? TextDecoration.underline : TextDecoration.none,
               ),
             ),
             const SizedBox(height: 6),
