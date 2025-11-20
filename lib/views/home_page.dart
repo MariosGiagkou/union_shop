@@ -99,44 +99,137 @@ class HomePage extends StatelessWidget {
                             fontSize: 20,
                             color: Colors.black,
                             letterSpacing: 1,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         const SizedBox(height: 48),
-                        GridView.count(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisCount:
-                              MediaQuery.of(context).size.width > 600 ? 2 : 1,
-                          crossAxisSpacing: 24,
-                          mainAxisSpacing: 48,
-                          children: const [
-                            ProductCard(
-                              title: 'Limited Edition Essential Zip Hoodies',
-                              originalPrice: '£20.00',
-                              price: '£14.99',
-                              imageUrl: 'assets/images/pink_hoodie.webp',
-                              useAsset: true,
-                              aspectRatio: 4 / 3,
-                            ),
-                            ProductCard(
-                              title: 'Placeholder Product 2',
-                              price: '£15.00',
-                              imageUrl:
-                                  'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                            ),
-                            ProductCard(
-                              title: 'Placeholder Product 3',
-                              price: '£20.00',
-                              imageUrl:
-                                  'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                            ),
-                            ProductCard(
-                              title: 'Placeholder Product 4',
-                              price: '£25.00',
-                              imageUrl:
-                                  'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-                            ),
-                          ],
+
+                        // REPLACED LayoutBuilder with simple MediaQuery width check
+                        Builder(
+                          builder: (context) {
+                            final isWide =
+                                MediaQuery.of(context).size.width > 600;
+
+                            final firstRow = isWide
+                                ? const Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: ProductCard(
+                                          title:
+                                              'Limited Edition Essential Zip Hoodies',
+                                          originalPrice: '£20.00',
+                                          price: '£14.99',
+                                          imageUrl:
+                                              'assets/images/pink_hoodie.webp',
+                                          useAsset: true,
+                                          customHeight: 400, // was 340
+                                        ),
+                                      ),
+                                      SizedBox(width: 24),
+                                      Expanded(
+                                        child: ProductCard(
+                                          title: 'Essential T-Shirt',
+                                          originalPrice: '£10.00',
+                                          price: '£6.99',
+                                          imageUrl:
+                                              'assets/images/essential_t-shirt.webp',
+                                          useAsset: true,
+                                          customHeight: 400, // was 340
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const Column(
+                                    children: [
+                                      ProductCard(
+                                        title:
+                                            'Limited Edition Essential Zip Hoodies',
+                                        originalPrice: '£20.00',
+                                        price: '£14.99',
+                                        imageUrl:
+                                            'assets/images/pink_hoodie.webp',
+                                        useAsset: true,
+                                        customHeight: 400, // was 340
+                                      ),
+                                      SizedBox(height: 48),
+                                      ProductCard(
+                                        title: 'Essential T-Shirt',
+                                        originalPrice: '£10.00',
+                                        price: '£6.99',
+                                        imageUrl:
+                                            'assets/images/essential_t-shirt.webp',
+                                        useAsset: true,
+                                        customHeight: 400, // was 340
+                                      ),
+                                    ],
+                                  );
+
+                            final secondRow = isWide
+                                ? const Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: ProductCard(
+                                          title: 'Placeholder Product 3',
+                                          price: '£20.00',
+                                          imageUrl:
+                                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                                          customHeight: 360, // was 300
+                                        ),
+                                      ),
+                                      SizedBox(width: 24),
+                                      Expanded(
+                                        child: ProductCard(
+                                          title: 'Placeholder Product 4',
+                                          price: '£25.00',
+                                          imageUrl:
+                                              'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                                          customHeight: 360, // was 300
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const Column(
+                                    children: [
+                                      ProductCard(
+                                        title: 'Placeholder Product 3',
+                                        price: '£20.00',
+                                        imageUrl:
+                                            'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                                        customHeight: 360, // was 300
+                                      ),
+                                      SizedBox(height: 48),
+                                      ProductCard(
+                                        title: 'Placeholder Product 4',
+                                        price: '£25.00',
+                                        imageUrl:
+                                            'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
+                                        customHeight: 360, // was 300
+                                      ),
+                                    ],
+                                  );
+
+                            return Column(
+                              children: [
+                                firstRow,
+                                const SizedBox(height: 56),
+                                const Text(
+                                  'SIGNATURE RANGE',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    letterSpacing: 1,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 48),
+                                secondRow,
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -233,23 +326,37 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget image = _buildImage();
+    Widget baseImage = _buildImage();
 
-    if (aspectRatio != null) {
+    // Force rectangular (wide) shape using AspectRatio inside a fixed-height box if customHeight given.
+    Widget image;
+    if (customHeight != null) {
+      image = SizedBox(
+        height: customHeight,
+        width: double.infinity,
+        child: AspectRatio(
+          aspectRatio: 16 / 9, // rectangular
+          child: ClipRRect(
+            borderRadius: BorderRadius.zero,
+            child: baseImage,
+          ),
+        ),
+      );
+    } else if (aspectRatio != null) {
       image = AspectRatio(
-        aspectRatio: aspectRatio!,
+        aspectRatio: 16 / 9, // override to rectangular
         child: ClipRRect(
           borderRadius: BorderRadius.zero,
-          child: image,
+          child: baseImage,
         ),
       );
     } else {
       image = SizedBox(
-        height: customHeight ?? 260,
+        height: 300, // was 260
         width: double.infinity,
         child: ClipRRect(
           borderRadius: BorderRadius.zero,
-          child: image,
+          child: baseImage,
         ),
       );
     }
