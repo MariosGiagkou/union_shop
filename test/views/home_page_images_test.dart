@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/home_page.dart';
 
 void main() {
-  testWidgets('essential range images appear', (tester) async {
+  testWidgets('essential + signature + category assets appear', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: HomePage()));
     await tester.pumpAndSettle();
 
@@ -15,24 +15,41 @@ void main() {
       find.image(const AssetImage('assets/images/essential_t-shirt.webp')),
       findsOneWidget,
     );
-  });
 
-  testWidgets('signature range images appear', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: HomePage()));
-    await tester.pumpAndSettle();
-
-    // Two network product images
     expect(
-      find.image(const NetworkImage(
-        'https://shop.upsu.net/cdn/shop/files/PortsmouthCityMagnet1_1024x1024@2x.jpg?v=1752230282',
-      )),
-      findsNWidgets(2),
+      find.image(const AssetImage('assets/images/signature_hoodie.webp')),
+      findsOneWidget,
+    );
+    expect(
+      find.image(const AssetImage('assets/images/signiture_t-shirt.webp')),
+      findsOneWidget,
+    );
+
+    expect(
+      find.image(const AssetImage('assets/images/PurpleHoodie.webp')),
+      findsOneWidget,
+    );
+    expect(
+      find.image(const AssetImage('assets/images/id.jpg')),
+      findsOneWidget,
+    );
+    expect(
+      find.image(const AssetImage('assets/images/GradGrey.webp')),
+      findsOneWidget,
+    );
+    expect(
+      find.image(const AssetImage('assets/images/notepad.webp')),
+      findsOneWidget,
     );
   });
 
-  testWidgets('total product cards count is 4', (tester) async {
+  testWidgets('total product/category cards count', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: HomePage()));
     await tester.pumpAndSettle();
-    expect(find.byType(ProductCard), findsNWidgets(4));
+    // ProductCard + RangeCategoryCard instances
+    final productCards = find.byType(ProductCard);
+    final rangeCards = find.byType(RangeCategoryCard);
+    expect(productCards, findsWidgets);
+    expect(rangeCards, findsNWidgets(4));
   });
 }

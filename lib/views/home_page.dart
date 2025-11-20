@@ -390,8 +390,46 @@ class HomePage extends StatelessWidget {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                const SizedBox(
-                                    height: 70), // Space between sections
+                                const SizedBox(height: 32),
+                                const Row(
+                                  children: [
+                                    Expanded(
+                                      child: RangeCategoryCard(
+                                        imageAsset:
+                                            'assets/images/PurpleHoodie.webp',
+                                        label: 'Clothing',
+                                        route: '/category/clothing',
+                                      ),
+                                    ),
+                                    SizedBox(width: 16),
+                                    Expanded(
+                                      child: RangeCategoryCard(
+                                        imageAsset: 'assets/images/id.jpg',
+                                        label: 'Merchandise', // fixed typo
+                                        route: '/category/merch',
+                                      ),
+                                    ),
+                                    SizedBox(width: 16),
+                                    Expanded(
+                                      child: RangeCategoryCard(
+                                        imageAsset:
+                                            'assets/images/GradGrey.webp',
+                                        label: 'Graduation',
+                                        route: '/category/graduation',
+                                      ),
+                                    ),
+                                    SizedBox(width: 16),
+                                    Expanded(
+                                      child: RangeCategoryCard(
+                                        imageAsset:
+                                            'assets/images/notepad.webp',
+                                        label: 'SALE',
+                                        route: '/category/sale',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 70),
                                 // NEW: Additional products or content for "OUR RANGE" can be added here
                               ],
                             );
@@ -492,7 +530,6 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     Widget baseImage = _buildImage();
-
     Widget image;
     if (widget.customHeight != null) {
       image = SizedBox(
@@ -512,11 +549,9 @@ class _ProductCardState extends State<ProductCard> {
         child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       );
     }
-
-    // Transparent film overlay (slightly stronger when hovering)
     final overlay = AnimatedContainer(
       duration: const Duration(milliseconds: 160),
-      color: Colors.white.withOpacity(_hover ? 0.25 : 0.15), // was black
+      color: Colors.white.withOpacity(_hover ? 0.25 : 0.15),
     );
 
     return MouseRegion(
@@ -580,6 +615,82 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// NEW: RangeCategoryCard widget for category sections
+class RangeCategoryCard extends StatefulWidget {
+  final String imageAsset;
+  final String label;
+  final String route;
+  const RangeCategoryCard({
+    super.key,
+    required this.imageAsset,
+    required this.label,
+    required this.route,
+  });
+
+  @override
+  State<RangeCategoryCard> createState() => _RangeCategoryCardState();
+}
+
+class _RangeCategoryCardState extends State<RangeCategoryCard> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, widget.route),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  widget.imageAsset,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child:
+                          Icon(Icons.image_not_supported, color: Colors.grey),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  color: Colors.black
+                      .withOpacity(_hover ? 0.55 : 0.35), // reverted from grey
+                ),
+              ),
+              Positioned.fill(
+                child: Center(
+                  child: AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 160),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1,
+                      decoration: _hover
+                          ? TextDecoration.underline
+                          : TextDecoration.none,
+                    ),
+                    child: Text(widget.label.toUpperCase()),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
