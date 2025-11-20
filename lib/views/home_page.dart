@@ -354,9 +354,9 @@ class HomePage extends StatelessWidget {
                                     }
                                   },
                                 ),
-                                const SizedBox(height: 40),
+                                const SizedBox(height: 80), // was 40
                                 SizedBox(
-                                  height: 44, // was 56
+                                  height: 44,
                                   child: ElevatedButton(
                                     onPressed: _placeholderCallbackForButtons,
                                     style: ElevatedButton.styleFrom(
