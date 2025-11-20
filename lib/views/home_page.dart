@@ -372,8 +372,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// PRODUCT CARD
-class ProductCard extends StatelessWidget {
+// PRODUCT CARD (converted to StatefulWidget for hover effects)
+class ProductCard extends StatefulWidget {
   final String title;
   final String price;
   final String imageUrl;
@@ -393,29 +393,30 @@ class ProductCard extends StatelessWidget {
     this.customHeight,
   });
 
+  @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  bool _hover = false;
+
   Widget _buildImage() {
     final placeholder = Container(
       color: Colors.grey[300],
-      child: const Center(
-        child: Icon(Icons.image, color: Colors.grey),
-      ),
+      child: const Center(child: Icon(Icons.image, color: Colors.grey)),
     );
-
-    if (useAsset) {
+    if (widget.useAsset) {
       return Image.asset(
-        imageUrl,
+        widget.imageUrl,
         fit: BoxFit.cover,
-        errorBuilder: (c, e, s) => Container(
+        errorBuilder: (_, __, ___) => Container(
           color: Colors.grey[300],
-          child: const Center(
-            child: Icon(Icons.image_not_supported, color: Colors.grey),
-          ),
+          child: const Center(child: Icon(Icons.image_not_supported, color: Colors.grey)),
         ),
       );
     }
-
     return Image.network(
-      imageUrl,
+      widget.imageUrl,
       fit: BoxFit.cover,
       loadingBuilder: (context, child, progress) {
         if (progress == null) return child;
@@ -423,30 +424,25 @@ class ProductCard extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             placeholder,
-            Positioned.fill(
-              child: Center(
-                child: SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    value: progress.expectedTotalBytes != null
-                        ? progress.cumulativeBytesLoaded /
-                            progress.expectedTotalBytes!
-                        : null,
-                    color: const Color(0xFF4d2963),
-                  ),
+            Center(
+              child: SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  value: progress.expectedTotalBytes != null
+                      ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                      : null,
+                  color: const Color(0xFF4d2963),
                 ),
               ),
             ),
           ],
         );
       },
-      errorBuilder: (context, error, stackTrace) => Container(
+      errorBuilder: (_, __, ___) => Container(
         color: Colors.grey[300],
-        child: const Center(
-          child: Icon(Icons.image_not_supported, color: Colors.grey),
-        ),
+        child: const Center(child: Icon(Icons.image_not_supported, color: Colors.grey)),
       ),
     );
   }
@@ -455,89 +451,93 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget baseImage = _buildImage();
 
-    // Force rectangular (wide) shape using AspectRatio inside a fixed-height box if customHeight given.
     Widget image;
-    if (customHeight != null) {
+    if (widget.customHeight != null) {
       image = SizedBox(
-        height: customHeight,
+        height: widget.customHeight,
         width: double.infinity,
-        child: AspectRatio(
-          aspectRatio: 16 / 9, // rectangular
-          child: ClipRRect(
-            borderRadius: BorderRadius.zero,
-            child: baseImage,
-          ),
-        ),
+        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       );
-    } else if (aspectRatio != null) {
+    } else if (widget.aspectRatio != null) {
       image = AspectRatio(
-        aspectRatio: 16 / 9, // override to rectangular
-        child: ClipRRect(
-          borderRadius: BorderRadius.zero,
-          child: baseImage,
-        ),
+        aspectRatio: widget.aspectRatio!,
+        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       );
     } else {
       image = SizedBox(
-        height: 300, // was 260
+        height: 300,
         width: double.infinity,
-        child: ClipRRect(
-          borderRadius: BorderRadius.zero,
-          child: baseImage,
-        ),
+        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       );
     }
 
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/product'),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          image,
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
-            ),
-            maxLines: 2,
-          ),
-          const SizedBox(height: 6),
-          if (originalPrice != null)
-            Row(
+    // Transparent film overlay (slightly stronger when hovering)
+    final overlay = AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
+      color: Colors.white.withOpacity(_hover ? 0.25 : 0.15), // was black
+    );
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, '/product'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                Text(
-                  originalPrice!,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF555555),
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.lineThrough,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  price,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                image,
+                Positioned.fill(child: overlay),
               ],
-            )
-          else
+            ),
+            const SizedBox(height: 8),
             Text(
-              price,
-              style: const TextStyle(
+              widget.title,
+              maxLines: 2,
+              style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
+                decoration: _hover ? TextDecoration.underline : TextDecoration.none,
               ),
             ),
-        ],
+            const SizedBox(height: 6),
+            if (widget.originalPrice != null)
+              Row(
+                children: [
+                  Text(
+                    widget.originalPrice!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF555555),
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.price,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              )
+            else
+              Text(
+                widget.price,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
