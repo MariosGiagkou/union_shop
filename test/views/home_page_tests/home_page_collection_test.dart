@@ -57,7 +57,8 @@ void main() {
     testWidgets('HomePage builds and shows hero text', (tester) async {
       await tester.pumpWidget(const MaterialApp(home: HomePage()));
       await tester.pumpAndSettle();
-      expect(find.text('Placeholder Hero Title'), findsOneWidget);
+      // Updated hero first slide text
+      expect(find.text('essential range 20% OFF'), findsOneWidget);
     });
   });
 }

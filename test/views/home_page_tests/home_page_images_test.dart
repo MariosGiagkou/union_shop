@@ -22,7 +22,7 @@ void main() {
     );
     expect(
       find.image(const AssetImage('assets/images/signiture_t-shirt.webp')),
-      findsOneWidget,
+      findsWidgets, // allow duplicates after hero/layout changes
     );
 
     expect(
