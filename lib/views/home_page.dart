@@ -141,219 +141,103 @@ class HomePage extends StatelessWidget {
                           squareSide =
                               squareSide.clamp(140, productWidth * 0.85);
 
-                          final firstRow = isWide
-                              ? Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 32,
-                                  runSpacing: 32,
-                                  children: [
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title:
-                                            'Limited Edition Essential Zip Hoodies',
-                                        originalPrice: '£20.00',
-                                        price: '£14.99',
-                                        imageUrl:
-                                            'assets/images/pink_hoodie.webp',
-                                        useAsset: true,
-                                        aspectRatio: 3 / 2,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Essential T-Shirt',
-                                        originalPrice: '£10.00',
-                                        price: '£6.99',
-                                        imageUrl:
-                                            'assets/images/essential_t-shirt.webp',
-                                        useAsset: true,
-                                        aspectRatio: 3 / 2,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : const Column(
-                                  children: [
-                                    ProductCard(
-                                      title:
-                                          'Limited Edition Essential Zip Hoodies',
-                                      originalPrice: '£20.00',
-                                      price: '£14.99',
-                                      imageUrl:
-                                          'assets/images/pink_hoodie.webp',
-                                      useAsset: true,
-                                      aspectRatio: 3 / 2,
-                                    ),
-                                    SizedBox(height: 48),
-                                    ProductCard(
-                                      title: 'Essential T-Shirt',
-                                      originalPrice: '£10.00',
-                                      price: '£6.99',
-                                      imageUrl:
-                                          'assets/images/essential_t-shirt.webp',
-                                      useAsset: true,
-                                      aspectRatio: 3 / 2,
-                                    ),
-                                  ],
-                                );
+                          Widget buildPair(
+                              {required ProductCard a,
+                              required ProductCard b,
+                              double verticalGap = 48}) {
+                            if (isWide) {
+                              return Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 32,
+                                runSpacing: 32,
+                                children: [
+                                  SizedBox(width: productWidth, child: a),
+                                  SizedBox(width: productWidth, child: b),
+                                ],
+                              );
+                            }
+                            return Column(
+                              children: [
+                                a,
+                                SizedBox(height: verticalGap),
+                                b,
+                              ],
+                            );
+                          }
 
-                          final secondRow = isWide
-                              ? Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 32,
-                                  runSpacing: 32,
-                                  children: [
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Signiture Hoodie',
-                                        price: '£32.99',
-                                        imageUrl:
-                                            'assets/images/signature_hoodie.webp',
-                                        useAsset: true,
-                                        aspectRatio: 3 / 2,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Signiture T-Shirt',
-                                        price: '£14.99',
-                                        imageUrl:
-                                            'assets/images/signiture_t-shirt.webp',
-                                        useAsset: true,
-                                        aspectRatio: 3 / 2,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : const Column(
-                                  children: [
-                                    ProductCard(
-                                      title: 'Signiture Hoodie',
-                                      price: '£32.99',
-                                      imageUrl:
-                                          'assets/images/signature_hoodie.webp',
-                                      useAsset: true,
-                                      aspectRatio: 3 / 2,
-                                    ),
-                                    SizedBox(height: 48),
-                                    ProductCard(
-                                      title: 'Signiture T-Shirt',
-                                      price: '£14.99',
-                                      imageUrl:
-                                          'assets/images/signiture_t-shirt.webp',
-                                      useAsset: true,
-                                      aspectRatio: 3 / 2,
-                                    ),
-                                  ],
-                                );
+                          final firstRow = buildPair(
+                            a: const ProductCard(
+                              title: 'Limited Edition Essential Zip Hoodies',
+                              originalPrice: '£20.00',
+                              price: '£14.99',
+                              imageUrl: 'assets/images/pink_hoodie.webp',
+                              useAsset: true,
+                              aspectRatio: 3 / 2,
+                            ),
+                            b: const ProductCard(
+                              title: 'Essential T-Shirt',
+                              originalPrice: '£10.00',
+                              price: '£6.99',
+                              imageUrl: 'assets/images/essential_t-shirt.webp',
+                              useAsset: true,
+                              aspectRatio: 3 / 2,
+                            ),
+                          );
 
-                          final portsmouthRow1 = isWide
-                              ? Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 32,
-                                  runSpacing: 32,
-                                  children: [
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Portsmouth City Postcard',
-                                        price: '£1.00',
-                                        imageUrl:
-                                            'assets/images/PortsmouthCityPostcard.webp',
-                                        useAsset: true,
-                                        aspectRatio: 4 / 3,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Portsmouth City Magnet',
-                                        price: '£4.50',
-                                        imageUrl:
-                                            'assets/images/PortsmouthCityMagnet.jpg',
-                                        useAsset: true,
-                                        aspectRatio: 4 / 3,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : const Column(
-                                  children: [
-                                    ProductCard(
-                                      title: 'Portsmouth City Postcard',
-                                      price: '£1.00',
-                                      imageUrl:
-                                          'assets/images/PortsmouthCityPostcard.webp',
-                                      useAsset: true,
-                                      aspectRatio: 4 / 3,
-                                    ),
-                                    SizedBox(height: 48),
-                                    ProductCard(
-                                      title: 'Portsmouth City Magnet',
-                                      price: '£4.50',
-                                      imageUrl:
-                                          'assets/images/PortsmouthCityMagnet.jpg',
-                                      useAsset: true,
-                                      aspectRatio: 4 / 3,
-                                    ),
-                                  ],
-                                );
+                          final secondRow = buildPair(
+                            a: const ProductCard(
+                              title: 'Signiture Hoodie',
+                              price: '£32.99',
+                              imageUrl: 'assets/images/signature_hoodie.webp',
+                              useAsset: true,
+                              aspectRatio: 3 / 2,
+                            ),
+                            b: const ProductCard(
+                              title: 'Signiture T-Shirt',
+                              price: '£14.99',
+                              imageUrl: 'assets/images/signiture_t-shirt.webp',
+                              useAsset: true,
+                              aspectRatio: 3 / 2,
+                            ),
+                          );
 
-                          final portsmouthRow2 = isWide
-                              ? Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 32,
-                                  runSpacing: 32,
-                                  children: [
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Portsmouth City Bookmark',
-                                        price: '£3.00',
-                                        imageUrl:
-                                            'assets/images/PortsmouthCityBookmark.jpg',
-                                        useAsset: true,
-                                        aspectRatio: 4 / 3,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: productWidth,
-                                      child: const ProductCard(
-                                        title: 'Portsmouth City Notebook',
-                                        price: '£7.50',
-                                        imageUrl:
-                                            'assets/images/PortsmouthCityNotebook.webp',
-                                        useAsset: true,
-                                        aspectRatio: 4 / 3,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : const Column(
-                                  children: [
-                                    ProductCard(
-                                      title: 'Portsmouth City Bookmark',
-                                      price: '£3.00',
-                                      imageUrl:
-                                          'assets/images/PortsmouthCityBookmark.jpg',
-                                      useAsset: true,
-                                      aspectRatio: 4 / 3,
-                                    ),
-                                    SizedBox(height: 48),
-                                    ProductCard(
-                                      title: 'Portsmouth City Notebook',
-                                      price: '£7.50',
-                                      imageUrl:
-                                          'assets/images/PortsmouthCityNotebook.webp',
-                                      useAsset: true,
-                                      aspectRatio: 4 / 3,
-                                    ),
-                                  ],
-                                );
+                          final portsmouthRow1 = buildPair(
+                            a: const ProductCard(
+                              title: 'Portsmouth City Postcard',
+                              price: '£1.00',
+                              imageUrl:
+                                  'assets/images/PortsmouthCityPostcard.webp',
+                              useAsset: true,
+                              aspectRatio: 4 / 3,
+                            ),
+                            b: const ProductCard(
+                              title: 'Portsmouth City Magnet',
+                              price: '£4.50',
+                              imageUrl:
+                                  'assets/images/PortsmouthCityMagnet.jpg',
+                              useAsset: true,
+                              aspectRatio: 4 / 3,
+                            ),
+                          );
+
+                          final portsmouthRow2 = buildPair(
+                            a: const ProductCard(
+                              title: 'Portsmouth City Bookmark',
+                              price: '£3.00',
+                              imageUrl:
+                                  'assets/images/PortsmouthCityBookmark.jpg',
+                              useAsset: true,
+                              aspectRatio: 4 / 3,
+                            ),
+                            b: const ProductCard(
+                              title: 'Portsmouth City Notebook',
+                              price: '£7.50',
+                              imageUrl:
+                                  'assets/images/PortsmouthCityNotebook.webp',
+                              useAsset: true,
+                              aspectRatio: 4 / 3,
+                            ),
+                          );
 
                           return Column(
                             children: [
@@ -451,7 +335,7 @@ class HomePage extends StatelessWidget {
                                             route: '/category/clothing',
                                           ),
                                         ),
-                                        SizedBox(width: categorySpacing),
+                                        const SizedBox(width: categorySpacing),
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
@@ -460,7 +344,7 @@ class HomePage extends StatelessWidget {
                                             route: '/category/merch',
                                           ),
                                         ),
-                                        SizedBox(width: categorySpacing),
+                                        const SizedBox(width: categorySpacing),
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
@@ -470,7 +354,7 @@ class HomePage extends StatelessWidget {
                                             route: '/category/graduation',
                                           ),
                                         ),
-                                        SizedBox(width: categorySpacing),
+                                        const SizedBox(width: categorySpacing),
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
