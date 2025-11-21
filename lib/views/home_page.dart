@@ -530,13 +530,13 @@ class _HeroCarouselState extends State<HeroCarousel> {
             children: [
               // Slide 1 (retain existing hero text for tests)
               _buildSlide(
-                asset: 'assets/images/printshack.webp',
+                asset: 'assets/images/signiture_t-shirt.webp',
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      'Placeholder Hero Title',
+                      'essential range 20% OFF',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -546,7 +546,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'This is placeholder text for the hero section.',
+                      'essential clothing for all uni students. Grab yours now and save big!',
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -575,11 +575,11 @@ class _HeroCarouselState extends State<HeroCarousel> {
               // Slide 2 (new image requested)
               _buildSlide(
                 asset: 'assets/images/personalazedhoodie.webp',
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Personalised Hoodie',
                       style: TextStyle(
                         fontSize: 30,
@@ -589,8 +589,8 @@ class _HeroCarouselState extends State<HeroCarousel> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 18),
-                    Text(
+                    const SizedBox(height: 18),
+                    const Text(
                       'Add custom text and make it yours!',
                       style: TextStyle(
                         fontSize: 19,
@@ -598,6 +598,21 @@ class _HeroCarouselState extends State<HeroCarousel> {
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4d2963),
+                        foregroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      child: const Text(
+                        'BROWSE PRODUCTS',
+                        style: TextStyle(fontSize: 14, letterSpacing: 1),
+                      ),
                     ),
                   ],
                 ),
