@@ -27,6 +27,10 @@ class _SiteHeaderState extends State<SiteHeader> {
     return name == '/' || name == null;
   }
 
+  bool _isRoute(BuildContext context, String route) {
+    return ModalRoute.of(context)?.settings.name == route;
+  }
+
   // helper to render nav text buttons with hover/active styles
   Widget _navButton(
     String label,
@@ -142,7 +146,8 @@ class _SiteHeaderState extends State<SiteHeader> {
                           'About',
                           _aboutHover,
                           (v) => _aboutHover = v,
-                          _placeholderCallbackForButtons,
+                          () => Navigator.pushNamed(context, '/about'),
+                          active: _isRoute(context, '/about'),
                         ),
                       ],
                     ),
@@ -221,8 +226,6 @@ class SiteFooter extends StatelessWidget {
       color: Colors.black87,
     );
 
-
-
     Widget thirdCol = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -240,8 +243,7 @@ class SiteFooter extends StatelessWidget {
                     horizontal: 14,
                     vertical: 18,
                   ),
-                  border:
-                      OutlineInputBorder(borderRadius: BorderRadius.zero),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(color: Colors.grey),
