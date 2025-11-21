@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
+import 'dart:math' as math;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,7 +17,7 @@ class HomePage extends StatelessWidget {
 
             // HERO SECTION
             SizedBox(
-              height: 400,
+              height: 420, // enlarged hero
               width: double.infinity,
               child: Stack(
                 children: [
@@ -35,48 +36,49 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                    left: 24,
-                    right: 24,
-                    top: 80,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Placeholder Hero Title',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            height: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'This is placeholder text for the hero section.',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            height: 1.5,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 32),
-                        ElevatedButton(
-                          onPressed: _placeholderCallbackForButtons,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4d2963),
-                            foregroundColor: Colors.white,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Placeholder Hero Title',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              height: 1.2,
                             ),
                           ),
-                          child: const Text(
-                            'BROWSE PRODUCTS',
-                            style: TextStyle(fontSize: 14, letterSpacing: 1),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'This is placeholder text for the hero section.',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              height: 1.5,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 32),
+                          ElevatedButton(
+                            onPressed: _placeholderCallbackForButtons,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4d2963),
+                              foregroundColor: Colors.white,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero,
+                              ),
+                            ),
+                            child: const Text(
+                              'BROWSE PRODUCTS',
+                              style: TextStyle(fontSize: 14, letterSpacing: 1),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -89,61 +91,69 @@ class HomePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(40.0),
                 child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 900),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'ESSENTIAL RANGE - OVER 20% OFF!',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w700,
-                          ),
+                  // ConstrainedBox removed to allow full width expansion
+                  child: Column(
+                    children: [
+                      const Text(
+                        'ESSENTIAL RANGE - OVER 20% OFF!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w700,
                         ),
-                        const SizedBox(height: 48),
+                      ),
+                      const SizedBox(height: 48),
+                      Builder(
+                        builder: (context) {
+                          final screenWidth = MediaQuery.of(context).size.width;
+                          final isWide = screenWidth > 600;
+                          final double categoryWidth = screenWidth >= 1400
+                              ? 360
+                              : screenWidth >= 1150
+                                  ? 320
+                                  : screenWidth >= 900
+                                      ? 300
+                                      : screenWidth >= 700
+                                          ? 280
+                                          : 240;
+                          final double productWidth = math.max(
+                            categoryWidth,
+                            screenWidth >= 1600
+                                ? 520
+                                : screenWidth >= 1400
+                                    ? 480
+                                    : screenWidth >= 1200
+                                        ? 440
+                                        : screenWidth >= 1000
+                                            ? 400
+                                            : screenWidth >= 800
+                                                ? 360
+                                                : 320,
+                          );
+                          // Alignment with product cards: products use spacing 32 between two cards.
+                          const double productSpacing =
+                              32; // matches Wrap spacing for products
+                          const double categorySpacing =
+                              24; // desired gap between category squares
+                          final double totalProductSpan =
+                              2 * productWidth + productSpacing;
+                          // Compute square side so 4 squares + 3 gaps fill exactly totalProductSpan.
+                          double squareSide =
+                              (totalProductSpan - 3 * categorySpacing) / 4;
+                          // Clamp to a reasonable min/max (not larger than productWidth).
+                          squareSide =
+                              squareSide.clamp(140, productWidth * 0.85);
 
-                        // REPLACED LayoutBuilder with simple MediaQuery width check
-                        Builder(
-                          builder: (context) {
-                            final isWide =
-                                MediaQuery.of(context).size.width > 600;
-
-                            final firstRow = isWide
-                                ? const Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: ProductCard(
-                                          title:
-                                              'Limited Edition Essential Zip Hoodies',
-                                          originalPrice: '£20.00',
-                                          price: '£14.99',
-                                          imageUrl:
-                                              'assets/images/pink_hoodie.webp',
-                                          useAsset: true,
-                                          customHeight: 400, // was 340
-                                        ),
-                                      ),
-                                      SizedBox(width: 24),
-                                      Expanded(
-                                        child: ProductCard(
-                                          title: 'Essential T-Shirt',
-                                          originalPrice: '£10.00',
-                                          price: '£6.99',
-                                          imageUrl:
-                                              'assets/images/essential_t-shirt.webp',
-                                          useAsset: true,
-                                          customHeight: 400, // was 340
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : const Column(
-                                    children: [
-                                      ProductCard(
+                          final firstRow = isWide
+                              ? Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 32,
+                                  runSpacing: 32,
+                                  children: [
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
                                         title:
                                             'Limited Edition Essential Zip Hoodies',
                                         originalPrice: '£20.00',
@@ -151,276 +161,312 @@ class HomePage extends StatelessWidget {
                                         imageUrl:
                                             'assets/images/pink_hoodie.webp',
                                         useAsset: true,
-                                        customHeight: 400, // was 340
+                                        aspectRatio: 3 / 2,
                                       ),
-                                      SizedBox(height: 48),
-                                      ProductCard(
+                                    ),
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
                                         title: 'Essential T-Shirt',
                                         originalPrice: '£10.00',
                                         price: '£6.99',
                                         imageUrl:
                                             'assets/images/essential_t-shirt.webp',
                                         useAsset: true,
-                                        customHeight: 400, // was 340
+                                        aspectRatio: 3 / 2,
                                       ),
-                                    ],
-                                  );
+                                    ),
+                                  ],
+                                )
+                              : const Column(
+                                  children: [
+                                    ProductCard(
+                                      title:
+                                          'Limited Edition Essential Zip Hoodies',
+                                      originalPrice: '£20.00',
+                                      price: '£14.99',
+                                      imageUrl:
+                                          'assets/images/pink_hoodie.webp',
+                                      useAsset: true,
+                                      aspectRatio: 3 / 2,
+                                    ),
+                                    SizedBox(height: 48),
+                                    ProductCard(
+                                      title: 'Essential T-Shirt',
+                                      originalPrice: '£10.00',
+                                      price: '£6.99',
+                                      imageUrl:
+                                          'assets/images/essential_t-shirt.webp',
+                                      useAsset: true,
+                                      aspectRatio: 3 / 2,
+                                    ),
+                                  ],
+                                );
 
-                            final secondRow = isWide
-                                ? const Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: ProductCard(
-                                          title: 'Signiture Hoodie',
-                                          price: '£32.99',
-                                          imageUrl:
-                                              'assets/images/signature_hoodie.webp',
-                                          useAsset: true,
-                                          customHeight: 360,
-                                        ),
-                                      ),
-                                      SizedBox(width: 24),
-                                      Expanded(
-                                        child: ProductCard(
-                                          title: 'Signiture T-Shirt', // changed
-                                          price: '£14.99', // changed
-                                          imageUrl:
-                                              'assets/images/signiture_t-shirt.webp', // changed
-                                          useAsset: true, // added
-                                          customHeight: 360,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : const Column(
-                                    children: [
-                                      ProductCard(
+                          final secondRow = isWide
+                              ? Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 32,
+                                  runSpacing: 32,
+                                  children: [
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
                                         title: 'Signiture Hoodie',
                                         price: '£32.99',
                                         imageUrl:
                                             'assets/images/signature_hoodie.webp',
                                         useAsset: true,
-                                        customHeight: 360,
+                                        aspectRatio: 3 / 2,
                                       ),
-                                      SizedBox(height: 48),
-                                      ProductCard(
-                                        title: 'Signiture T-Shirt', // changed
-                                        price: '£14.99', // changed
+                                    ),
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
+                                        title: 'Signiture T-Shirt',
+                                        price: '£14.99',
                                         imageUrl:
-                                            'assets/images/signiture_t-shirt.webp', // changed
-                                        useAsset: true, // added
-                                        customHeight: 360,
-                                      ),
-                                    ],
-                                  );
-
-                            return Column(
-                              children: [
-                                firstRow,
-                                const SizedBox(height: 56),
-                                const Text(
-                                  'SIGNATURE RANGE',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 48),
-                                secondRow,
-                                const SizedBox(height: 56),
-                                const Text(
-                                  'PORTSMOUTH CITY COLLECTION',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 48),
-                                // NEW: Portsmouth City products (responsive)
-                                Builder(
-                                  builder: (context) {
-                                    final wide =
-                                        MediaQuery.of(context).size.width > 600;
-                                    if (wide) {
-                                      return const Column(
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: ProductCard(
-                                                  title:
-                                                      'Portsmouth City Postcard',
-                                                  price: '£1.00',
-                                                  imageUrl:
-                                                      'assets/images/PortsmouthCityPostcard.webp',
-                                                  useAsset: true,
-                                                  customHeight: 300,
-                                                ),
-                                              ),
-                                              SizedBox(width: 24),
-                                              Expanded(
-                                                child: ProductCard(
-                                                  title:
-                                                      'Portsmouth City Magnet',
-                                                  price: '£4.50',
-                                                  imageUrl:
-                                                      'assets/images/PortsmouthCityMagnet.jpg',
-                                                  useAsset: true,
-                                                  customHeight: 300,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 48),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: ProductCard(
-                                                  title:
-                                                      'Portsmouth City Bookmark',
-                                                  price: '£3.00',
-                                                  imageUrl:
-                                                      'assets/images/PortsmouthCityBookmark.jpg',
-                                                  useAsset: true,
-                                                  customHeight: 300,
-                                                ),
-                                              ),
-                                              SizedBox(width: 24),
-                                              Expanded(
-                                                child: ProductCard(
-                                                  title:
-                                                      'Portsmouth City Notebook',
-                                                  price: '£7.50',
-                                                  imageUrl:
-                                                      'assets/images/PortsmouthCityNotebook.webp',
-                                                  useAsset: true,
-                                                  customHeight: 300,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      );
-                                    } else {
-                                      return const Column(
-                                        children: [
-                                          ProductCard(
-                                            title: 'Portsmouth City Postcard',
-                                            price: '£1.00',
-                                            imageUrl:
-                                                'assets/images/PortsmouthCityPostcard.webp',
-                                            useAsset: true,
-                                            customHeight: 300,
-                                          ),
-                                          SizedBox(height: 48),
-                                          ProductCard(
-                                            title: 'Portsmouth City Magnet',
-                                            price: '£4.50',
-                                            imageUrl:
-                                                'assets/images/PortsmouthCityMagnet.jpg',
-                                            useAsset: true,
-                                            customHeight: 300,
-                                          ),
-                                          SizedBox(height: 48),
-                                          ProductCard(
-                                            title: 'Portsmouth City Bookmark',
-                                            price: '£3.00',
-                                            imageUrl:
-                                                'assets/images/PortsmouthCityBookmark.jpg',
-                                            useAsset: true,
-                                            customHeight: 300,
-                                          ),
-                                          SizedBox(height: 48),
-                                          ProductCard(
-                                            title: 'Portsmouth City Notebook',
-                                            price: '£7.50',
-                                            imageUrl:
-                                                'assets/images/PortsmouthCityNotebook.webp',
-                                            useAsset: true,
-                                            customHeight: 300,
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 80), // was 40
-                                SizedBox(
-                                  height: 44,
-                                  child: ElevatedButton(
-                                    onPressed: _placeholderCallbackForButtons,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF4d2963),
-                                      foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24, // was 32
-                                        vertical: 12, // added to thin button
-                                      ),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.zero,
+                                            'assets/images/signiture_t-shirt.webp',
+                                        useAsset: true,
+                                        aspectRatio: 3 / 2,
                                       ),
                                     ),
-                                    child: const Text(
-                                      'VIEW ALL',
-                                      style: TextStyle(
-                                        fontSize: 13, // was 14
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.8, // was 1.1
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 96), // was 48
-                                const Text(
-                                  'OUR RANGE',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 32),
-                                const Row(
+                                  ],
+                                )
+                              : const Column(
                                   children: [
-                                    Expanded(
-                                      child: RangeCategoryCard(
+                                    ProductCard(
+                                      title: 'Signiture Hoodie',
+                                      price: '£32.99',
+                                      imageUrl:
+                                          'assets/images/signature_hoodie.webp',
+                                      useAsset: true,
+                                      aspectRatio: 3 / 2,
+                                    ),
+                                    SizedBox(height: 48),
+                                    ProductCard(
+                                      title: 'Signiture T-Shirt',
+                                      price: '£14.99',
+                                      imageUrl:
+                                          'assets/images/signiture_t-shirt.webp',
+                                      useAsset: true,
+                                      aspectRatio: 3 / 2,
+                                    ),
+                                  ],
+                                );
+
+                          final portsmouthRow1 = isWide
+                              ? Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 32,
+                                  runSpacing: 32,
+                                  children: [
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
+                                        title: 'Portsmouth City Postcard',
+                                        price: '£1.00',
+                                        imageUrl:
+                                            'assets/images/PortsmouthCityPostcard.webp',
+                                        useAsset: true,
+                                        aspectRatio: 4 / 3,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
+                                        title: 'Portsmouth City Magnet',
+                                        price: '£4.50',
+                                        imageUrl:
+                                            'assets/images/PortsmouthCityMagnet.jpg',
+                                        useAsset: true,
+                                        aspectRatio: 4 / 3,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const Column(
+                                  children: [
+                                    ProductCard(
+                                      title: 'Portsmouth City Postcard',
+                                      price: '£1.00',
+                                      imageUrl:
+                                          'assets/images/PortsmouthCityPostcard.webp',
+                                      useAsset: true,
+                                      aspectRatio: 4 / 3,
+                                    ),
+                                    SizedBox(height: 48),
+                                    ProductCard(
+                                      title: 'Portsmouth City Magnet',
+                                      price: '£4.50',
+                                      imageUrl:
+                                          'assets/images/PortsmouthCityMagnet.jpg',
+                                      useAsset: true,
+                                      aspectRatio: 4 / 3,
+                                    ),
+                                  ],
+                                );
+
+                          final portsmouthRow2 = isWide
+                              ? Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 32,
+                                  runSpacing: 32,
+                                  children: [
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
+                                        title: 'Portsmouth City Bookmark',
+                                        price: '£3.00',
+                                        imageUrl:
+                                            'assets/images/PortsmouthCityBookmark.jpg',
+                                        useAsset: true,
+                                        aspectRatio: 4 / 3,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: productWidth,
+                                      child: const ProductCard(
+                                        title: 'Portsmouth City Notebook',
+                                        price: '£7.50',
+                                        imageUrl:
+                                            'assets/images/PortsmouthCityNotebook.webp',
+                                        useAsset: true,
+                                        aspectRatio: 4 / 3,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const Column(
+                                  children: [
+                                    ProductCard(
+                                      title: 'Portsmouth City Bookmark',
+                                      price: '£3.00',
+                                      imageUrl:
+                                          'assets/images/PortsmouthCityBookmark.jpg',
+                                      useAsset: true,
+                                      aspectRatio: 4 / 3,
+                                    ),
+                                    SizedBox(height: 48),
+                                    ProductCard(
+                                      title: 'Portsmouth City Notebook',
+                                      price: '£7.50',
+                                      imageUrl:
+                                          'assets/images/PortsmouthCityNotebook.webp',
+                                      useAsset: true,
+                                      aspectRatio: 4 / 3,
+                                    ),
+                                  ],
+                                );
+
+                          return Column(
+                            children: [
+                              firstRow,
+                              const SizedBox(height: 56),
+                              const Text(
+                                'SIGNATURE RANGE',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 48),
+                              secondRow,
+                              const SizedBox(height: 56),
+                              const Text(
+                                'PORTSMOUTH CITY COLLECTION',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 48),
+                              Column(
+                                children: [
+                                  portsmouthRow1,
+                                  const SizedBox(height: 48),
+                                  portsmouthRow2,
+                                ],
+                              ),
+                              const SizedBox(height: 80),
+                              SizedBox(
+                                height: 44,
+                                child: ElevatedButton(
+                                  onPressed: _placeholderCallbackForButtons,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF4d2963),
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, // was 32
+                                      vertical: 12, // added to thin button
+                                    ),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.zero,
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'VIEW ALL',
+                                    style: TextStyle(
+                                      fontSize: 13, // was 14
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.8, // was 1.1
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 96), // was 48
+                              const Text(
+                                'OUR RANGE',
+                                style: TextStyle(
+                                  fontSize: 24, // was 22
+                                  color: Colors.black,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+                              // Aligned row: total width matches span of two product cards.
+                              SizedBox(
+                                width: totalProductSpan,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: squareSide,
+                                      child: const RangeCategoryCard(
                                         imageAsset:
                                             'assets/images/PurpleHoodie.webp',
                                         label: 'Clothing',
                                         route: '/category/clothing',
                                       ),
                                     ),
-                                    SizedBox(width: 16),
-                                    Expanded(
-                                      child: RangeCategoryCard(
+                                    SizedBox(width: categorySpacing),
+                                    SizedBox(
+                                      width: squareSide,
+                                      child: const RangeCategoryCard(
                                         imageAsset: 'assets/images/id.jpg',
-                                        label: 'Merchandise', // fixed typo
+                                        label: 'Merchandise',
                                         route: '/category/merch',
                                       ),
                                     ),
-                                    SizedBox(width: 16),
-                                    Expanded(
-                                      child: RangeCategoryCard(
+                                    SizedBox(width: categorySpacing),
+                                    SizedBox(
+                                      width: squareSide,
+                                      child: const RangeCategoryCard(
                                         imageAsset:
                                             'assets/images/GradGrey.webp',
                                         label: 'Graduation',
                                         route: '/category/graduation',
                                       ),
                                     ),
-                                    SizedBox(width: 16),
-                                    Expanded(
-                                      child: RangeCategoryCard(
+                                    SizedBox(width: categorySpacing),
+                                    SizedBox(
+                                      width: squareSide,
+                                      child: const RangeCategoryCard(
                                         imageAsset:
                                             'assets/images/notepad.webp',
                                         label: 'SALE',
@@ -429,112 +475,109 @@ class HomePage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 72), // was 32
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: ConstrainedBox(
-                                    constraints:
-                                        const BoxConstraints(maxWidth: 900),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        ConstrainedBox(
-                                          constraints: const BoxConstraints(
-                                              maxWidth: 420),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Add a Personal Touch',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: .5,
-                                                  color: Colors.black,
-                                                ),
+                              ),
+                              const SizedBox(height: 72), // was 32
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: ConstrainedBox(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 900),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ConstrainedBox(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 420),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Add a Personal Touch',
+                                              style: TextStyle(
+                                                fontSize: 22, // was 20
+                                                fontWeight: FontWeight.w700,
+                                                letterSpacing: .5,
+                                                color: Colors.black,
                                               ),
-                                              const SizedBox(height: 16),
-                                              const Text(
-                                                'First add your item of clothing to your cart then click below to add your text! One line of text contains 10 characters!',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  height: 1.5,
-                                                  color: Color(0xFF666666),
-                                                ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            const Text(
+                                              'First add your item of clothing to your cart then click below to add your text! One line of text contains 10 characters!',
+                                              style: TextStyle(
+                                                fontSize: 18, // was 17
+                                                height: 1.5,
+                                                color: Color(0xFF666666),
                                               ),
-                                              const SizedBox(height: 24),
-                                              SizedBox(
-                                                height: 44,
-                                                child: ElevatedButton(
-                                                  onPressed:
-                                                      _placeholderCallbackForButtons,
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        const Color(0xFF4d2963),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 24),
-                                                    shape:
-                                                        const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.zero,
-                                                    ),
+                                            ),
+                                            const SizedBox(height: 24),
+                                            SizedBox(
+                                              height: 44,
+                                              child: ElevatedButton(
+                                                onPressed:
+                                                    _placeholderCallbackForButtons,
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xFF4d2963),
+                                                  foregroundColor: Colors.white,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 24),
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.zero,
                                                   ),
-                                                  child: const Text(
-                                                    'CLICK HERE TO ADD TEXT!',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      letterSpacing: 1,
-                                                    ),
+                                                ),
+                                                child: const Text(
+                                                  'CLICK HERE TO ADD TEXT!',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                    letterSpacing: 1,
                                                   ),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(width: 60),
-                                        SizedBox(
-                                          width: 350,
-                                          child: AspectRatio(
-                                            aspectRatio: 1,
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.zero,
-                                              child: Image.asset(
-                                                'assets/images/printshack.webp', // adjust filename if different
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (_, __, ___) =>
-                                                    Container(
-                                                  color: Colors.grey[300],
-                                                  child: const Center(
-                                                    child: Icon(
-                                                        Icons
-                                                            .image_not_supported,
-                                                        color: Colors.grey),
-                                                  ),
+                                      ),
+                                      const SizedBox(width: 60),
+                                      SizedBox(
+                                        width: 340, // was 300
+                                        child: AspectRatio(
+                                          aspectRatio: 1,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.zero,
+                                            child: Image.asset(
+                                              'assets/images/printshack.webp', // adjust filename if different
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) =>
+                                                  Container(
+                                                color: Colors.grey[300],
+                                                child: const Center(
+                                                  child: Icon(
+                                                      Icons.image_not_supported,
+                                                      color: Colors.grey),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 70),
-                                // NEW: Additional products or content for "OUR RANGE" can be added here
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                              ),
+                              const SizedBox(height: 70),
+                              // NEW: Additional products or content for "OUR RANGE" can be added here
+                            ],
+                          );
+                        },
+                      ),
+                      // ...existing code after Builder...
+                    ],
                   ),
                 ),
               ),
@@ -629,20 +672,27 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     Widget baseImage = _buildImage();
     Widget image;
-    if (widget.customHeight != null) {
-      image = SizedBox(
-        height: widget.customHeight,
-        width: double.infinity,
-        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
+    const maxHeight =
+        520.0; // allow taller product images to match enlarged widths
+    if (widget.aspectRatio != null) {
+      image = ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: maxHeight),
+        child: AspectRatio(
+          aspectRatio: widget.aspectRatio!,
+          child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
+        ),
       );
-    } else if (widget.aspectRatio != null) {
-      image = AspectRatio(
-        aspectRatio: widget.aspectRatio!,
+    } else if (widget.customHeight != null) {
+      image = SizedBox(
+        height: widget.customHeight! <= maxHeight
+            ? widget.customHeight!
+            : maxHeight,
+        width: double.infinity,
         child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       );
     } else {
       image = SizedBox(
-        height: 300,
+        height: maxHeight,
         width: double.infinity,
         child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       );
@@ -715,7 +765,7 @@ class _ProductCardState extends State<ProductCard> {
           ],
         ),
       ),
-    );
+    ); // close MouseRegion
   }
 }
 
@@ -737,59 +787,66 @@ class RangeCategoryCard extends StatefulWidget {
 
 class _RangeCategoryCardState extends State<RangeCategoryCard> {
   bool _hover = false;
-
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hover = true),
-      onExit: (_) => setState(() => _hover = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, widget.route),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  widget.imageAsset,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child:
-                          Icon(Icons.image_not_supported, color: Colors.grey),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final targetHeight = constraints.maxWidth / (3 / 2);
+        return MouseRegion(
+          onEnter: (_) => setState(() => _hover = true),
+          onExit: (_) => setState(() => _hover = false),
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(context, widget.route),
+            child: SizedBox(
+              height: constraints.maxWidth, // square: height == width
+              child: AspectRatio(
+                aspectRatio: 1, // make image square
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(
+                        widget.imageAsset,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(Icons.image_not_supported,
+                                color: Colors.grey),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  color: Colors.black.withOpacity(_hover ? 0.55 : 0.35),
-                ),
-              ),
-              Positioned.fill(
-                child: Center(
-                  child: AnimatedDefaultTextStyle(
-                    duration: const Duration(milliseconds: 160),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1,
-                      decoration: _hover
-                          ? TextDecoration.underline
-                          : TextDecoration.none,
+                    Positioned.fill(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        color: Colors.black.withOpacity(_hover ? 0.55 : 0.35),
+                      ),
                     ),
-                    child: Text(widget.label.toUpperCase()),
-                  ),
+                    Positioned.fill(
+                      child: Center(
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 160),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.2,
+                            decoration: _hover
+                                ? TextDecoration.underline
+                                : TextDecoration.none,
+                          ),
+                          child: Text(widget.label.toUpperCase()),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
