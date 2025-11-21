@@ -141,7 +141,8 @@ class _SiteHeaderState extends State<SiteHeader> {
                           'SALES!',
                           _salesHover,
                           (v) => _salesHover = v,
-                          _placeholderCallbackForButtons,
+                          () => Navigator.pushNamed(context, '/sales'),
+                          active: _isRoute(context, '/sales'),
                         ),
                         _navButton(
                           'About',
