@@ -434,54 +434,91 @@ class HomePage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: ConstrainedBox(
                                     constraints:
-                                        const BoxConstraints(maxWidth: 420),
-                                    child: Column(
+                                        const BoxConstraints(maxWidth: 900),
+                                    child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'Add a Personal Touch',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: .5,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        const Text(
-                                          'First add your item of clothing to your cart then click below to add your text! One line of text contains 10 characters!',
-                                          style: TextStyle(
-                                            fontSize: 16, // was 14
-                                            height: 1.5,
-                                            color: Color(
-                                                0xFF666666), // was Colors.black87
-                                          ),
-                                        ),
-                                        const SizedBox(height: 24),
-                                        SizedBox(
-                                          height: 44,
-                                          child: ElevatedButton(
-                                            onPressed:
-                                                _placeholderCallbackForButtons,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color(0xFF4d2963),
-                                              foregroundColor: Colors.white,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 24),
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.zero,
+                                        ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                              maxWidth: 420),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Add a Personal Touch',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  letterSpacing: .5,
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                            ),
-                                            child: const Text(
-                                              'CLICK HERE TO ADD TEXT!',
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
-                                                letterSpacing: 1,
+                                              const SizedBox(height: 16),
+                                              const Text(
+                                                'First add your item of clothing to your cart then click below to add your text! One line of text contains 10 characters!',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  height: 1.5,
+                                                  color: Color(0xFF666666),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 24),
+                                              SizedBox(
+                                                height: 44,
+                                                child: ElevatedButton(
+                                                  onPressed:
+                                                      _placeholderCallbackForButtons,
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xFF4d2963),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 24),
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.zero,
+                                                    ),
+                                                  ),
+                                                  child: const Text(
+                                                    'CLICK HERE TO ADD TEXT!',
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: 1,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 60),
+                                        SizedBox(
+                                          width: 350,
+                                          child: AspectRatio(
+                                            aspectRatio: 1,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.zero,
+                                              child: Image.asset(
+                                                'assets/images/printshack.webp', // adjust filename if different
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (_, __, ___) =>
+                                                    Container(
+                                                  color: Colors.grey[300],
+                                                  child: const Center(
+                                                    child: Icon(
+                                                        Icons
+                                                            .image_not_supported,
+                                                        color: Colors.grey),
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -720,7 +757,8 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
                   errorBuilder: (_, __, ___) => Container(
                     color: Colors.grey[300],
                     child: const Center(
-                      child: Icon(Icons.image_not_supported, color: Colors.grey),
+                      child:
+                          Icon(Icons.image_not_supported, color: Colors.grey),
                     ),
                   ),
                 ),
@@ -740,7 +778,9 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1,
-                      decoration: _hover ? TextDecoration.underline : TextDecoration.none,
+                      decoration: _hover
+                          ? TextDecoration.underline
+                          : TextDecoration.none,
                     ),
                     child: Text(widget.label.toUpperCase()),
                   ),
@@ -753,4 +793,3 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
     );
   }
 }
-
