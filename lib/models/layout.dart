@@ -44,6 +44,7 @@ class _SiteHeaderState extends State<SiteHeader> {
       onExit: (_) => setState(() => setHover(false)),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
