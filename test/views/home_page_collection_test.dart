@@ -35,24 +35,29 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.image(
-            const AssetImage('assets/images/PortsmouthCityPostcard.webp')),
-        findsOneWidget,
-      );
+          find.image(
+              const AssetImage('assets/images/PortsmouthCityPostcard.webp')),
+          findsOneWidget);
       expect(
-        find.image(const AssetImage('assets/images/PortsmouthCityMagnet.jpg')),
-        findsOneWidget,
-      );
+          find.image(
+              const AssetImage('assets/images/PortsmouthCityMagnet.jpg')),
+          findsOneWidget);
       expect(
-        find.image(
-            const AssetImage('assets/images/PortsmouthCityBookmark.jpg')),
-        findsOneWidget,
-      );
+          find.image(
+              const AssetImage('assets/images/PortsmouthCityBookmark.jpg')),
+          findsOneWidget);
       expect(
-        find.image(
-            const AssetImage('assets/images/PortsmouthCityNotebook.webp')),
-        findsOneWidget,
-      );
+          find.image(
+              const AssetImage('assets/images/PortsmouthCityNotebook.webp')),
+          findsOneWidget);
+    });
+  });
+
+  group('Hero Section', () {
+    testWidgets('HomePage builds and shows hero text', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: HomePage()));
+      await tester.pumpAndSettle();
+      expect(find.text('Placeholder Hero Title'), findsOneWidget);
     });
   });
 }

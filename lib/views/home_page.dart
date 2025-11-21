@@ -25,9 +25,8 @@ class HomePage extends StatelessWidget {
                     child: Container(
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(
-                            'https://shop.upsu.net/cdn/shop/files/PortsmouthCityPostcard2_1024x1024@2x.jpg?v=1752232561',
-                          ),
+                          image: AssetImage(
+                              'assets/images/signiture_t-shirt.webp'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -91,7 +90,6 @@ class HomePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(40.0),
                 child: Center(
-                  // ConstrainedBox removed to allow full width expansion
                   child: Column(
                     children: [
                       const Text(
@@ -131,17 +129,15 @@ class HomePage extends StatelessWidget {
                                                 ? 360
                                                 : 320,
                           );
-                          // Alignment with product cards: products use spacing 32 between two cards.
-                          const double productSpacing =
-                              32; // matches Wrap spacing for products
-                          const double categorySpacing =
-                              24; // desired gap between category squares
+
+                          const double productSpacing = 32;
+                          const double categorySpacing = 24;
                           final double totalProductSpan =
                               2 * productWidth + productSpacing;
-                          // Compute square side so 4 squares + 3 gaps fill exactly totalProductSpan.
+
                           double squareSide =
                               (totalProductSpan - 3 * categorySpacing) / 4;
-                          // Clamp to a reasonable min/max (not larger than productWidth).
+
                           squareSide =
                               squareSide.clamp(140, productWidth * 0.85);
 
@@ -401,8 +397,8 @@ class HomePage extends StatelessWidget {
                                     backgroundColor: const Color(0xFF4d2963),
                                     foregroundColor: Colors.white,
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 24, // was 32
-                                      vertical: 12, // added to thin button
+                                      horizontal: 24,
+                                      vertical: 12,
                                     ),
                                     shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.zero,
@@ -411,172 +407,213 @@ class HomePage extends StatelessWidget {
                                   child: const Text(
                                     'VIEW ALL',
                                     style: TextStyle(
-                                      fontSize: 13, // was 14
+                                      fontSize: 13,
                                       fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.8, // was 1.1
+                                      letterSpacing: 0.8,
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 96), // was 48
+                              const SizedBox(height: 96),
                               const Text(
                                 'OUR RANGE',
                                 style: TextStyle(
-                                  fontSize: 24, // was 22
+                                  fontSize: 24,
                                   color: Colors.black,
                                   letterSpacing: 1,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
                               const SizedBox(height: 32),
-                              // Aligned row: total width matches span of two product cards.
-                              SizedBox(
-                                width: totalProductSpan,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: squareSide,
-                                      child: const RangeCategoryCard(
-                                        imageAsset:
-                                            'assets/images/PurpleHoodie.webp',
-                                        label: 'Clothing',
-                                        route: '/category/clothing',
-                                      ),
-                                    ),
-                                    SizedBox(width: categorySpacing),
-                                    SizedBox(
-                                      width: squareSide,
-                                      child: const RangeCategoryCard(
-                                        imageAsset: 'assets/images/id.jpg',
-                                        label: 'Merchandise',
-                                        route: '/category/merch',
-                                      ),
-                                    ),
-                                    SizedBox(width: categorySpacing),
-                                    SizedBox(
-                                      width: squareSide,
-                                      child: const RangeCategoryCard(
-                                        imageAsset:
-                                            'assets/images/GradGrey.webp',
-                                        label: 'Graduation',
-                                        route: '/category/graduation',
-                                      ),
-                                    ),
-                                    SizedBox(width: categorySpacing),
-                                    SizedBox(
-                                      width: squareSide,
-                                      child: const RangeCategoryCard(
-                                        imageAsset:
-                                            'assets/images/notepad.webp',
-                                        label: 'SALE',
-                                        route: '/category/sale',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 72), // was 32
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: ConstrainedBox(
-                                  constraints:
-                                      const BoxConstraints(maxWidth: 900),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ConstrainedBox(
-                                        constraints:
-                                            const BoxConstraints(maxWidth: 420),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Add a Personal Touch',
-                                              style: TextStyle(
-                                                fontSize: 22, // was 20
-                                                fontWeight: FontWeight.w700,
-                                                letterSpacing: .5,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 16),
-                                            const Text(
-                                              'First add your item of clothing to your cart then click below to add your text! One line of text contains 10 characters!',
-                                              style: TextStyle(
-                                                fontSize: 18, // was 17
-                                                height: 1.5,
-                                                color: Color(0xFF666666),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 24),
-                                            SizedBox(
-                                              height: 44,
-                                              child: ElevatedButton(
-                                                onPressed:
-                                                    _placeholderCallbackForButtons,
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      const Color(0xFF4d2963),
-                                                  foregroundColor: Colors.white,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 24),
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.zero,
-                                                  ),
-                                                ),
-                                                child: const Text(
-                                                  'CLICK HERE TO ADD TEXT!',
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
-                                                    letterSpacing: 1,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(width: 60),
-                                      SizedBox(
-                                        width: 340, // was 300
-                                        child: AspectRatio(
-                                          aspectRatio: 1,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.zero,
-                                            child: Image.asset(
-                                              'assets/images/printshack.webp', // adjust filename if different
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (_, __, ___) =>
-                                                  Container(
-                                                color: Colors.grey[300],
-                                                child: const Center(
-                                                  child: Icon(
-                                                      Icons.image_not_supported,
-                                                      color: Colors.grey),
-                                                ),
-                                              ),
-                                            ),
+
+                              // Clamp width to available space to avoid horizontal overflow on narrower viewports
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final span = math.min(
+                                      totalProductSpan, constraints.maxWidth);
+                                  // Recompute square side based on clamped span to preserve spacing & proportions
+                                  final adjustedSquareSide =
+                                      ((span - 3 * categorySpacing) / 4).clamp(
+                                          120.0,
+                                          squareSide); // keep sensible lower bound
+                                  return SizedBox(
+                                    width: span,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: adjustedSquareSide,
+                                          child: const RangeCategoryCard(
+                                            imageAsset:
+                                                'assets/images/PurpleHoodie.webp',
+                                            label: 'Clothing',
+                                            route: '/category/clothing',
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                        SizedBox(width: categorySpacing),
+                                        SizedBox(
+                                          width: adjustedSquareSide,
+                                          child: const RangeCategoryCard(
+                                            imageAsset: 'assets/images/id.jpg',
+                                            label: 'Merchandise',
+                                            route: '/category/merch',
+                                          ),
+                                        ),
+                                        SizedBox(width: categorySpacing),
+                                        SizedBox(
+                                          width: adjustedSquareSide,
+                                          child: const RangeCategoryCard(
+                                            imageAsset:
+                                                'assets/images/GradGrey.webp',
+                                            label: 'Graduation',
+                                            route: '/category/graduation',
+                                          ),
+                                        ),
+                                        SizedBox(width: categorySpacing),
+                                        SizedBox(
+                                          width: adjustedSquareSide,
+                                          child: const RangeCategoryCard(
+                                            imageAsset:
+                                                'assets/images/notepad.webp',
+                                            label: 'SALE',
+                                            route: '/category/sale',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 72),
+                              // Personalisation row: also clamp width to available space to remove overflow while keeping layout
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final span = math.min(
+                                      totalProductSpan, constraints.maxWidth);
+                                  const double textBlockMaxWidth = 420;
+                                  const double spacer = 60;
+                                  final double effectiveTextWidth =
+                                      math.min(textBlockMaxWidth, span * 0.6);
+                                  final double remaining =
+                                      span - (effectiveTextWidth + spacer);
+                                  double imageWidth = 0;
+                                  double leftPad = 0;
+                                  if (remaining > 0) {
+                                    imageWidth = math.min(340, remaining);
+                                    leftPad = remaining - imageWidth;
+                                    if (leftPad < 0) leftPad = 0;
+                                  }
+                                  return SizedBox(
+                                    width: span,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                              maxWidth: effectiveTextWidth),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Add a Personal Touch',
+                                                style: TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w700,
+                                                  letterSpacing: .5,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              const Text(
+                                                'First add your item of clothing to your cart then click below to add your text! One line of text contains 10 characters!',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  height: 1.5,
+                                                  color: Color(0xFF666666),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 24),
+                                              SizedBox(
+                                                height: 44,
+                                                child: ElevatedButton(
+                                                  onPressed:
+                                                      _placeholderCallbackForButtons,
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xFF4d2963),
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 24),
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .zero),
+                                                  ),
+                                                  child: const Text(
+                                                    'CLICK HERE TO ADD TEXT!',
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      letterSpacing: 1,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: spacer),
+                                        Row(
+                                          children: [
+                                            if (leftPad > 0)
+                                              SizedBox(width: leftPad),
+                                            if (imageWidth > 0)
+                                              SizedBox(
+                                                width: imageWidth,
+                                                child: AspectRatio(
+                                                  aspectRatio: 1,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.zero,
+                                                    child: Image.asset(
+                                                      'assets/images/printshack.webp',
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder:
+                                                          (_, __, ___) =>
+                                                              Container(
+                                                        color: Colors.grey[300],
+                                                        child: const Center(
+                                                          child: Icon(
+                                                              Icons
+                                                                  .image_not_supported,
+                                                              color:
+                                                                  Colors.grey),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                               const SizedBox(height: 70),
-                              // NEW: Additional products or content for "OUR RANGE" can be added here
                             ],
                           );
                         },
                       ),
-                      // ...existing code after Builder...
                     ],
                   ),
                 ),
@@ -590,7 +627,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// PRODUCT CARD (converted to StatefulWidget for hover effects)
 class ProductCard extends StatefulWidget {
   final String title;
   final String price;
@@ -672,8 +708,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     Widget baseImage = _buildImage();
     Widget image;
-    const maxHeight =
-        520.0; // allow taller product images to match enlarged widths
+    const maxHeight = 520.0;
     if (widget.aspectRatio != null) {
       image = ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: maxHeight),
@@ -711,12 +746,7 @@ class _ProductCardState extends State<ProductCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
-              children: [
-                image,
-                Positioned.fill(child: overlay),
-              ],
-            ),
+            Stack(children: [image, Positioned.fill(child: overlay)]),
             const SizedBox(height: 8),
             Text(
               widget.title,
@@ -765,11 +795,10 @@ class _ProductCardState extends State<ProductCard> {
           ],
         ),
       ),
-    ); // close MouseRegion
+    );
   }
 }
 
-// NEW: RangeCategoryCard widget for category sections
 class RangeCategoryCard extends StatefulWidget {
   final String imageAsset;
   final String label;
@@ -791,7 +820,6 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final targetHeight = constraints.maxWidth / (3 / 2);
         return MouseRegion(
           onEnter: (_) => setState(() => _hover = true),
           onExit: (_) => setState(() => _hover = false),
@@ -799,9 +827,9 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
           child: GestureDetector(
             onTap: () => Navigator.pushNamed(context, widget.route),
             child: SizedBox(
-              height: constraints.maxWidth, // square: height == width
+              height: constraints.maxWidth,
               child: AspectRatio(
-                aspectRatio: 1, // make image square
+                aspectRatio: 1,
                 child: Stack(
                   children: [
                     Positioned.fill(
