@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
 import 'dart:math' as math;
+import 'dart:async';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,74 +16,8 @@ class HomePage extends StatelessWidget {
           children: [
             const SiteHeader(),
 
-            // HERO SECTION
-            SizedBox(
-              height: 420, // enlarged hero
-              width: double.infinity,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/signiture_t-shirt.webp'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Container(
-                        color: Colors.black.withOpacity(0.7),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            'Placeholder Hero Title',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              height: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'This is placeholder text for the hero section.',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              height: 1.5,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 32),
-                          ElevatedButton(
-                            onPressed: _placeholderCallbackForButtons,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF4d2963),
-                              foregroundColor: Colors.white,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero,
-                              ),
-                            ),
-                            child: const Text(
-                              'BROWSE PRODUCTS',
-                              style: TextStyle(fontSize: 14, letterSpacing: 1),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // HERO SECTION WITH AUTO-ROTATING CAROUSEL
+            const HeroCarousel(),
 
             // PRODUCTS SECTION
             Container(
@@ -506,6 +441,277 @@ class HomePage extends StatelessWidget {
             const SiteFooter(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Auto-rotating hero carousel with two slides.
+class HeroCarousel extends StatefulWidget {
+  const HeroCarousel({super.key});
+
+  @override
+  State<HeroCarousel> createState() => _HeroCarouselState();
+}
+
+class _HeroCarouselState extends State<HeroCarousel> {
+  late final PageController _controller;
+  int _current = 0;
+  static const _interval = Duration(seconds: 15);
+  static const _animation = Duration(milliseconds: 600);
+  Timer? _timer;
+  bool _paused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+    _timer = Timer.periodic(_interval, (_) {
+      if (_paused) return; // do nothing while paused
+      final next = (_current + 1) % 2;
+      if (mounted) {
+        _controller.animateToPage(
+          next,
+          duration: _animation,
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+    _controller.addListener(() {
+      final page = _controller.page?.round() ?? 0;
+      if (page != _current) setState(() => _current = page);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildSlide({required String asset, required Widget child}) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Background image
+        Image.asset(
+          asset,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => ColoredBox(
+            color: Colors.grey.shade700,
+            child: const Center(
+              child: Icon(Icons.image_not_supported, color: Colors.white70),
+            ),
+          ),
+        ),
+        // Dark overlay
+        ColoredBox(color: Colors.black.withOpacity(0.7)),
+        // Foreground content
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: child,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 420,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          PageView(
+            controller: _controller,
+            children: [
+              // Slide 1 (retain existing hero text for tests)
+              _buildSlide(
+                asset: 'assets/images/printshack.webp',
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Placeholder Hero Title',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'This is placeholder text for the hero section.',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4d2963),
+                        foregroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      child: const Text(
+                        'BROWSE PRODUCTS',
+                        style: TextStyle(fontSize: 14, letterSpacing: 1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Slide 2 (new image requested)
+              _buildSlide(
+                asset: 'assets/images/personalazedhoodie.webp',
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Personalised Hoodie',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 18),
+                    Text(
+                      'Add custom text and make it yours!',
+                      style: TextStyle(
+                        fontSize: 19,
+                        color: Colors.white,
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // Bottom controls: left arrow, dots, right arrow, pause/play
+          Positioned(
+            bottom: 12,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _NavButton(
+                  icon: Icons.chevron_left,
+                  onTap: () {
+                    final prev = (_current - 1) < 0 ? 1 : _current - 1;
+                    _controller.animateToPage(
+                      prev,
+                      duration: _animation,
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+                const SizedBox(width: 12),
+                Row(
+                  children: List.generate(2, (i) {
+                    final active = i == _current;
+                    return GestureDetector(
+                      onTap: () {
+                        _controller.animateToPage(
+                          i,
+                          duration: _animation,
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        width: active ? 14 : 10,
+                        height: active ? 14 : 10,
+                        decoration: BoxDecoration(
+                          color:
+                              active ? const Color(0xFF4d2963) : Colors.white70,
+                          shape: BoxShape.circle,
+                          boxShadow: active
+                              ? [
+                                  const BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2))
+                                ]
+                              : null,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(width: 12),
+                _NavButton(
+                  icon: Icons.chevron_right,
+                  onTap: () {
+                    final next = (_current + 1) % 2;
+                    _controller.animateToPage(
+                      next,
+                      duration: _animation,
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => setState(() => _paused = !_paused),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.45),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      _paused ? Icons.play_arrow : Icons.pause,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Reusable navigation button with consistent styling
+class _NavButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  const _NavButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.35),
+          borderRadius: BorderRadius.circular(28),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: Icon(icon, color: Colors.white, size: 32),
       ),
     );
   }
