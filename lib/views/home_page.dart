@@ -102,6 +102,8 @@ class HomePage extends StatelessWidget {
 
                           final firstRow = buildPair(
                             a: const ProductCard(
+                              key: ValueKey(
+                                  'product:Limited Edition Essential Zip Hoodies'),
                               title: 'Limited Edition Essential Zip Hoodies',
                               originalPrice: '£20.00',
                               price: '£14.99',
@@ -110,6 +112,7 @@ class HomePage extends StatelessWidget {
                               aspectRatio: 3 / 2,
                             ),
                             b: const ProductCard(
+                              key: ValueKey('product:Essential T-Shirt'),
                               title: 'Essential T-Shirt',
                               originalPrice: '£10.00',
                               price: '£6.99',
@@ -121,6 +124,7 @@ class HomePage extends StatelessWidget {
 
                           final secondRow = buildPair(
                             a: const ProductCard(
+                              key: ValueKey('product:Signiture Hoodie'),
                               title: 'Signiture Hoodie',
                               price: '£32.99',
                               imageUrl: 'assets/images/signature_hoodie.webp',
@@ -128,6 +132,7 @@ class HomePage extends StatelessWidget {
                               aspectRatio: 3 / 2,
                             ),
                             b: const ProductCard(
+                              key: ValueKey('product:Signiture T-Shirt'),
                               title: 'Signiture T-Shirt',
                               price: '£14.99',
                               imageUrl: 'assets/images/signiture_t-shirt.webp',
@@ -138,6 +143,7 @@ class HomePage extends StatelessWidget {
 
                           final portsmouthRow1 = buildPair(
                             a: const ProductCard(
+                              key: ValueKey('product:Portsmouth City Postcard'),
                               title: 'Portsmouth City Postcard',
                               price: '£1.00',
                               imageUrl:
@@ -146,6 +152,7 @@ class HomePage extends StatelessWidget {
                               aspectRatio: 4 / 3,
                             ),
                             b: const ProductCard(
+                              key: ValueKey('product:Portsmouth City Magnet'),
                               title: 'Portsmouth City Magnet',
                               price: '£4.50',
                               imageUrl:
@@ -157,6 +164,7 @@ class HomePage extends StatelessWidget {
 
                           final portsmouthRow2 = buildPair(
                             a: const ProductCard(
+                              key: ValueKey('product:Portsmouth City Bookmark'),
                               title: 'Portsmouth City Bookmark',
                               price: '£3.00',
                               imageUrl:
@@ -165,6 +173,7 @@ class HomePage extends StatelessWidget {
                               aspectRatio: 4 / 3,
                             ),
                             b: const ProductCard(
+                              key: ValueKey('product:Portsmouth City Notebook'),
                               title: 'Portsmouth City Notebook',
                               price: '£7.50',
                               imageUrl:
@@ -211,6 +220,7 @@ class HomePage extends StatelessWidget {
                               SizedBox(
                                 height: 44,
                                 child: ElevatedButton(
+                                  key: const Key('home:view-all'),
                                   onPressed: _placeholderCallbackForButtons,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF4d2963),
@@ -264,6 +274,7 @@ class HomePage extends StatelessWidget {
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
+                                            key: ValueKey('category:Clothing'),
                                             imageAsset:
                                                 'assets/images/PurpleHoodie.webp',
                                             label: 'Clothing',
@@ -274,6 +285,8 @@ class HomePage extends StatelessWidget {
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
+                                            key: ValueKey(
+                                                'category:Merchandise'),
                                             imageAsset: 'assets/images/id.jpg',
                                             label: 'Merchandise',
                                             route: '/category/merch',
@@ -283,6 +296,8 @@ class HomePage extends StatelessWidget {
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
+                                            key:
+                                                ValueKey('category:Graduation'),
                                             imageAsset:
                                                 'assets/images/GradGrey.webp',
                                             label: 'Graduation',
@@ -293,6 +308,7 @@ class HomePage extends StatelessWidget {
                                         SizedBox(
                                           width: adjustedSquareSide,
                                           child: const RangeCategoryCard(
+                                            key: ValueKey('category:SALE'),
                                             imageAsset:
                                                 'assets/images/notepad.webp',
                                             label: 'SALE',
@@ -358,6 +374,8 @@ class HomePage extends StatelessWidget {
                                               SizedBox(
                                                 height: 44,
                                                 child: ElevatedButton(
+                                                  key: const Key(
+                                                      'home:add-text'),
                                                   onPressed:
                                                       _placeholderCallbackForButtons,
                                                   style:
@@ -526,6 +544,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
       child: Stack(
         children: [
           PageView(
+            key: const PageStorageKey('hero:carousel'),
             controller: _controller,
             children: [
               // Slide 1 (retain existing hero text for tests)
@@ -556,6 +575,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
+                      key: const Key('hero:browse:1'),
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
@@ -601,6 +621,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton(
+                      key: const Key('hero:browse:2'),
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
@@ -628,6 +649,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _NavButton(
+                  key: const Key('hero:left'),
                   icon: Icons.chevron_left,
                   onTap: () {
                     final prev = (_current - 1) < 0 ? 1 : _current - 1;
@@ -674,6 +696,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                 ),
                 const SizedBox(width: 12),
                 _NavButton(
+                  key: const Key('hero:right'),
                   icon: Icons.chevron_right,
                   onTap: () {
                     final next = (_current + 1) % 2;
@@ -686,6 +709,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                 ),
                 const SizedBox(width: 8),
                 GestureDetector(
+                  key: const Key('hero:pause'),
                   onTap: () => setState(() => _paused = !_paused),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
@@ -714,7 +738,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
 class _NavButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  const _NavButton({required this.icon, required this.onTap});
+  const _NavButton({super.key, required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -847,7 +871,17 @@ class _ProductCardState extends State<ProductCard> {
       onExit: (_) => setState(() => _hover = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, '/product'),
+        onTap: () => Navigator.pushNamed(
+          context,
+          '/product',
+          arguments: {
+            'title': widget.title,
+            'price': widget.price,
+            'imageUrl': widget.imageUrl,
+            'useAsset': widget.useAsset,
+            'originalPrice': widget.originalPrice,
+          },
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
