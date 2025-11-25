@@ -138,17 +138,15 @@ class ProductPage extends StatelessWidget {
               ),
             ),
 
-            // Product details
+            // Product details (responsive two-column: image left, details right)
             Container(
               color: Colors.white,
               padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Product image
-                  Container(
-                    height: 300,
-                    width: double.infinity,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final bool isWide = constraints.maxWidth >= 800;
+
+                  Widget imageWidget = Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.grey[200],
@@ -213,82 +211,113 @@ class ProductPage extends StatelessWidget {
                               },
                             ),
                     ),
-                  ),
+                  );
 
-                  const SizedBox(height: 24),
-
-                  // Product name
-                  Text(
-                    title,
-                    key: const Key('product:title'),
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Product price
-                  Row(
+                  Widget detailsColumn = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (originalPrice != null)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Text(
-                            originalPrice,
-                            key: const Key('product:originalPrice'),
+                      Text(
+                        title,
+                        key: const Key('product:title'),
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          if (originalPrice != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: Text(
+                                originalPrice,
+                                key: const Key('product:originalPrice'),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xFF666666),
+                                  fontWeight: FontWeight.w600,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            ),
+                          Text(
+                            price.isNotEmpty ? price : '—',
+                            key: const Key('product:price'),
                             style: const TextStyle(
-                              fontSize: 20,
-                              color: Color(0xFF666666),
-                              fontWeight: FontWeight.w600,
-                              decoration: TextDecoration.lineThrough,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4d2963),
                             ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
-                      Text(
-                        price.isNotEmpty ? price : '—',
-                        key: const Key('product:price'),
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4d2963),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'This is a placeholder description for the product. Students should replace this with real product information and implement proper data management.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Students should add size options, colour options, quantity selector, add to cart button, and buy now button here.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                          height: 1.4,
                         ),
                       ),
                     ],
-                  ),
+                  );
 
-                  const SizedBox(height: 24),
-
-                  // Product description
-                  const Text(
-                    'Description',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'This is a placeholder description for the product. Students should replace this with real product information and implement proper data management.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Students should add size options, colour options, quantity selector, add to cart button, and buy now button here.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
+                  if (isWide) {
+                    // Two-column layout
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: imageWidget,
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        Expanded(
+                          flex: 6,
+                          child: detailsColumn,
+                        ),
+                      ],
+                    );
+                  } else {
+                    // Stacked layout (mobile)
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 300,
+                          width: double.infinity,
+                          child: imageWidget,
+                        ),
+                        const SizedBox(height: 24),
+                        detailsColumn,
+                      ],
+                    );
+                  }
+                },
               ),
             ),
 
