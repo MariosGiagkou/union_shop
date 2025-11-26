@@ -172,5 +172,88 @@ void main() {
       expect(find.text('Help and Information'), findsOneWidget);
       expect(find.text('Latest Offers'), findsOneWidget);
     });
+
+    testWidgets('quantity input is present with inline arrows', (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage()));
+      await tester.pump();
+
+      expect(find.byKey(const Key('product:quantity-input')), findsOneWidget);
+      expect(find.byKey(const Key('product:qty-increase')), findsOneWidget);
+      expect(find.byKey(const Key('product:qty-decrease')), findsOneWidget);
+
+      final tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '1');
+    });
+
+    testWidgets('typing a valid quantity updates the input', (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage()));
+      await tester.pump();
+
+      await tester.enterText(
+          find.byKey(const Key('product:quantity-input')), '5');
+      await tester.pump();
+
+      final tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '5');
+    });
+
+    testWidgets('invalid input resets to minimum 1', (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage()));
+      await tester.pump();
+
+      await tester.enterText(
+          find.byKey(const Key('product:quantity-input')), '');
+      await tester.pump();
+
+      var tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '1');
+
+      await tester.enterText(
+          find.byKey(const Key('product:quantity-input')), '0');
+      await tester.pump();
+
+      tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '1');
+    });
+
+    testWidgets('arrow increase increments quantity', (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage()));
+      await tester.pump();
+
+      await tester.tap(find.byKey(const Key('product:qty-increase')));
+      await tester.pump();
+
+      final tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '2');
+    });
+
+    testWidgets('arrow decrease decrements but not below 1', (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage()));
+      await tester.pump();
+
+      // Try to go below 1
+      await tester.tap(find.byKey(const Key('product:qty-decrease')));
+      await tester.pump();
+
+      var tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '1');
+
+      // Set to 3 and then decrease to 2
+      await tester.enterText(
+          find.byKey(const Key('product:quantity-input')), '3');
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('product:qty-decrease')));
+      await tester.pump();
+
+      tf = tester
+          .widget<TextField>(find.byKey(const Key('product:quantity-input')));
+      expect(tf.controller!.text, '2');
+    });
   });
 }

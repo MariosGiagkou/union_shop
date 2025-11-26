@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
+import 'package:flutter/services.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   final String? titleOverride;
   final String? priceOverride;
   final String? imageUrlOverride;
@@ -17,6 +18,15 @@ class ProductPage extends StatelessWidget {
     this.originalPriceOverride,
   });
 
+  @override
+  State<ProductPage> createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  int _quantity = 1;
+  late final TextEditingController _qtyController =
+      TextEditingController(text: '1');
+
   void navigateToHome(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
@@ -26,18 +36,25 @@ class ProductPage extends StatelessWidget {
   }
 
   @override
+  void dispose() {
+    _qtyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final String title =
-        titleOverride ?? (args?['title'] as String?) ?? 'Product';
-    final String price = priceOverride ?? (args?['price'] as String?) ?? '';
+        widget.titleOverride ?? (args?['title'] as String?) ?? 'Product';
+    final String price =
+        widget.priceOverride ?? (args?['price'] as String?) ?? '';
     final String imageUrl =
-        imageUrlOverride ?? (args?['imageUrl'] as String?) ?? '';
+        widget.imageUrlOverride ?? (args?['imageUrl'] as String?) ?? '';
     final bool useAsset =
-        useAssetOverride ?? (args?['useAsset'] as bool?) ?? false;
+        widget.useAssetOverride ?? (args?['useAsset'] as bool?) ?? false;
     final String? originalPrice =
-        originalPriceOverride ?? (args?['originalPrice'] as String?);
+        widget.originalPriceOverride ?? (args?['originalPrice'] as String?);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -162,6 +179,110 @@ class ProductPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 16),
+
+                      // Quantity selector with inline arrows (updated)
+                      SizedBox(
+                        key: const Key('product:quantity-row'),
+                        width: 120,
+                        height: 36,
+                        child: Stack(
+                          children: [
+                            TextField(
+                              key: const Key('product:quantity-input'),
+                              controller: _qtyController,
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              onChanged: (val) {
+                                final parsed = int.tryParse(val);
+                                setState(() {
+                                  _quantity = (parsed == null || parsed <= 0)
+                                      ? 1
+                                      : parsed;
+                                  if (_quantity == 1 &&
+                                      (parsed == null || parsed <= 0)) {
+                                    _qtyController.text = '1';
+                                    _qtyController.selection =
+                                        TextSelection.collapsed(
+                                            offset: _qtyController.text.length);
+                                  }
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.fromLTRB(8, 8, 36, 8),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xFF4d2963)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color(0xFF4d2963), width: 2),
+                                ),
+                              ),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              bottom: 0,
+                              child: Container(
+                                width: 36,
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                      left:
+                                          BorderSide(color: Color(0xFF4d2963))),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        key: const Key('product:qty-increase'),
+                                        onTap: () {
+                                          setState(() {
+                                            _quantity++;
+                                            _qtyController.text = '$_quantity';
+                                          });
+                                        },
+                                        child: const Icon(
+                                            Icons.keyboard_arrow_up,
+                                            size: 18,
+                                            color: Color(0xFF4d2963)),
+                                      ),
+                                    ),
+                                    const Divider(
+                                        height: 1,
+                                        thickness: 1,
+                                        color: Color(0xFF4d2963)),
+                                    Expanded(
+                                      child: InkWell(
+                                        key: const Key('product:qty-decrease'),
+                                        onTap: () {
+                                          if (_quantity > 1) {
+                                            setState(() {
+                                              _quantity--;
+                                              _qtyController.text =
+                                                  '$_quantity';
+                                            });
+                                          }
+                                        },
+                                        child: const Icon(
+                                            Icons.keyboard_arrow_down,
+                                            size: 18,
+                                            color: Color(0xFF4d2963)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
                       SizedBox(
                         height: 44,
                         child: ElevatedButton(
@@ -170,9 +291,7 @@ class ProductPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4d2963),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero,
                             ),
