@@ -255,5 +255,94 @@ void main() {
           .widget<TextField>(find.byKey(const Key('product:quantity-input')));
       expect(tf.controller!.text, '2');
     });
+
+    testWidgets('clothing options are hidden for non-clothing titles',
+        (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage(
+        titleOverride: 'Mug',
+        priceOverride: '£5.00',
+      )));
+      await tester.pump();
+
+      expect(find.byKey(const Key('product:size-selector')), findsNothing);
+      expect(find.byKey(const Key('product:color-selector')), findsNothing);
+      expect(find.textContaining('Selected:'), findsNothing);
+    });
+
+    testWidgets('clothing options show and default to first values',
+        (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage(
+        titleOverride: 'Hoodie',
+        priceOverride: '£30.00',
+      )));
+      await tester.pump();
+
+      expect(find.byKey(const Key('product:size-selector')), findsOneWidget);
+      expect(find.byKey(const Key('product:color-selector')), findsOneWidget);
+      expect(find.text('Selected: XS, Black'), findsOneWidget);
+    });
+
+    testWidgets('size dropdown changes selected size and summary',
+        (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage(
+        titleOverride: 'Hoodie',
+        priceOverride: '£30.00',
+      )));
+      await tester.pump();
+
+      // Open size menu
+      await tester.tap(find.byKey(const Key('product:size-selector')));
+      await tester.pumpAndSettle();
+
+      // Ensure option keys exist and select 'M'
+      expect(find.byKey(const Key('product:size-option-M')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('product:size-option-M')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Selected: M, Black'), findsOneWidget);
+    });
+
+    testWidgets('color dropdown changes selected color and summary',
+        (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage(
+        titleOverride: 'Hoodie',
+        priceOverride: '£30.00',
+      )));
+      await tester.pump();
+
+      // Open color menu
+      await tester.tap(find.byKey(const Key('product:color-selector')));
+      await tester.pumpAndSettle();
+
+      // Ensure option keys exist and select 'Red'
+      expect(find.byKey(const Key('product:color-option-Red')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('product:color-option-Red')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Selected: XS, Red'), findsOneWidget);
+    });
+
+    testWidgets('selected options persist after quantity change (rebuild)',
+        (tester) async {
+      await tester.pumpWidget(_wrap(const ProductPage(
+        titleOverride: 'Hoodie',
+        priceOverride: '£30.00',
+      )));
+      await tester.pump();
+
+      // Change size to L
+      await tester.tap(find.byKey(const Key('product:size-selector')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('product:size-option-L')));
+      await tester.pumpAndSettle();
+      expect(find.text('Selected: L, Black'), findsOneWidget);
+
+      // Trigger a rebuild by changing quantity
+      await tester.tap(find.byKey(const Key('product:qty-increase')));
+      await tester.pump();
+
+      // Selection should persist
+      expect(find.text('Selected: L, Black'), findsOneWidget);
+    });
   });
 }
