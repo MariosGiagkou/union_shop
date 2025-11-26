@@ -27,6 +27,28 @@ class _ProductPageState extends State<ProductPage> {
   late final TextEditingController _qtyController =
       TextEditingController(text: '1');
 
+  // Add: options state and defaults
+  static const List<String> _sizeOptions = ['XS', 'S', 'M', 'L', 'XL'];
+  static const List<String> _colorOptions = [
+    'Black',
+    'White',
+    'Grey',
+    'Blue',
+    'Red'
+  ];
+  String _selectedSize = _sizeOptions.first;
+  String _selectedColor = _colorOptions.first;
+
+  // Add: helper to detect clothing-like titles
+  bool _isClothingTitle(String title) {
+    final t = title.toLowerCase();
+    return t.contains('hoodie') ||
+        t.contains('tee') ||
+        t.contains('t-shirt') ||
+        t.contains('tshirt') ||
+        t.contains('shirt');
+  }
+
   void navigateToHome(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
@@ -39,6 +61,107 @@ class _ProductPageState extends State<ProductPage> {
   void dispose() {
     _qtyController.dispose();
     super.dispose();
+  }
+
+  // Helper: show options menu at tap position
+  Future<void> _showOptionsMenu({
+    required Offset globalPosition,
+    required List<String> options,
+    required String current,
+    required ValueChanged<String> onChanged,
+    required String keyPrefix,
+  }) async {
+    final overlay =
+        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+    final selected = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        globalPosition.dx,
+        globalPosition.dy,
+        overlay.size.width - globalPosition.dx,
+        overlay.size.height - globalPosition.dy,
+      ),
+      items: [
+        for (final o in options)
+          PopupMenuItem<String>(
+            key: Key('product:$keyPrefix-option-$o'),
+            value: o,
+            child: Row(
+              children: [
+                if (o == current)
+                  const Padding(
+                    padding: EdgeInsets.only(right: 6),
+                    child: Icon(Icons.check, size: 16),
+                  ),
+                Text(o),
+              ],
+            ),
+          ),
+      ],
+    );
+    if (selected != null) onChanged(selected);
+  }
+
+  // Helper: boxed dropdown styled like quantity box
+  Widget _buildBoxDropdown({
+    required Key key,
+    required String value,
+    required List<String> options,
+    required ValueChanged<String> onChanged,
+    required String keyPrefix,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (details) {
+        _showOptionsMenu(
+          globalPosition: details.globalPosition,
+          options: options,
+          current: value,
+          onChanged: onChanged,
+          keyPrefix: keyPrefix,
+        );
+      },
+      child: SizedBox(
+        key: key,
+        height: 36,
+        child: Stack(
+          children: [
+            // Base box (matches quantity outline and padding)
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFF4d2963)),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              padding: const EdgeInsets.fromLTRB(8, 8, 36, 8),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF4d2963),
+                ),
+              ),
+            ),
+            // Right "dropdown" area like quantity box
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: 36,
+                decoration: const BoxDecoration(
+                  border: Border(left: BorderSide(color: Color(0xFF4d2963))),
+                ),
+                alignment: Alignment.center,
+                child: const Icon(Icons.keyboard_arrow_down,
+                    size: 18, color: Color(0xFF4d2963)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -180,6 +303,39 @@ class _ProductPageState extends State<ProductPage> {
                       ),
                       const SizedBox(height: 16),
 
+                      // Add: Clothing options (only for hoodie/tee/shirt)
+                      if (_isClothingTitle(title)) ...[
+                        const SizedBox(height: 12),
+                        Text('Options',
+                            style: Theme.of(context).textTheme.titleMedium),
+                        const SizedBox(height: 6),
+                        const Text('Size'),
+                        const SizedBox(height: 6),
+                        _buildBoxDropdown(
+                          key: const Key('product:size-selector'),
+                          value: _selectedSize,
+                          options: _sizeOptions,
+                          onChanged: (v) => setState(() => _selectedSize = v),
+                          keyPrefix: 'size',
+                        ),
+                        const SizedBox(height: 8),
+                        const Text('Color'),
+                        const SizedBox(height: 6),
+                        _buildBoxDropdown(
+                          key: const Key('product:color-selector'),
+                          value: _selectedColor,
+                          options: _colorOptions,
+                          onChanged: (v) => setState(() => _selectedColor = v),
+                          keyPrefix: 'color',
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Selected: $_selectedSize, $_selectedColor',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+
                       // Quantity selector with inline arrows (updated)
                       SizedBox(
                         key: const Key('product:quantity-row'),
@@ -212,7 +368,8 @@ class _ProductPageState extends State<ProductPage> {
                               },
                               decoration: const InputDecoration(
                                 isDense: true,
-                                contentPadding: EdgeInsets.fromLTRB(8, 8, 36, 8),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(8, 8, 36, 8),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Color(0xFF4d2963)),
