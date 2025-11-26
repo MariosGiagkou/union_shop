@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
 
 class ProductPage extends StatelessWidget {
-  const ProductPage({super.key});
+  final String? titleOverride;
+  final String? priceOverride;
+  final String? imageUrlOverride;
+  final bool? useAssetOverride;
+  final String? originalPriceOverride;
+
+  const ProductPage({
+    super.key,
+    this.titleOverride,
+    this.priceOverride,
+    this.imageUrlOverride,
+    this.useAssetOverride,
+    this.originalPriceOverride,
+  });
 
   void navigateToHome(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
@@ -16,11 +29,15 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final String title = (args?['title'] as String?) ?? 'Product';
-    final String price = (args?['price'] as String?) ?? '';
-    final String imageUrl = (args?['imageUrl'] as String?) ?? '';
-    final bool useAsset = (args?['useAsset'] as bool?) ?? false;
-    final String? originalPrice = args?['originalPrice'] as String?;
+    final String title =
+        titleOverride ?? (args?['title'] as String?) ?? 'Product';
+    final String price = priceOverride ?? (args?['price'] as String?) ?? '';
+    final String imageUrl =
+        imageUrlOverride ?? (args?['imageUrl'] as String?) ?? '';
+    final bool useAsset =
+        useAssetOverride ?? (args?['useAsset'] as bool?) ?? false;
+    final String? originalPrice =
+        originalPriceOverride ?? (args?['originalPrice'] as String?);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -144,6 +161,32 @@ class ProductPage extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        height: 44,
+                        child: ElevatedButton(
+                          key: const Key('product:add-to-cart'),
+                          onPressed: placeholderCallbackForButtons,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF4d2963),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                            ),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                          ),
+                          child: const Text(
+                            'ADD TO CART',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       const Text(
                         'Description',
@@ -180,7 +223,7 @@ class ProductPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          flex: 5,
+                          flex: 4,
                           child: AspectRatio(
                             aspectRatio: 1,
                             child: imageWidget,
@@ -199,7 +242,7 @@ class ProductPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: 300,
+                          height: 220,
                           width: double.infinity,
                           child: imageWidget,
                         ),

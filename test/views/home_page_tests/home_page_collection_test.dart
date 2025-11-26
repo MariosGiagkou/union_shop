@@ -4,7 +4,7 @@ import 'package:union_shop/views/home_page.dart';
 
 void main() {
   group('Portsmouth City Collection', () {
-    testWidgets('collection headings and product counts', (tester) async {
+    testWidgets('collection headings and product keys', (tester) async {
       await tester.pumpWidget(const MaterialApp(home: HomePage()));
       await tester.pumpAndSettle();
 
@@ -15,40 +15,41 @@ void main() {
 
       // Essential range products
       expect(
-          find.text('Limited Edition Essential Zip Hoodies'), findsOneWidget);
-      expect(find.text('Essential T-Shirt'), findsOneWidget);
+          find.byKey(
+              const ValueKey('product:Limited Edition Essential Zip Hoodies')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Essential T-Shirt')),
+          findsOneWidget);
 
       // Signature range products
-      expect(find.text('Signiture Hoodie'), findsOneWidget);
-      expect(find.text('Signiture T-Shirt'), findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Signiture Hoodie')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Signiture T-Shirt')),
+          findsOneWidget);
 
       // Portsmouth City collection products
-      expect(find.text('Portsmouth City Postcard'), findsOneWidget);
-      expect(find.text('Portsmouth City Magnet'), findsOneWidget);
-      expect(find.text('Portsmouth City Bookmark'), findsOneWidget);
-      expect(find.text('Portsmouth City Notebook'), findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Portsmouth City Postcard')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Portsmouth City Magnet')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Portsmouth City Bookmark')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('product:Portsmouth City Notebook')),
+          findsOneWidget);
     });
 
-    testWidgets('Portsmouth City collection asset images exist',
+    testWidgets('Portsmouth City collection product cards exist via keys',
         (tester) async {
       await tester.pumpWidget(const MaterialApp(home: HomePage()));
       await tester.pumpAndSettle();
 
-      expect(
-          find.image(
-              const AssetImage('assets/images/PortsmouthCityPostcard.webp')),
+      expect(find.byKey(const ValueKey('product:Portsmouth City Postcard')),
           findsOneWidget);
-      expect(
-          find.image(
-              const AssetImage('assets/images/PortsmouthCityMagnet.jpg')),
+      expect(find.byKey(const ValueKey('product:Portsmouth City Magnet')),
           findsOneWidget);
-      expect(
-          find.image(
-              const AssetImage('assets/images/PortsmouthCityBookmark.jpg')),
+      expect(find.byKey(const ValueKey('product:Portsmouth City Bookmark')),
           findsOneWidget);
-      expect(
-          find.image(
-              const AssetImage('assets/images/PortsmouthCityNotebook.webp')),
+      expect(find.byKey(const ValueKey('product:Portsmouth City Notebook')),
           findsOneWidget);
     });
   });
@@ -59,6 +60,17 @@ void main() {
       await tester.pumpAndSettle();
       // Updated hero first slide text
       expect(find.text('essential range 20% OFF'), findsOneWidget);
+      // Keys in hero controls
+      expect(find.byKey(const PageStorageKey('hero:carousel')), findsOneWidget);
+      expect(find.byKey(const Key('hero:left')), findsOneWidget);
+      expect(find.byKey(const Key('hero:right')), findsOneWidget);
+      expect(find.byKey(const Key('hero:pause')), findsOneWidget);
+      expect(find.byKey(const Key('hero:browse:1')), findsOneWidget);
+      // Navigate to second slide to verify its button key
+      await tester.drag(find.byKey(const PageStorageKey('hero:carousel')),
+          const Offset(-600, 0));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('hero:browse:2')), findsOneWidget);
     });
   });
 }
