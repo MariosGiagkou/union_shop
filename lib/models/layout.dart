@@ -94,9 +94,9 @@ class _SiteHeaderState extends State<SiteHeader> {
                     alignment: Alignment.centerLeft,
                     child: GestureDetector(
                       onTap: () => _goHome(context),
-                      child: Image.network(
-                        'https://shop.upsu.net/cdn/shop/files/upsu_300x300.png?v=1614735854',
-                        height: 28,
+                      child: Image.asset(
+                        'assets/images/logo1.png', // fixed path to load from assets folder
+                        height: 90,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
