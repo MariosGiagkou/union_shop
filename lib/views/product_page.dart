@@ -63,24 +63,29 @@ class _ProductPageState extends State<ProductPage> {
     super.dispose();
   }
 
-  // Helper: show options menu at tap position
-  Future<void> _showOptionsMenu({
-    required Offset globalPosition,
+  // Remove old onTapDown-based helper and use a context-anchored menu instead
+  Future<void> _openMenuForBox({
+    required BuildContext boxContext,
     required List<String> options,
     required String current,
     required ValueChanged<String> onChanged,
     required String keyPrefix,
   }) async {
+    final renderBox = boxContext.findRenderObject() as RenderBox;
     final overlay =
-        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+        Overlay.of(boxContext).context.findRenderObject() as RenderBox;
+
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final position = RelativeRect.fromLTRB(
+      offset.dx,
+      offset.dy + renderBox.size.height,
+      overlay.size.width - offset.dx - renderBox.size.width,
+      overlay.size.height - offset.dy - renderBox.size.height,
+    );
+
     final selected = await showMenu<String>(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        globalPosition.dx,
-        globalPosition.dy,
-        overlay.size.width - globalPosition.dx,
-        overlay.size.height - globalPosition.dy,
-      ),
+      context: boxContext,
+      position: position,
       items: [
         for (final o in options)
           PopupMenuItem<String>(
@@ -102,7 +107,7 @@ class _ProductPageState extends State<ProductPage> {
     if (selected != null) onChanged(selected);
   }
 
-  // Helper: boxed dropdown styled like quantity box
+  // Helper: boxed dropdown styled like quantity box (tap to open menu)
   Widget _buildBoxDropdown({
     required Key key,
     required String value,
@@ -110,55 +115,56 @@ class _ProductPageState extends State<ProductPage> {
     required ValueChanged<String> onChanged,
     required String keyPrefix,
   }) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: (details) {
-        _showOptionsMenu(
-          globalPosition: details.globalPosition,
-          options: options,
-          current: value,
-          onChanged: onChanged,
-          keyPrefix: keyPrefix,
-        );
-      },
-      child: SizedBox(
-        key: key,
-        height: 36,
-        child: Stack(
-          children: [
-            // Base box (matches quantity outline and padding)
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF4d2963)),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              padding: const EdgeInsets.fromLTRB(8, 8, 36, 8),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF4d2963),
+    return Builder(
+      builder: (ctx) => InkWell(
+        onTap: () {
+          _openMenuForBox(
+            boxContext: ctx,
+            options: options,
+            current: value,
+            onChanged: onChanged,
+            keyPrefix: keyPrefix,
+          );
+        },
+        child: SizedBox(
+          key: key,
+          height: 36,
+          child: Stack(
+            children: [
+              // Base box (matches quantity outline and padding)
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFF4d2963)),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                padding: const EdgeInsets.fromLTRB(8, 8, 36, 8),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF4d2963),
+                  ),
                 ),
               ),
-            ),
-            // Right "dropdown" area like quantity box
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: Container(
-                width: 36,
-                decoration: const BoxDecoration(
-                  border: Border(left: BorderSide(color: Color(0xFF4d2963))),
+              // Right "dropdown" area like quantity box
+              Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 36,
+                  decoration: const BoxDecoration(
+                    border: Border(left: BorderSide(color: Color(0xFF4d2963))),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.keyboard_arrow_down,
+                      size: 18, color: Color(0xFF4d2963)),
                 ),
-                alignment: Alignment.center,
-                child: const Icon(Icons.keyboard_arrow_down,
-                    size: 18, color: Color(0xFF4d2963)),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
