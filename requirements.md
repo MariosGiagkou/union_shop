@@ -7,8 +7,8 @@
 - [ ] Collections Page (static)
 - [ ] Collection Page (dummy with dropdowns/filters)
 - [x] Dummy Product Page
-- [ ] Sale Collection Page
-- [ ] Authentication UI (login/signup forms)
+- [x] Sale Collection Page
+- [x] Authentication UI (login/signup forms)
 - [x] Static Navbar (collapses on mobile)
 
 ## Dynamic / Functional Features
