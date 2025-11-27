@@ -66,6 +66,7 @@ class _SiteHeaderState extends State<SiteHeader> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWideNav = MediaQuery.of(context).size.width >= 800; // added
     return Container(
       height: 140,
       color: Colors.white,
@@ -112,48 +113,49 @@ class _SiteHeaderState extends State<SiteHeader> {
                       ),
                     ),
                   ),
-                  // Center: nav buttons (Home + new dummy links)
-                  Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _navButton(
-                          'Home',
-                          _homeHover,
-                          (v) => _homeHover = v,
-                          () => _goHome(context),
-                          active: _isHome(context),
-                        ),
-                        _navButton(
-                          'Shop',
-                          _shopHover,
-                          (v) => _shopHover = v,
-                          _placeholderCallbackForButtons,
-                        ),
-                        _navButton(
-                          'The Printing Shack',
-                          _tpsHover,
-                          (v) => _tpsHover = v,
-                          _placeholderCallbackForButtons,
-                        ),
-                        _navButton(
-                          'SALES!',
-                          _salesHover,
-                          (v) => _salesHover = v,
-                          () => Navigator.pushNamed(context, '/sales'),
-                          active: _isRoute(context, '/sales'),
-                        ),
-                        _navButton(
-                          'About',
-                          _aboutHover,
-                          (v) => _aboutHover = v,
-                          () => Navigator.pushNamed(context, '/about'),
-                          active: _isRoute(context, '/about'),
-                        ),
-                      ],
+                  // Center: nav buttons (shown only on wide screens)
+                  if (isWideNav)
+                    Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _navButton(
+                            'Home',
+                            _homeHover,
+                            (v) => _homeHover = v,
+                            () => _goHome(context),
+                            active: _isHome(context),
+                          ),
+                          _navButton(
+                            'Shop',
+                            _shopHover,
+                            (v) => _shopHover = v,
+                            _placeholderCallbackForButtons,
+                          ),
+                          _navButton(
+                            'The Printing Shack',
+                            _tpsHover,
+                            (v) => _tpsHover = v,
+                            _placeholderCallbackForButtons,
+                          ),
+                          _navButton(
+                            'SALES!',
+                            _salesHover,
+                            (v) => _salesHover = v,
+                            () => Navigator.pushNamed(context, '/sales'),
+                            active: _isRoute(context, '/sales'),
+                          ),
+                          _navButton(
+                            'About',
+                            _aboutHover,
+                            (v) => _aboutHover = v,
+                            () => Navigator.pushNamed(context, '/about'),
+                            active: _isRoute(context, '/about'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   // Right: Icons group
                   Align(
                     alignment: Alignment.centerRight,
