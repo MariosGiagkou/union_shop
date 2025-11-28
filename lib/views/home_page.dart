@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:union_shop/models/layout.dart';
 import 'dart:math' as math;
 import 'dart:async';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -871,17 +873,7 @@ class _ProductCardState extends State<ProductCard> {
       onExit: (_) => setState(() => _hover = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => Navigator.pushNamed(
-          context,
-          '/product',
-          arguments: {
-            'title': widget.title,
-            'price': widget.price,
-            'imageUrl': widget.imageUrl,
-            'useAsset': widget.useAsset,
-            'originalPrice': widget.originalPrice,
-          },
-        ),
+        onTap: () => context.go('/product'),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -964,7 +956,7 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
           onExit: (_) => setState(() => _hover = false),
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: () => Navigator.pushNamed(context, widget.route),
+            onTap: () => context.go(widget.route),
             child: SizedBox(
               height: constraints.maxWidth,
               child: AspectRatio(

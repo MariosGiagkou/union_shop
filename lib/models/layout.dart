@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SiteHeader extends StatefulWidget {
   const SiteHeader({super.key});
@@ -18,17 +19,37 @@ class _SiteHeaderState extends State<SiteHeader> {
     // placeholder for buttons that don't do anything yet
   }
 
+  String _currentLocation(BuildContext context) {
+    return GoRouter.maybeOf(context)?.location ??
+        ModalRoute.of(context)?.settings.name ??
+        '/';
+  }
+
   void _goHome(BuildContext context) {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    final router = GoRouter.maybeOf(context);
+    if (router != null) {
+      router.go('/');
+    } else {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
+    }
+  }
+
+  void _navigate(BuildContext context, String route) {
+    final router = GoRouter.maybeOf(context);
+    if (router != null) {
+      router.go(route);
+    } else {
+      Navigator.pushNamed(context, route);
+    }
   }
 
   bool _isHome(BuildContext context) {
-    final name = ModalRoute.of(context)?.settings.name;
-    return name == '/' || name == null;
+    final loc = _currentLocation(context);
+    return loc == '/' || loc.isEmpty;
   }
 
   bool _isRoute(BuildContext context, String route) {
-    return ModalRoute.of(context)?.settings.name == route;
+    return _currentLocation(context) == route;
   }
 
   // helper to render nav text buttons with hover/active styles
@@ -143,14 +164,14 @@ class _SiteHeaderState extends State<SiteHeader> {
                             'SALES!',
                             _salesHover,
                             (v) => _salesHover = v,
-                            () => Navigator.pushNamed(context, '/sales'),
+                            () => _navigate(context, '/sales'),
                             active: _isRoute(context, '/sales'),
                           ),
                           _navButton(
                             'About',
                             _aboutHover,
                             (v) => _aboutHover = v,
-                            () => Navigator.pushNamed(context, '/about'),
+                            () => _navigate(context, '/about'),
                             active: _isRoute(context, '/about'),
                           ),
                         ],
@@ -178,8 +199,7 @@ class _SiteHeaderState extends State<SiteHeader> {
                             padding: const EdgeInsets.all(10),
                             constraints: const BoxConstraints(
                                 minWidth: 40, minHeight: 40),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, '/sign-in'),
+                            onPressed: () => _navigate(context, '/sign-in'),
                           ),
                           IconButton(
                             icon: const Icon(Icons.shopping_bag_outlined,
@@ -209,6 +229,10 @@ class _SiteHeaderState extends State<SiteHeader> {
       ),
     );
   }
+}
+
+extension on GoRouter? {
+  get location => null;
 }
 
 class SiteFooter extends StatelessWidget {
