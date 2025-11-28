@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:union_shop/firebase_options.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/home_page.dart';
@@ -7,7 +9,11 @@ import 'package:union_shop/views/SALES!.dart';
 import 'package:union_shop/views/sign_in.dart';
 import 'package:union_shop/views/collections_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const UnionShopApp());
 }
 
