@@ -40,7 +40,7 @@ class UnionShopApp extends StatelessWidget {
               titleOverride: args?['title'] as String?,
               priceOverride: args?['price'] as String?,
               imageUrlOverride: args?['imageUrl'] as String?,
-              originalPriceOverride: args?['originalPrice'] as String?,
+              discountPriceOverride: args?['discountPrice'] as String?,
             );
           },
         ),
@@ -62,12 +62,6 @@ class UnionShopApp extends StatelessWidget {
         GoRoute(
           path: '/collections',
           name: 'collections',
-          builder: (context, state) => const CollectionsPage(),
-        ),
-        // Alias to support singular path as requested
-        GoRoute(
-          path: '/collection',
-          name: 'collection',
           builder: (context, state) => const CollectionsPage(),
         ),
       ],

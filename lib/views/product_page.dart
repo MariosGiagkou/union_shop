@@ -7,14 +7,14 @@ class ProductPage extends StatefulWidget {
   final String? titleOverride;
   final String? priceOverride;
   final String? imageUrlOverride;
-  final String? originalPriceOverride;
+  final String? discountPriceOverride;
 
   const ProductPage({
     super.key,
     this.titleOverride,
     this.priceOverride,
     this.imageUrlOverride,
-    this.originalPriceOverride,
+    this.discountPriceOverride,
   });
 
   @override
@@ -179,16 +179,20 @@ class _ProductPageState extends State<ProductPage> {
         widget.priceOverride ?? (args?['price'] as String?) ?? '';
     final String rawImageUrl =
         widget.imageUrlOverride ?? (args?['imageUrl'] as String?) ?? '';
-    // Normalize local asset paths: if it's not network and doesn't start with assets/, prefix assets/images/
-    String imageUrl = rawImageUrl;
-    if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
-      if (!imageUrl.startsWith('assets/')) {
-        imageUrl = 'assets/images/$imageUrl';
-      }
+    // Helper to parse price strings like '£14.99' to double for comparisons
+    double _parsePrice(String price) {
+      final cleaned = price.replaceAll(RegExp(r'[^0-9.]'), '');
+      return double.tryParse(cleaned) ?? 0.0;
     }
-    final bool isNetwork = imageUrl.startsWith('http');
-    final String? originalPrice =
-        widget.originalPriceOverride ?? (args?['originalPrice'] as String?);
+
+    // Only support local asset images: normalize and root at assets/images/
+    String imageUrl = rawImageUrl.trim();
+    if (imageUrl.startsWith('/')) imageUrl = imageUrl.substring(1);
+    if (imageUrl.isNotEmpty && !imageUrl.startsWith('assets/')) {
+      imageUrl = 'assets/images/$imageUrl';
+    }
+    final String? discountPrice =
+        widget.discountPriceOverride ?? (args?['discountPrice'] as String?);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -224,59 +228,30 @@ class _ProductPageState extends State<ProductPage> {
                                 ),
                               ),
                             )
-                          : (isNetwork
-                              ? Image.network(
-                                  key: const Key('product:image'),
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                    color: Colors.grey[300],
-                                    child: const Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.image_not_supported,
-                                            size: 64,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text('Image unavailable',
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                        ],
+                          : Image.asset(
+                              key: const Key('product:image'),
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                color: Colors.grey[300],
+                                child: const Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.image_not_supported,
+                                        size: 64,
+                                        color: Colors.grey,
                                       ),
-                                    ),
+                                      SizedBox(height: 8),
+                                      Text('Image unavailable',
+                                          style: TextStyle(color: Colors.grey)),
+                                    ],
                                   ),
-                                )
-                              : Image.asset(
-                                  key: const Key('product:image'),
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                    color: Colors.grey[300],
-                                    child: const Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.image_not_supported,
-                                            size: 64,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text('Image unavailable',
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )),
+                                ),
+                              ),
+                            ),
                     ),
                   );
 
@@ -295,11 +270,12 @@ class _ProductPageState extends State<ProductPage> {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          if (originalPrice != null)
+                          if (discountPrice != null &&
+                              _parsePrice(discountPrice) < _parsePrice(price))
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: Text(
-                                originalPrice,
+                                price.isNotEmpty ? price : '—',
                                 key: const Key('product:originalPrice'),
                                 style: const TextStyle(
                                   fontSize: 20,
@@ -310,7 +286,11 @@ class _ProductPageState extends State<ProductPage> {
                               ),
                             ),
                           Text(
-                            price.isNotEmpty ? price : '—',
+                            (discountPrice != null &&
+                                    _parsePrice(discountPrice) <
+                                        _parsePrice(price))
+                                ? discountPrice
+                                : (price.isNotEmpty ? price : '—'),
                             key: const Key('product:price'),
                             style: const TextStyle(
                               fontSize: 24,

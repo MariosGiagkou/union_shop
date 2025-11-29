@@ -106,15 +106,15 @@ class HomePage extends StatelessWidget {
                               key: ValueKey(
                                   'product:Limited Edition Essential Zip Hoodies'),
                               title: 'Limited Edition Essential Zip Hoodies',
-                              originalPrice: '£20.00',
-                              price: '£14.99',
+                              discountPrice: '£14.99',
+                              price: '£20.00',
                               imageUrl: 'assets/images/pink_hoodie.webp',
                             ),
                             b: const ProductCard(
                               key: ValueKey('product:Essential T-Shirt'),
                               title: 'Essential T-Shirt',
-                              originalPrice: '£10.00',
-                              price: '£6.99',
+                              discountPrice: '£6.99',
+                              price: '£10.00',
                               imageUrl: 'assets/images/essential_t-shirt.webp',
                             ),
                           );
@@ -745,14 +745,14 @@ class ProductCard extends StatefulWidget {
   final String title;
   final String price;
   final String imageUrl;
-  final String? originalPrice;
+  final String? discountPrice;
 
   const ProductCard({
     super.key,
     required this.title,
     required this.price,
     required this.imageUrl,
-    this.originalPrice,
+    this.discountPrice,
   });
 
   @override
@@ -762,56 +762,35 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   bool _hover = false;
 
+  // Helper to parse price strings like '£14.99' to double for comparisons
+  double _parsePrice(String price) {
+    final cleaned = price.replaceAll(RegExp(r'[^0-9.]'), '');
+    return double.tryParse(cleaned) ?? 0.0;
+  }
+
   Widget _buildImage() {
-    final placeholder = Container(
-      color: Colors.grey[300],
-      child: const Center(child: Icon(Icons.image, color: Colors.grey)),
-    );
-    final isNetwork = widget.imageUrl.startsWith('http');
-    if (!isNetwork) {
-      return Image.asset(
-        widget.imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          color: Colors.grey[300],
-          child: const Center(
-              child: Icon(Icons.image_not_supported, color: Colors.grey)),
-        ),
-      );
-    } else {
-      return Image.network(
-        widget.imageUrl,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, progress) {
-          if (progress == null) return child;
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              placeholder,
-              Center(
-                child: SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    value: progress.expectedTotalBytes != null
-                        ? progress.cumulativeBytesLoaded /
-                            progress.expectedTotalBytes!
-                        : null,
-                    color: const Color(0xFF4d2963),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        errorBuilder: (_, __, ___) => Container(
-          color: Colors.grey[300],
-          child: const Center(
-              child: Icon(Icons.image_not_supported, color: Colors.grey)),
-        ),
+    // Normalize asset path locally; do not mutate the widget.
+    String src = widget.imageUrl.trim();
+    if (src.startsWith('/')) src = src.substring(1);
+    if (src.isNotEmpty && !src.startsWith('assets/'))
+      src = 'assets/images/$src';
+
+    if (src.isEmpty) {
+      return Container(
+        color: Colors.grey[300],
+        child: const Center(child: Icon(Icons.image, color: Colors.grey)),
       );
     }
+
+    return Image.asset(
+      src,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => Container(
+        color: Colors.grey[300],
+        child: const Center(
+            child: Icon(Icons.image_not_supported, color: Colors.grey)),
+      ),
+    );
   }
 
   @override
@@ -848,8 +827,8 @@ class _ProductCardState extends State<ProductCard> {
             'title': widget.title,
             'price': widget.price,
             'imageUrl': widget.imageUrl,
-            if (widget.originalPrice != null)
-              'originalPrice': widget.originalPrice,
+            if (widget.discountPrice != null)
+              'discountPrice': widget.discountPrice,
           },
         ),
         child: Column(
@@ -869,11 +848,12 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ),
             const SizedBox(height: 6),
-            if (widget.originalPrice != null)
+            if (widget.discountPrice != null &&
+                _parsePrice(widget.discountPrice!) < _parsePrice(widget.price))
               Row(
                 children: [
                   Text(
-                    widget.originalPrice!,
+                    widget.price,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color(0xFF555555),
@@ -883,7 +863,7 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    widget.price,
+                    widget.discountPrice!,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.blueGrey,

@@ -30,13 +30,14 @@ void main() {
       await tester.pumpWidget(
         _wrap(const ProductPage(
           titleOverride: 'Tee',
-          priceOverride: '£15.00',
-          originalPriceOverride: '£20.00',
+          priceOverride: '£20.00',
+          discountPriceOverride: '£15.00',
         )),
       );
       await tester.pump();
 
       expect(find.text('Tee'), findsOneWidget);
+      // discounted price should be shown as the main price, original shown struck-through
       expect(find.text('£15.00'), findsOneWidget);
       expect(find.byKey(const Key('product:originalPrice')), findsOneWidget);
       expect(find.text('£20.00'), findsOneWidget);
