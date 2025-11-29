@@ -154,6 +154,28 @@ class HomePage extends StatelessWidget {
                                 ));
                               }
 
+                              // Before partitioning, allow swapping specific
+                              // products by title (useful for manual ordering).
+                              // Swap 'Portsmouth City Postcard' with 'Signiture T-Shirt'
+                              // if both are present in the fetched documents.
+                              final postcardIndex = docs.indexWhere((d) {
+                                final t = d.data()['title'];
+                                return t is String &&
+                                    t.toLowerCase() ==
+                                        'portsmouth city postcard';
+                              });
+                              final signitureIndex = docs.indexWhere((d) {
+                                final t = d.data()['title'];
+                                return t is String &&
+                                    t.toLowerCase() == 'signiture t-shirt';
+                              });
+                              if (postcardIndex != -1 && signitureIndex != -1) {
+                                final tmp = allCards[postcardIndex];
+                                allCards[postcardIndex] =
+                                    allCards[signitureIndex];
+                                allCards[signitureIndex] = tmp;
+                              }
+
                               // Partition into discounted and regular lists
                               final discountedCards = <Widget>[];
                               final regularCards = <Widget>[];
