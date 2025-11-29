@@ -97,7 +97,6 @@ void main() {
           titleOverride: 'Wide',
           priceOverride: '£1.00',
           imageUrlOverride: 'assets/images/fidget.avif',
-          useAssetOverride: true,
         )),
       );
       await tester.pump();
@@ -130,7 +129,6 @@ void main() {
           titleOverride: 'Narrow',
           priceOverride: '£2.00',
           imageUrlOverride: 'assets/images/fidget.avif',
-          useAssetOverride: true,
         )),
       );
       await tester.pumpAndSettle();
@@ -256,7 +254,8 @@ void main() {
       expect(tf.controller!.text, '2');
     });
 
-    testWidgets('clothing options are hidden for non-clothing titles', (tester) async {
+    testWidgets('clothing options are hidden for non-clothing titles',
+        (tester) async {
       await tester.pumpWidget(_wrap(const ProductPage(
         titleOverride: 'Mug',
         priceOverride: '£5.00',
@@ -268,7 +267,8 @@ void main() {
       expect(find.textContaining('Selected:'), findsNothing);
     });
 
-    testWidgets('clothing options show and default to first values', (tester) async {
+    testWidgets('clothing options show and default to first values',
+        (tester) async {
       await tester.pumpWidget(_wrap(const ProductPage(
         titleOverride: 'Hoodie',
         priceOverride: '£30.00',
@@ -280,7 +280,8 @@ void main() {
       expect(find.text('Selected: XS, Black'), findsOneWidget);
     });
 
-    testWidgets('size dropdown changes selected size and summary', (tester) async {
+    testWidgets('size dropdown changes selected size and summary',
+        (tester) async {
       await tester.pumpWidget(_wrap(const ProductPage(
         titleOverride: 'Hoodie',
         priceOverride: '£30.00',
@@ -299,8 +300,8 @@ void main() {
       expect(find.text('Selected: M, Black'), findsOneWidget);
     });
 
-
-    testWidgets('selected options persist after quantity change (rebuild)', (tester) async {
+    testWidgets('selected options persist after quantity change (rebuild)',
+        (tester) async {
       await tester.pumpWidget(_wrap(const ProductPage(
         titleOverride: 'Hoodie',
         priceOverride: '£30.00',

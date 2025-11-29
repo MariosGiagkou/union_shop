@@ -13,8 +13,6 @@ void main() {
               title: 'Test Product',
               price: '£35.00',
               imageUrl: 'assets/images/pink_hoodie.webp',
-              useAsset: true,
-              customHeight: 140, // was 100
             ),
           ),
         ),
@@ -34,7 +32,6 @@ void main() {
               title: 'Network Product',
               price: '£15.00',
               imageUrl: 'https://example.com/image.jpg',
-              customHeight: 140, // was 100
             ),
           ),
         ),
@@ -57,7 +54,6 @@ void main() {
               title: 'No Sale Product',
               price: '£12.00',
               imageUrl: 'https://example.com/image.jpg',
-              customHeight: 140, // was 100
             ),
           ),
         ),
@@ -76,8 +72,6 @@ void main() {
               title: 'Hover Test Product',
               price: '£9.99',
               imageUrl: 'assets/images/pink_hoodie.webp',
-              useAsset: true,
-              customHeight: 160, // was 120
             ),
           ),
         ),

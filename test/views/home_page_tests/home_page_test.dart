@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:union_shop/views/home_page.dart';
 
-Widget _buildTestApp() => MaterialApp(
-      routes: {
-        '/product': (_) => const Scaffold(
-              body: Center(child: Text('Product Page')),
-            ),
-      },
-      home: const HomePage(),
-    );
+Widget _buildTestApp() {
+  final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: '/product',
+        builder: (context, state) => const Scaffold(
+          body: Center(child: Text('Product Page')),
+        ),
+      ),
+    ],
+  );
+  return MaterialApp.router(routerConfig: router);
+}
 
 void main() {
   testWidgets('HomePage renders hero section and primary headings',

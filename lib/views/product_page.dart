@@ -214,10 +214,14 @@ class _ProductPageState extends State<ProductPage> {
                       borderRadius: BorderRadius.circular(8),
                       child: imageUrl.isEmpty
                           ? Container(
+                              key: const Key('product:image'),
                               color: Colors.grey[300],
                               child: const Center(
-                                child: Icon(Icons.image_not_supported,
-                                    size: 64, color: Colors.grey),
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  size: 64,
+                                  color: Colors.grey,
+                                ),
                               ),
                             )
                           : (isNetwork
