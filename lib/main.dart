@@ -33,7 +33,16 @@ class UnionShopApp extends StatelessWidget {
         GoRoute(
           path: '/product',
           name: 'product',
-          builder: (context, state) => const ProductPage(),
+          builder: (context, state) {
+            // Forward extras (provided via context.go('/product', extra: {...}))
+            final args = state.extra as Map<String, dynamic>?;
+            return ProductPage(
+              titleOverride: args?['title'] as String?,
+              priceOverride: args?['price'] as String?,
+              imageUrlOverride: args?['imageUrl'] as String?,
+              originalPriceOverride: args?['originalPrice'] as String?,
+            );
+          },
         ),
         GoRoute(
           path: '/about',
@@ -53,6 +62,12 @@ class UnionShopApp extends StatelessWidget {
         GoRoute(
           path: '/collections',
           name: 'collections',
+          builder: (context, state) => const CollectionsPage(),
+        ),
+        // Alias to support singular path as requested
+        GoRoute(
+          path: '/collection',
+          name: 'collection',
           builder: (context, state) => const CollectionsPage(),
         ),
       ],

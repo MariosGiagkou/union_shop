@@ -4,7 +4,6 @@ import 'package:union_shop/models/layout.dart';
 import 'dart:math' as math;
 import 'dart:async';
 
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -110,8 +109,6 @@ class HomePage extends StatelessWidget {
                               originalPrice: '£20.00',
                               price: '£14.99',
                               imageUrl: 'assets/images/pink_hoodie.webp',
-                              useAsset: true,
-                              aspectRatio: 3 / 2,
                             ),
                             b: const ProductCard(
                               key: ValueKey('product:Essential T-Shirt'),
@@ -119,8 +116,6 @@ class HomePage extends StatelessWidget {
                               originalPrice: '£10.00',
                               price: '£6.99',
                               imageUrl: 'assets/images/essential_t-shirt.webp',
-                              useAsset: true,
-                              aspectRatio: 3 / 2,
                             ),
                           );
 
@@ -130,16 +125,12 @@ class HomePage extends StatelessWidget {
                               title: 'Signiture Hoodie',
                               price: '£32.99',
                               imageUrl: 'assets/images/signature_hoodie.webp',
-                              useAsset: true,
-                              aspectRatio: 3 / 2,
                             ),
                             b: const ProductCard(
                               key: ValueKey('product:Signiture T-Shirt'),
                               title: 'Signiture T-Shirt',
                               price: '£14.99',
                               imageUrl: 'assets/images/signiture_t-shirt.webp',
-                              useAsset: true,
-                              aspectRatio: 3 / 2,
                             ),
                           );
 
@@ -150,8 +141,6 @@ class HomePage extends StatelessWidget {
                               price: '£1.00',
                               imageUrl:
                                   'assets/images/PortsmouthCityPostcard.webp',
-                              useAsset: true,
-                              aspectRatio: 4 / 3,
                             ),
                             b: const ProductCard(
                               key: ValueKey('product:Portsmouth City Magnet'),
@@ -159,8 +148,6 @@ class HomePage extends StatelessWidget {
                               price: '£4.50',
                               imageUrl:
                                   'assets/images/PortsmouthCityMagnet.jpg',
-                              useAsset: true,
-                              aspectRatio: 4 / 3,
                             ),
                           );
 
@@ -171,8 +158,6 @@ class HomePage extends StatelessWidget {
                               price: '£3.00',
                               imageUrl:
                                   'assets/images/PortsmouthCityBookmark.jpg',
-                              useAsset: true,
-                              aspectRatio: 4 / 3,
                             ),
                             b: const ProductCard(
                               key: ValueKey('product:Portsmouth City Notebook'),
@@ -180,8 +165,6 @@ class HomePage extends StatelessWidget {
                               price: '£7.50',
                               imageUrl:
                                   'assets/images/PortsmouthCityNotebook.webp',
-                              useAsset: true,
-                              aspectRatio: 4 / 3,
                             ),
                           );
 
@@ -763,9 +746,6 @@ class ProductCard extends StatefulWidget {
   final String price;
   final String imageUrl;
   final String? originalPrice;
-  final bool useAsset;
-  final double? aspectRatio;
-  final double? customHeight;
 
   const ProductCard({
     super.key,
@@ -773,9 +753,6 @@ class ProductCard extends StatefulWidget {
     required this.price,
     required this.imageUrl,
     this.originalPrice,
-    this.useAsset = false,
-    this.aspectRatio,
-    this.customHeight,
   });
 
   @override
@@ -790,7 +767,8 @@ class _ProductCardState extends State<ProductCard> {
       color: Colors.grey[300],
       child: const Center(child: Icon(Icons.image, color: Colors.grey)),
     );
-    if (widget.useAsset) {
+    final isNetwork = widget.imageUrl.startsWith('http');
+    if (!isNetwork) {
       return Image.asset(
         widget.imageUrl,
         fit: BoxFit.cover,
@@ -800,69 +778,60 @@ class _ProductCardState extends State<ProductCard> {
               child: Icon(Icons.image_not_supported, color: Colors.grey)),
         ),
       );
-    }
-    return Image.network(
-      widget.imageUrl,
-      fit: BoxFit.cover,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            placeholder,
-            Center(
-              child: SizedBox(
-                width: 28,
-                height: 28,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  value: progress.expectedTotalBytes != null
-                      ? progress.cumulativeBytesLoaded /
-                          progress.expectedTotalBytes!
-                      : null,
-                  color: const Color(0xFF4d2963),
+    } else {
+      return Image.network(
+        widget.imageUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, progress) {
+          if (progress == null) return child;
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              placeholder,
+              Center(
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    value: progress.expectedTotalBytes != null
+                        ? progress.cumulativeBytesLoaded /
+                            progress.expectedTotalBytes!
+                        : null,
+                    color: const Color(0xFF4d2963),
+                  ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
-      errorBuilder: (_, __, ___) => Container(
-        color: Colors.grey[300],
-        child: const Center(
-            child: Icon(Icons.image_not_supported, color: Colors.grey)),
-      ),
-    );
+            ],
+          );
+        },
+        errorBuilder: (_, __, ___) => Container(
+          color: Colors.grey[300],
+          child: const Center(
+              child: Icon(Icons.image_not_supported, color: Colors.grey)),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     Widget baseImage = _buildImage();
-    Widget image;
     const maxHeight = 520.0;
-    if (widget.aspectRatio != null) {
-      image = ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: maxHeight),
-        child: AspectRatio(
-          aspectRatio: widget.aspectRatio!,
-          child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
-        ),
-      );
-    } else if (widget.customHeight != null) {
-      image = SizedBox(
-        height: widget.customHeight! <= maxHeight
-            ? widget.customHeight!
-            : maxHeight,
-        width: double.infinity,
-        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
-      );
-    } else {
-      image = SizedBox(
-        height: maxHeight,
-        width: double.infinity,
-        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
-      );
+    double _defaultAspect() {
+      final s = widget.imageUrl.toLowerCase();
+      // Preserve prior visuals: PortsmouthCity items used 4/3; others 3/2
+      if (s.contains('portsmouthcity')) return 4 / 3;
+      return 3 / 2;
     }
+
+    final image = ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: maxHeight),
+      child: AspectRatio(
+        aspectRatio: _defaultAspect(),
+        child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
+      ),
+    );
     final overlay = AnimatedContainer(
       duration: const Duration(milliseconds: 160),
       color: Colors.white.withOpacity(_hover ? 0.25 : 0.15),
@@ -873,7 +842,16 @@ class _ProductCardState extends State<ProductCard> {
       onExit: (_) => setState(() => _hover = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => context.go('/product'),
+        onTap: () => context.go(
+          '/product',
+          extra: {
+            'title': widget.title,
+            'price': widget.price,
+            'imageUrl': widget.imageUrl,
+            if (widget.originalPrice != null)
+              'originalPrice': widget.originalPrice,
+          },
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

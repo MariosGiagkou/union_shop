@@ -7,7 +7,6 @@ class ProductPage extends StatefulWidget {
   final String? titleOverride;
   final String? priceOverride;
   final String? imageUrlOverride;
-  final bool? useAssetOverride;
   final String? originalPriceOverride;
 
   const ProductPage({
@@ -15,7 +14,6 @@ class ProductPage extends StatefulWidget {
     this.titleOverride,
     this.priceOverride,
     this.imageUrlOverride,
-    this.useAssetOverride,
     this.originalPriceOverride,
   });
 
@@ -179,10 +177,16 @@ class _ProductPageState extends State<ProductPage> {
         widget.titleOverride ?? (args?['title'] as String?) ?? 'Product';
     final String price =
         widget.priceOverride ?? (args?['price'] as String?) ?? '';
-    final String imageUrl =
+    final String rawImageUrl =
         widget.imageUrlOverride ?? (args?['imageUrl'] as String?) ?? '';
-    final bool useAsset =
-        widget.useAssetOverride ?? (args?['useAsset'] as bool?) ?? false;
+    // Normalize local asset paths: if it's not network and doesn't start with assets/, prefix assets/images/
+    String imageUrl = rawImageUrl;
+    if (imageUrl.isNotEmpty && !imageUrl.startsWith('http')) {
+      if (!imageUrl.startsWith('assets/')) {
+        imageUrl = 'assets/images/$imageUrl';
+      }
+    }
+    final bool isNetwork = imageUrl.startsWith('http');
     final String? originalPrice =
         widget.originalPriceOverride ?? (args?['originalPrice'] as String?);
 
@@ -208,63 +212,67 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: useAsset
-                          ? Image.asset(
-                              key: const Key('product:image'),
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.image_not_supported,
-                                          size: 64,
-                                          color: Colors.grey,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Image unavailable',
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
+                      child: imageUrl.isEmpty
+                          ? Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: Icon(Icons.image_not_supported,
+                                    size: 64, color: Colors.grey),
+                              ),
                             )
-                          : Image.network(
-                              key: const Key('product:image'),
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.image_not_supported,
-                                          size: 64,
-                                          color: Colors.grey,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Image unavailable',
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                      ],
+                          : (isNetwork
+                              ? Image.network(
+                                  key: const Key('product:image'),
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.image_not_supported,
+                                            size: 64,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text('Image unavailable',
+                                              style: TextStyle(
+                                                  color: Colors.grey)),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
+                                )
+                              : Image.asset(
+                                  key: const Key('product:image'),
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.image_not_supported,
+                                            size: 64,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text('Image unavailable',
+                                              style: TextStyle(
+                                                  color: Colors.grey)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )),
                     ),
                   );
 
