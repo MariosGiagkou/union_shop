@@ -10,6 +10,15 @@ class HomePage extends StatelessWidget {
 
   void _placeholderCallbackForButtons() {}
 
+  
+  Stream<QuerySnapshot<Map<String, dynamic>>> _productsStream() {
+    try {
+      return FirebaseFirestore.instance.collection('products').snapshots();
+    } catch (_) {
+      return Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,9 +124,7 @@ class HomePage extends StatelessWidget {
                           // SIGNATURE RANGE and PORTSMOUTH collection (regular items).
                           final productSection = StreamBuilder<
                               QuerySnapshot<Map<String, dynamic>>>(
-                            stream: FirebaseFirestore.instance
-                                .collection('products')
-                                .snapshots(),
+                            stream: _productsStream(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
