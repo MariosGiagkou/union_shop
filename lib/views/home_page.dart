@@ -905,10 +905,27 @@ class RangeCategoryCard extends StatefulWidget {
 
 class _RangeCategoryCardState extends State<RangeCategoryCard> {
   bool _hover = false;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        // Determine a safe square side. When constraints are unbounded
+        // (can happen inside some flex/scroll combos), fall back to a
+        // reasonable default so the card renders predictably on mobile.
+        final double side =
+            constraints.maxWidth.isFinite ? constraints.maxWidth : 180.0;
+
+        // Normalize asset path locally; callers may pass bare filenames.
+        String asset = widget.imageAsset.trim();
+        if (asset.startsWith('/')) asset = asset.substring(1);
+        if (asset.isNotEmpty && !asset.startsWith('assets/')) {
+          asset = 'assets/images/$asset';
+        }
+
+        // Scale the label font for very small cards so text doesn't overflow.
+        final double fontSize = side < 140 ? 14 : (side < 220 ? 18 : 24);
+
         return MouseRegion(
           onEnter: (_) => setState(() => _hover = true),
           onExit: (_) => setState(() => _hover = false),
@@ -916,14 +933,14 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
           child: GestureDetector(
             onTap: () => context.go(widget.route),
             child: SizedBox(
-              height: constraints.maxWidth,
+              height: side,
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Stack(
                   children: [
                     Positioned.fill(
                       child: Image.asset(
-                        widget.imageAsset,
+                        asset,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
                           color: Colors.grey[300],
@@ -946,14 +963,23 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
                           duration: const Duration(milliseconds: 160),
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 24,
+                            fontSize: fontSize,
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
+                            letterSpacing: 1.0,
                             decoration: _hover
                                 ? TextDecoration.underline
                                 : TextDecoration.none,
                           ),
-                          child: Text(widget.label.toUpperCase()),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              widget.label.toUpperCase(),
+                              textAlign: TextAlign.center,
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ),
                       ),
                     ),

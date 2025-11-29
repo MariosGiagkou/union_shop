@@ -201,7 +201,7 @@ class _ProductPageState extends State<ProductPage> {
             // Header
             const SiteHeader(),
 
-            // Product details (responsive two-column: image left, details right)
+            // Product details 
             Container(
               color: Colors.white,
               padding: const EdgeInsets.all(24),
