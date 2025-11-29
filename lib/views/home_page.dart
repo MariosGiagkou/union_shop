@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/models/layout.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math' as math;
 import 'dart:async';
 
@@ -73,134 +74,182 @@ class HomePage extends StatelessWidget {
 
                           double squareSide =
                               (totalProductSpan - 3 * categorySpacing) / 4;
-
                           squareSide =
                               squareSide.clamp(140, productWidth * 0.85);
 
-                          Widget buildPair(
-                              {required ProductCard a,
-                              required ProductCard b,
-                              double verticalGap = 48}) {
-                            if (isWide) {
-                              return Wrap(
-                                alignment: WrapAlignment.center,
-                                spacing: 32,
-                                runSpacing: 32,
-                                children: [
-                                  SizedBox(width: productWidth, child: a),
-                                  SizedBox(width: productWidth, child: b),
-                                ],
-                              );
+                          // Helpers to convert DB price representations into doubles
+                          // and format them as UI strings like '£12.34'.
+                          double? _toDouble(dynamic raw) {
+                            if (raw == null) return null;
+                            if (raw is double) return raw;
+                            if (raw is int) return raw.toDouble();
+                            if (raw is num) return raw.toDouble();
+                            if (raw is String) {
+                              final s = raw.trim();
+                              if (s.isEmpty) return null;
+                              final withoutCurrency =
+                                  s.startsWith('£') ? s.substring(1) : s;
+                              final cleaned = withoutCurrency.replaceAll(
+                                  RegExp(r'[^0-9.]'), '');
+                              return double.tryParse(cleaned);
                             }
-                            return Column(
-                              children: [
-                                a,
-                                SizedBox(height: verticalGap),
-                                b,
-                              ],
-                            );
+                            try {
+                              return double.parse(raw.toString());
+                            } catch (_) {
+                              return null;
+                            }
                           }
 
-                          final firstRow = buildPair(
-                            a: const ProductCard(
-                              key: ValueKey(
-                                  'product:Limited Edition Essential Zip Hoodies'),
-                              title: 'Limited Edition Essential Zip Hoodies',
-                              discountPrice: '£14.99',
-                              price: '£20.00',
-                              imageUrl: 'assets/images/pink_hoodie.webp',
-                            ),
-                            b: const ProductCard(
-                              key: ValueKey('product:Essential T-Shirt'),
-                              title: 'Essential T-Shirt',
-                              discountPrice: '£6.99',
-                              price: '£10.00',
-                              imageUrl: 'assets/images/essential_t-shirt.webp',
-                            ),
-                          );
+                          String fmtPrice(dynamic raw) {
+                            final d = _toDouble(raw);
+                            if (d != null) return '£${d.toStringAsFixed(2)}';
+                            if (raw is String) {
+                              final s = raw.trim();
+                              if (s.startsWith('£') && s.length > 1) return s;
+                            }
+                            return '£0.00';
+                          }
 
-                          final secondRow = buildPair(
-                            a: const ProductCard(
-                              key: ValueKey('product:Signiture Hoodie'),
-                              title: 'Signiture Hoodie',
-                              price: '£32.99',
-                              imageUrl: 'assets/images/signature_hoodie.webp',
-                            ),
-                            b: const ProductCard(
-                              key: ValueKey('product:Signiture T-Shirt'),
-                              title: 'Signiture T-Shirt',
-                              price: '£14.99',
-                              imageUrl: 'assets/images/signiture_t-shirt.webp',
-                            ),
-                          );
+                          // StreamBuilder that reads products and arranges them into
+                          // sections: ESSENTIAL RANGE (discounted items),
+                          // SIGNATURE RANGE and PORTSMOUTH collection (regular items).
+                          final productSection = StreamBuilder<
+                              QuerySnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance
+                                .collection('products')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox(
+                                  height: 200,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              }
+                              final docs = snapshot.data?.docs ?? [];
+                              if (docs.isEmpty) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 24),
+                                  child: Center(
+                                      child: Text('No products available')),
+                                );
+                              }
 
-                          final portsmouthRow1 = buildPair(
-                            a: const ProductCard(
-                              key: ValueKey('product:Portsmouth City Postcard'),
-                              title: 'Portsmouth City Postcard',
-                              price: '£1.00',
-                              imageUrl:
-                                  'assets/images/PortsmouthCityPostcard.webp',
-                            ),
-                            b: const ProductCard(
-                              key: ValueKey('product:Portsmouth City Magnet'),
-                              title: 'Portsmouth City Magnet',
-                              price: '£4.50',
-                              imageUrl:
-                                  'assets/images/PortsmouthCityMagnet.jpg',
-                            ),
-                          );
+                              // Convert documents into ProductCard widgets
+                              final allCards = <Widget>[];
+                              for (final d in docs) {
+                                final data = d.data();
+                                final priceStr = fmtPrice(data['price']);
+                                final discountStr =
+                                    data['discountPrice'] == null
+                                        ? null
+                                        : fmtPrice(data['discountPrice']);
+                                allCards.add(ProductCard(
+                                  key: ValueKey('product:${d.id}'),
+                                  title: data['title'] ?? '',
+                                  price: priceStr,
+                                  imageUrl: data['imageUrl'] ?? '',
+                                  discountPrice: discountStr,
+                                ));
+                              }
 
-                          final portsmouthRow2 = buildPair(
-                            a: const ProductCard(
-                              key: ValueKey('product:Portsmouth City Bookmark'),
-                              title: 'Portsmouth City Bookmark',
-                              price: '£3.00',
-                              imageUrl:
-                                  'assets/images/PortsmouthCityBookmark.jpg',
-                            ),
-                            b: const ProductCard(
-                              key: ValueKey('product:Portsmouth City Notebook'),
-                              title: 'Portsmouth City Notebook',
-                              price: '£7.50',
-                              imageUrl:
-                                  'assets/images/PortsmouthCityNotebook.webp',
-                            ),
+                              // Partition into discounted and regular lists
+                              final discountedCards = <Widget>[];
+                              final regularCards = <Widget>[];
+                              for (var i = 0; i < docs.length; i++) {
+                                final data = docs[i].data();
+                                final p = _toDouble(data['price']);
+                                final dp = _toDouble(data['discountPrice']);
+                                final card = allCards[i];
+                                if (dp != null && p != null && dp < p) {
+                                  discountedCards.add(card);
+                                } else {
+                                  regularCards.add(card);
+                                }
+                              }
+
+                              Widget buildPairFromList(
+                                  List<Widget> list, int aIdx, int bIdx,
+                                  {double verticalGap = 48}) {
+                                final Widget a = aIdx < list.length
+                                    ? list[aIdx]
+                                    : const SizedBox.shrink();
+                                final Widget b = bIdx < list.length
+                                    ? list[bIdx]
+                                    : const SizedBox.shrink();
+
+                                if (isWide) {
+                                  return Wrap(
+                                    alignment: WrapAlignment.center,
+                                    spacing: 32,
+                                    runSpacing: 32,
+                                    children: [
+                                      SizedBox(width: productWidth, child: a),
+                                      SizedBox(width: productWidth, child: b),
+                                    ],
+                                  );
+                                }
+
+                                return Column(
+                                  children: [
+                                    a,
+                                    SizedBox(height: verticalGap),
+                                    b,
+                                  ],
+                                );
+                              }
+
+                              final firstRow =
+                                  buildPairFromList(discountedCards, 0, 1);
+                              final secondRow =
+                                  buildPairFromList(regularCards, 0, 1);
+                              final portsmouthRow1 =
+                                  buildPairFromList(regularCards, 2, 3);
+                              final portsmouthRow2 =
+                                  buildPairFromList(regularCards, 4, 5);
+
+                              return Column(
+                                children: [
+                                  firstRow,
+                                  const SizedBox(height: 56),
+                                  const Text(
+                                    'SIGNATURE RANGE',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 48),
+                                  secondRow,
+                                  const SizedBox(height: 56),
+                                  const Text(
+                                    'PORTSMOUTH CITY COLLECTION',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 48),
+                                  Column(
+                                    children: [
+                                      portsmouthRow1,
+                                      const SizedBox(height: 48),
+                                      portsmouthRow2,
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
                           );
 
                           return Column(
                             children: [
-                              firstRow,
-                              const SizedBox(height: 56),
-                              const Text(
-                                'SIGNATURE RANGE',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  letterSpacing: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 48),
-                              secondRow,
-                              const SizedBox(height: 56),
-                              const Text(
-                                'PORTSMOUTH CITY COLLECTION',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  letterSpacing: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 48),
-                              Column(
-                                children: [
-                                  portsmouthRow1,
-                                  const SizedBox(height: 48),
-                                  portsmouthRow2,
-                                ],
-                              ),
+                              productSection,
                               const SizedBox(height: 80),
                               SizedBox(
                                 height: 44,
