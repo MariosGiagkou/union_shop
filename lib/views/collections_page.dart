@@ -55,14 +55,33 @@ class CollectionsPage extends StatelessWidget {
                           final items =
                               docs.length <= 15 ? docs : docs.sublist(0, 15);
 
+                          // Fixed labels for the first 8 tiles as requested by the user.
+                          const List<String> fixedLabels = [
+                            'Clothing',
+                            'SALES',
+                            'Essentials Range',
+                            'Graduation',
+                            'Personalisation',
+                            'Portsmouth Collection',
+                            'Pride Collection',
+                            'Limited Edition - Zip Up Collection',
+                          ];
+
                           return GridView.count(
                             crossAxisCount: 3,
                             crossAxisSpacing: 12,
                             mainAxisSpacing: 12,
                             childAspectRatio: 1,
-                            shrinkWrap: true,
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            children: items.map((d) {
+                            // When GridView is inside a scrollable (SingleChildScrollView)
+                            // it must shrink to its content and disable its own scrolling.
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            // Let the outer SingleChildScrollView handle scrolling
+                            children:
+                                items.asMap().entries.map<Widget>((entry) {
+                              final idx = entry.key;
+                              final d = entry.value;
                               final data = d.data();
                               String src =
                                   (data['imageUrl'] ?? '').toString().trim();
@@ -71,7 +90,9 @@ class CollectionsPage extends StatelessWidget {
                                   !src.startsWith('assets/')) {
                                 src = 'assets/images/$src';
                               }
+
                               if (src.isEmpty) {
+                                // Keep placeholder tile consistent with hover look
                                 return Container(
                                   color: Colors.grey[300],
                                   child: const Center(
@@ -81,22 +102,16 @@ class CollectionsPage extends StatelessWidget {
                                 );
                               }
 
-                              return ClipRRect(
-                                borderRadius: BorderRadius.zero,
-                                child: AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Image.asset(
-                                    src,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => Container(
-                                      color: Colors.grey[300],
-                                      child: const Center(
-                                        child: Icon(Icons.image_not_supported,
-                                            color: Colors.grey),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              // Choose fixed label for early tiles, otherwise fall back to document title
+                              final docTitle = (data['title'] ?? '').toString();
+                              final label = idx < fixedLabels.length &&
+                                      fixedLabels[idx].isNotEmpty
+                                  ? fixedLabels[idx]
+                                  : (docTitle.isNotEmpty ? docTitle : null);
+
+                              return _HoverImageTile(
+                                src: src,
+                                label: label,
                               );
                             }).toList(),
                           );
@@ -112,6 +127,86 @@ class CollectionsPage extends StatelessWidget {
             // the user scrolls to the bottom of the page.
             const SiteFooter(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// Small hover-capable tile: darkens on hover and shows an optional centered label.
+class _HoverImageTile extends StatefulWidget {
+  final String src;
+  final String? label;
+
+  const _HoverImageTile({required this.src, this.label});
+
+  @override
+  State<_HoverImageTile> createState() => _HoverImageTileState();
+}
+
+class _HoverImageTileState extends State<_HoverImageTile> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      cursor: SystemMouseCursors.click,
+      child: ClipRRect(
+        borderRadius: BorderRadius.zero,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(
+                widget.src,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  color: Colors.grey[300],
+                  child: const Center(
+                    child: Icon(Icons.image_not_supported, color: Colors.grey),
+                  ),
+                ),
+              ),
+
+              // Baseline dark overlay and a darker state on hover.
+              Positioned.fill(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  color: Colors.black.withOpacity(_hover ? 0.55 : 0.35),
+                ),
+              ),
+
+              // Centered label (no underline on hover)
+              if (widget.label != null && widget.label!.isNotEmpty)
+                Positioned.fill(
+                  child: Center(
+                    child: AnimatedDefaultTextStyle(
+                      duration: const Duration(milliseconds: 160),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.0,
+                        decoration: TextDecoration.none,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          widget.label!.toUpperCase(),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
