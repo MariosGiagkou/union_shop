@@ -46,7 +46,7 @@ class _CartPageState extends State<CartPage> {
 
     try {
       final orderService = OrderService();
-      
+
       // Create order
       final orderId = await orderService.createOrder(
         userId: authService.currentUser!.uid,
@@ -61,7 +61,8 @@ class _CartPageState extends State<CartPage> {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Order placed successfully! Order ID: ${orderId.substring(0, 8)}'),
+            content: Text(
+                'Order placed successfully! Order ID: ${orderId.substring(0, 8)}'),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 3),
           ),
