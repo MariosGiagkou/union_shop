@@ -1,11 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../models/layout.dart';
 import '../repositories/cart_repository.dart';
 import '../models/cart_item.dart';
+import '../services/auth_service.dart';
+import '../services/order_service.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  bool _isProcessing = false;
+
+  Future<void> _handleCheckout(BuildContext context) async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final cartRepo = Provider.of<CartRepository>(context, listen: false);
+
+    // Check if user is signed in
+    if (!authService.isSignedIn) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please sign in to checkout'),
+            backgroundColor: Color(0xFF4d2963),
+          ),
+        );
+        context.go('/sign-in');
+      }
+      return;
+    }
+
+    // Check if cart is empty
+    if (cartRepo.isEmpty) {
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final orderService = OrderService();
+      
+      // Create order
+      final orderId = await orderService.createOrder(
+        userId: authService.currentUser!.uid,
+        items: cartRepo.cartItems,
+        total: cartRepo.cartTotal,
+      );
+
+      // Clear cart
+      cartRepo.clearCart();
+
+      if (context.mounted) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Order placed successfully! Order ID: ${orderId.substring(0, 8)}'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+
+        // Navigate to order history
+        context.go('/order-history');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error placing order: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -397,26 +478,28 @@ class CartPage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Checkout coming soon!'),
-                  backgroundColor: Color(0xFF4d2963),
-                ),
-              );
-            },
+            onPressed: _isProcessing ? null : () => _handleCheckout(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4d2963),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
-            child: const Text(
-              'Checkout',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            child: _isProcessing
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : const Text(
+                    'Checkout',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
           ),
         ],
       ),
