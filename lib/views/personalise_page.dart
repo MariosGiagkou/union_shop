@@ -15,6 +15,11 @@ class _PersonalisePageState extends State<PersonalisePage> {
   late final TextEditingController _qtyController =
       TextEditingController(text: '1');
 
+  // Text controllers for customization lines
+  late final TextEditingController _line1Controller = TextEditingController();
+  late final TextEditingController _line2Controller = TextEditingController();
+  late final TextEditingController _line3Controller = TextEditingController();
+
   // Personalisation options
   static const List<String> _personalisationOptions = [
     'One Line of Text',
@@ -24,6 +29,14 @@ class _PersonalisePageState extends State<PersonalisePage> {
     'Big Logo'
   ];
   String _selectedPersonalisation = _personalisationOptions.first;
+
+  // Helper to determine number of text lines needed
+  int _getNumberOfLines() {
+    if (_selectedPersonalisation == 'One Line of Text') return 1;
+    if (_selectedPersonalisation == 'Two Lines of Text') return 2;
+    if (_selectedPersonalisation == 'Three Lines of Text') return 3;
+    return 0; // For logo options, no text input needed
+  }
 
   void placeholderCallbackForButtons() {
     // This is the event handler for buttons that don't work yet
@@ -151,6 +164,9 @@ class _PersonalisePageState extends State<PersonalisePage> {
   @override
   void dispose() {
     _qtyController.dispose();
+    _line1Controller.dispose();
+    _line2Controller.dispose();
+    _line3Controller.dispose();
     super.dispose();
   }
 
@@ -325,6 +341,98 @@ class _PersonalisePageState extends State<PersonalisePage> {
                             keyPrefix: 'personalisation',
                           ),
                           const SizedBox(height: 12),
+
+                          // Text input fields (shown only for text options)
+                          if (_getNumberOfLines() > 0) ...[
+                            const SizedBox(height: 12),
+                            const Text(
+                              'Customization Text:',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+
+                            // Line 1
+                            TextField(
+                              controller: _line1Controller,
+                              decoration: const InputDecoration(
+                                labelText: 'Line 1',
+                                hintText: 'Enter text for line 1',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 12,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xFF4d2963)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xFF4d2963),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // Line 2
+                            if (_getNumberOfLines() >= 2) ...[
+                              const SizedBox(height: 12),
+                              TextField(
+                                controller: _line2Controller,
+                                decoration: const InputDecoration(
+                                  labelText: 'Line 2',
+                                  hintText: 'Enter text for line 2',
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Color(0xFF4d2963)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF4d2963),
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+
+                            // Line 3
+                            if (_getNumberOfLines() >= 3) ...[
+                              const SizedBox(height: 12),
+                              TextField(
+                                controller: _line3Controller,
+                                decoration: const InputDecoration(
+                                  labelText: 'Line 3',
+                                  hintText: 'Enter text for line 3',
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Color(0xFF4d2963)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF4d2963),
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 12),
+                          ],
 
                           // Quantity selector
                           SizedBox(
