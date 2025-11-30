@@ -561,6 +561,8 @@ class _SiteHeaderState extends State<SiteHeader> {
                                     authService.signOut();
                                   } else if (value == 'signin') {
                                     _navigate(context, '/sign-in');
+                                  } else if (value == 'orders') {
+                                    _navigate(context, '/order-history');
                                   }
                                 },
                                 itemBuilder: (context) {
@@ -574,6 +576,16 @@ class _SiteHeaderState extends State<SiteHeader> {
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black87,
                                           ),
+                                        ),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'orders',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.receipt_long, size: 18),
+                                            SizedBox(width: 8),
+                                            Text('Order History'),
+                                          ],
                                         ),
                                       ),
                                       const PopupMenuItem(
