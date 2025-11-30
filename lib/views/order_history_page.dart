@@ -24,7 +24,8 @@ class OrderHistoryPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.lock_outline, size: 64, color: Colors.grey),
+                    const Icon(Icons.lock_outline,
+                        size: 64, color: Colors.grey),
                     const SizedBox(height: 16),
                     const Text(
                       'Please sign in to view order history',
@@ -32,7 +33,8 @@ class OrderHistoryPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: () => Navigator.of(context).pushNamed('/sign-in'),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/sign-in'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
                         foregroundColor: Colors.white,
