@@ -57,6 +57,16 @@ class UnionShopApp extends StatelessWidget {
           path: '/collections',
           name: 'collections',
           builder: (context, state) => const CollectionsPage(),
+          routes: [
+            GoRoute(
+              path: ':category',
+              name: 'collection-category',
+              builder: (context, state) {
+                final category = state.pathParameters['category'];
+                return CollectionsPage(category: category);
+              },
+            ),
+          ],
         ),
       ],
     );

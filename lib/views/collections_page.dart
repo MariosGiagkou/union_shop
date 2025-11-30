@@ -1,28 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
+import 'package:go_router/go_router.dart';
 
 class CollectionsPage extends StatelessWidget {
-  const CollectionsPage({super.key});
+  final String? category;
+
+  const CollectionsPage({super.key, this.category});
+
+  // Define all collection categories
+  static final Map<String, Map<String, String>> allCollections = {
+    'signature': {
+      'image': 'assets/images/signature_hoodie.webp',
+      'title': 'Signature',
+      'slug': 'signature'
+    },
+    'sale': {
+      'image': 'assets/images/sale.webp',
+      'title': 'Sale',
+      'slug': 'sale'
+    },
+    'merchandise': {
+      'image': 'assets/images/id.jpg',
+      'title': 'Merchandise',
+      'slug': 'merchandise'
+    },
+    'personalisation': {
+      'image': 'assets/images/personalazedhoodie.webp',
+      'title': 'Personalisation',
+      'slug': 'personalisation'
+    },
+    'portsmouth-city': {
+      'image': 'assets/images/PortsmouthCityBookmark.jpg',
+      'title': 'Portsmouth City',
+      'slug': 'portsmouth-city'
+    },
+    'pride': {
+      'image': 'assets/images/RainbowHoodie.webp',
+      'title': 'Pride',
+      'slug': 'pride'
+    },
+    'halloween': {
+      'image': 'assets/images/Halloween_tote_bag.jpg',
+      'title': 'Halloween',
+      'slug': 'halloween'
+    },
+    'graduation': {
+      'image': 'assets/images/GradGrey.webp',
+      'title': 'Graduation',
+      'slug': 'graduation'
+    },
+  };
 
   @override
   Widget build(BuildContext context) {
-    // Define the collection items with their images and titles
-    final collectionItems = [
-      {'image': 'assets/images/signature_hoodie.webp', 'title': 'Signature'},
-      {'image': 'assets/images/sale.webp', 'title': 'Sale'},
-      {'image': 'assets/images/id.jpg', 'title': 'Merchandise'},
-      {
-        'image': 'assets/images/personalazedhoodie.webp',
-        'title': 'Personalisation'
-      },
-      {
-        'image': 'assets/images/PortsmouthCityBookmark.jpg',
-        'title': 'Portsmouth City'
-      },
-      {'image': 'assets/images/RainbowHoodie.webp', 'title': 'Pride'},
-      {'image': 'assets/images/Halloween_tote_bag.jpg', 'title': 'Halloween'},
-      {'image': 'assets/images/GradGrey.webp', 'title': 'Graduation'},
-    ];
+    // If category is specified, show that category's products
+    // Otherwise show the collection grid overview
+    if (category != null && allCollections.containsKey(category)) {
+      return _buildCategoryPage(context, category!);
+    } else {
+      return _buildCollectionsOverview(context);
+    }
+  }
+
+  // Build the main collections overview grid
+  Widget _buildCollectionsOverview(BuildContext context) {
+    final collectionItems = allCollections.values.toList();
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -56,11 +98,70 @@ class CollectionsPage extends StatelessWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: collectionItems.map<Widget>((item) {
-                          return _HoverImageTile(
-                            src: item['image']!,
-                            label: item['title']!,
+                          return GestureDetector(
+                            onTap: () {
+                              context.go('/collections/${item['slug']}');
+                            },
+                            child: _HoverImageTile(
+                              src: item['image']!,
+                              label: item['title']!,
+                            ),
                           );
                         }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SiteFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Build a specific category page
+  Widget _buildCategoryPage(BuildContext context, String categorySlug) {
+    final categoryData = allCollections[categorySlug]!;
+    final categoryTitle = categoryData['title']!;
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SiteHeader(),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Back button and title
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => context.go('/collections'),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        categoryTitle,
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+
+                  // Category content placeholder
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: Text(
+                        'Category page content goes here',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                     ),
                   ),
