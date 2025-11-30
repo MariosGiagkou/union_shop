@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../models/layout.dart';
 import '../services/auth_service.dart';
@@ -33,8 +34,7 @@ class OrderHistoryPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/sign-in'),
+                      onPressed: () => context.go('/sign-in'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
                         foregroundColor: Colors.white,
@@ -106,7 +106,7 @@ class OrderHistoryPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pushNamed('/'),
+            onPressed: () => context.go('/'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4d2963),
               foregroundColor: Colors.white,
