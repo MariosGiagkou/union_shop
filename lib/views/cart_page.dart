@@ -23,7 +23,6 @@ class CartPage extends StatelessWidget {
               },
             ),
           ),
-          const SiteFooter(),
         ],
       ),
     );
@@ -78,36 +77,42 @@ class CartPage extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 600;
 
     return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Page Title
-            Text(
-              'Shopping Cart',
-              style: TextStyle(
-                fontSize: isMobile ? 28 : 36,
-                fontWeight: FontWeight.w700,
-                color: Colors.grey[900],
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${cartRepo.itemCount} ${cartRepo.itemCount == 1 ? 'item' : 'items'}',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 32),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(isMobile ? 16 : 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Page Title
+                Text(
+                  'Shopping Cart',
+                  style: TextStyle(
+                    fontSize: isMobile ? 28 : 36,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey[900],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${cartRepo.itemCount} ${cartRepo.itemCount == 1 ? 'item' : 'items'}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 32),
 
-            // Cart Items and Summary
-            isMobile
-                ? _buildMobileLayout(context, cartRepo)
-                : _buildDesktopLayout(context, cartRepo),
-          ],
-        ),
+                // Cart Items and Summary
+                isMobile
+                    ? _buildMobileLayout(context, cartRepo)
+                    : _buildDesktopLayout(context, cartRepo),
+              ],
+            ),
+          ),
+          // Footer at the bottom of scrollable content
+          const SiteFooter(),
+        ],
       ),
     );
   }
@@ -426,50 +431,6 @@ class CartPage extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Clear Cart?'),
-                  content: const Text(
-                      'Are you sure you want to remove all items from your cart?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        cartRepo.clearCart();
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Clear Cart',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.red,
-              side: const BorderSide(color: Colors.red),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: const Text(
-              'Clear Cart',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
               ),
             ),
           ),
