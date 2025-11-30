@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:union_shop/firebase_options.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/home_page.dart';
 import 'package:union_shop/views/about_us.dart';
@@ -10,6 +11,8 @@ import 'package:union_shop/views/sign_in.dart';
 import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/personalise_page.dart';
 import 'package:union_shop/views/search_page.dart';
+import 'package:union_shop/views/cart_page.dart';
+import 'package:union_shop/repositories/cart_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,6 +78,11 @@ class UnionShopApp extends StatelessWidget {
           builder: (context, state) => const PersonalisePage(),
         ),
         GoRoute(
+          path: '/cart',
+          name: 'cart',
+          builder: (context, state) => const CartPage(),
+        ),
+        GoRoute(
           path: '/collections',
           name: 'collections',
           builder: (context, state) => const CollectionsPage(),
@@ -108,13 +116,16 @@ class UnionShopApp extends StatelessWidget {
       ],
     );
 
-    return MaterialApp.router(
-      title: 'Union Shop',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
+    return ChangeNotifierProvider(
+      create: (context) => CartRepository(),
+      child: MaterialApp.router(
+        title: 'Union Shop',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4d2963)),
+        ),
+        routerConfig: router,
       ),
-      routerConfig: router,
     );
   }
 }

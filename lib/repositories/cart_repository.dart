@@ -87,9 +87,8 @@ class CartRepository extends ChangeNotifier {
 
   /// Increment quantity of a specific cart item by 1
   void incrementQuantity(CartItem cartItem) {
-    final index = _cartItems.indexOf(cartItem);
-    if (index >= 0) {
-      _cartItems[index].quantity++;
+    if (_cartItems.contains(cartItem)) {
+      cartItem.quantity++;
       notifyListeners();
     }
   }
@@ -97,14 +96,14 @@ class CartRepository extends ChangeNotifier {
   /// Decrement quantity of a specific cart item by 1
   /// If quantity becomes 0, remove the item
   void decrementQuantity(CartItem cartItem) {
-    final index = _cartItems.indexOf(cartItem);
-    if (index >= 0) {
-      if (_cartItems[index].quantity > 1) {
-        _cartItems[index].quantity--;
+    if (_cartItems.contains(cartItem)) {
+      if (cartItem.quantity > 1) {
+        cartItem.quantity--;
+        notifyListeners();
       } else {
-        _cartItems.removeAt(index);
+        _cartItems.remove(cartItem);
+        notifyListeners();
       }
-      notifyListeners();
     }
   }
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:union_shop/models/layout.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:union_shop/repositories/cart_repository.dart';
 
 class ProductPage extends StatefulWidget {
   final String? titleOverride;
@@ -54,6 +56,46 @@ class _ProductPageState extends State<ProductPage> {
 
   void placeholderCallbackForButtons() {
     // This is the event handler for buttons that don't work yet
+  }
+
+  void _addToCart(BuildContext context) {
+    final cartRepo = Provider.of<CartRepository>(context, listen: false);
+    final title = widget.titleOverride ?? 'Sample Product';
+    final priceStr =
+        widget.discountPriceOverride ?? widget.priceOverride ?? '0.00';
+    final price = double.tryParse(priceStr.replaceAll('£', '')) ?? 0.0;
+    final imageUrl = widget.imageUrlOverride ?? 'assets/images/logo.avif';
+
+    // Build selected options map
+    final selectedOptions = <String, dynamic>{};
+    if (_isClothingTitle(title)) {
+      selectedOptions['Size'] = _selectedSize;
+      selectedOptions['Color'] = _selectedColor;
+    }
+
+    // Add to cart
+    cartRepo.addItem(
+      productId: title.toLowerCase().replaceAll(' ', '-'),
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      quantity: _quantity,
+      selectedOptions: selectedOptions.isNotEmpty ? selectedOptions : null,
+    );
+
+    // Show confirmation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Added $_quantity x $title to cart'),
+        backgroundColor: const Color(0xFF4d2963),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'VIEW CART',
+          textColor: Colors.white,
+          onPressed: () => context.go('/cart'),
+        ),
+      ),
+    );
   }
 
   @override
@@ -201,7 +243,7 @@ class _ProductPageState extends State<ProductPage> {
             // Header
             const SiteHeader(),
 
-            // Product details 
+            // Product details
             Container(
               color: Colors.white,
               padding: const EdgeInsets.all(24),
@@ -443,7 +485,7 @@ class _ProductPageState extends State<ProductPage> {
                         height: 44,
                         child: ElevatedButton(
                           key: const Key('product:add-to-cart'),
-                          onPressed: placeholderCallbackForButtons,
+                          onPressed: () => _addToCart(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4d2963),
                             foregroundColor: Colors.white,
