@@ -168,11 +168,13 @@ class CollectionsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Products grid from Firebase (for signature, sale, merchandise, and portsmouth-city collections)
+                  // Products grid from Firebase (for signature, sale, merchandise, portsmouth-city, pride, and halloween collections)
                   if (categorySlug == 'signature' ||
                       categorySlug == 'sale' ||
                       categorySlug == 'merchandise' ||
-                      categorySlug == 'portsmouth-city')
+                      categorySlug == 'portsmouth-city' ||
+                      categorySlug == 'pride' ||
+                      categorySlug == 'halloween')
                     StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection('products')
