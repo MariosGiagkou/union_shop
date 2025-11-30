@@ -9,6 +9,7 @@ import 'package:union_shop/views/about_us_printshack.dart';
 import 'package:union_shop/views/sign_in.dart';
 import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/personalise_page.dart';
+import 'package:union_shop/views/search_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
