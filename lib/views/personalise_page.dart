@@ -25,6 +25,10 @@ class _PersonalisePageState extends State<PersonalisePage> {
   ];
   String _selectedPersonalisation = _personalisationOptions.first;
 
+  void placeholderCallbackForButtons() {
+    // This is the event handler for buttons that don't work yet
+  }
+
   // Helper: open menu for dropdown
   Future<void> _openMenuForBox({
     required BuildContext boxContext,
@@ -430,6 +434,32 @@ class _PersonalisePageState extends State<PersonalisePage> {
                             ),
                           ),
                           const SizedBox(height: 12),
+
+                          // Add to Cart button
+                          SizedBox(
+                            height: 44,
+                            child: ElevatedButton(
+                              key: const Key('product:add-to-cart'),
+                              onPressed: placeholderCallbackForButtons,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4d2963),
+                                foregroundColor: Colors.white,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero,
+                                ),
+                              ),
+                              child: const Text(
+                                'ADD TO CART',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       );
 
