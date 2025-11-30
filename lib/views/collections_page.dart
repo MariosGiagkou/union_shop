@@ -429,7 +429,11 @@ class _CollectionsPageState extends State<CollectionsPage> {
                           return slug == categorySlug.toLowerCase();
                         }).toList();
 
-                        if (filteredDocs.isEmpty) {
+                        // Apply additional filter and sort
+                        final processedDocs =
+                            _applySort(_applyFilter(filteredDocs));
+
+                        if (processedDocs.isEmpty) {
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(40.0),
@@ -439,40 +443,50 @@ class _CollectionsPageState extends State<CollectionsPage> {
                           );
                         }
 
-                        return GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.75,
-                          ),
-                          itemCount: filteredDocs.length,
-                          itemBuilder: (context, index) {
-                            final data = filteredDocs[index].data();
-                            final title = data['title'] ?? 'Untitled';
-                            final price = data['price'] ?? 0;
-                            final discountPrice = data['discountPrice'];
-                            String imageUrl =
-                                (data['imageUrl'] ?? '').toString().trim();
+                        return Column(
+                          children: [
+                            // Filter/Sort Banner
+                            _buildFilterSortBanner(processedDocs.length),
+                            const SizedBox(height: 16),
 
-                            // Normalize image path
-                            imageUrl = imageUrl.replaceAll(RegExp(r'^/+'), '');
-                            if (imageUrl.isNotEmpty &&
-                                !imageUrl.contains('assets/images')) {
-                              imageUrl = 'assets/images/$imageUrl';
-                            }
+                            // Products Grid
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                                childAspectRatio: 0.75,
+                              ),
+                              itemCount: processedDocs.length,
+                              itemBuilder: (context, index) {
+                                final data = processedDocs[index].data();
+                                final title = data?['title'] ?? 'Untitled';
+                                final price = data?['price'] ?? 0;
+                                final discountPrice = data?['discountPrice'];
+                                String imageUrl =
+                                    (data?['imageUrl'] ?? '').toString().trim();
 
-                            return _ProductCard(
-                              title: title,
-                              price: price,
-                              discountPrice: discountPrice,
-                              imageUrl: imageUrl,
-                              categorySlug: categorySlug,
-                            );
-                          },
+                                // Normalize image path
+                                imageUrl =
+                                    imageUrl.replaceAll(RegExp(r'^/+'), '');
+                                if (imageUrl.isNotEmpty &&
+                                    !imageUrl.contains('assets/images')) {
+                                  imageUrl = 'assets/images/$imageUrl';
+                                }
+
+                                return _ProductCard(
+                                  title: title,
+                                  price: price,
+                                  discountPrice: discountPrice,
+                                  imageUrl: imageUrl,
+                                  categorySlug: categorySlug,
+                                );
+                              },
+                            ),
+                          ],
                         );
                       },
                     )
