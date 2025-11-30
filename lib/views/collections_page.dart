@@ -128,6 +128,113 @@ class _CollectionsPageState extends State<CollectionsPage> {
     return double.tryParse(price.toString()) ?? 0.0;
   }
 
+  // Build filter and sort banner
+  Widget _buildFilterSortBanner(int productCount) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Left side: Filter dropdown
+          Row(
+            children: [
+              const Text(
+                'Filter by',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: DropdownButton<String>(
+                  value: _filterBy,
+                  underline: const SizedBox(),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'All products',
+                      child: Text('All products'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Merchandise',
+                      child: Text('Merchandise'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Clothing',
+                      child: Text('Clothing'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _filterBy = value);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+
+          // Center: Product count
+          Text(
+            '$productCount ${productCount == 1 ? 'product' : 'products'}',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+
+          // Right side: Sort dropdown
+          Row(
+            children: [
+              const Text(
+                'Sort by',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: DropdownButton<String>(
+                  value: _sortBy,
+                  underline: const SizedBox(),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Featured',
+                      child: Text('Featured'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Alphabetically: A-Z',
+                      child: Text('Alphabetically: A-Z'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Alphabetically: Z-A',
+                      child: Text('Alphabetically: Z-A'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Price: Low to High',
+                      child: Text('Price: Low to High'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Price: High to Low',
+                      child: Text('Price: High to Low'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _sortBy = value);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // If category is specified, show that category's products
