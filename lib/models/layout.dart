@@ -164,8 +164,8 @@ class _SiteHeaderState extends State<SiteHeader> {
                             'SALES!',
                             _salesHover,
                             (v) => _salesHover = v,
-                            () => _navigate(context, '/sales'),
-                            active: _isRoute(context, '/sales'),
+                            () => _navigate(context, '/collections/sale'),
+                            active: _isRoute(context, '/collections/sale'),
                           ),
                           _navButton(
                             'About',
