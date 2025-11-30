@@ -258,8 +258,7 @@ class CollectionsPage extends StatelessWidget {
   }
 }
 
-// Product card widget for category pages
-class _ProductCard extends StatelessWidget {
+class _ProductCard extends StatefulWidget {
   final String title;
   final dynamic price;
   final dynamic discountPrice;
@@ -272,6 +271,13 @@ class _ProductCard extends StatelessWidget {
     required this.imageUrl,
   });
 
+  @override
+  State<_ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<_ProductCard> {
+  bool _hover = false;
+
   String _formatPrice(dynamic value) {
     if (value == null) return '';
     final numValue = value is double || value is int
@@ -280,79 +286,133 @@ class _ProductCard extends StatelessWidget {
     return '£${numValue.toStringAsFixed(2)}';
   }
 
+  double _parsePrice(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double || value is int) return (value as num).toDouble();
+    return double.tryParse(value.toString()) ?? 0.0;
+  }
+
+  Widget _buildImage() {
+    String src = widget.imageUrl.trim();
+    // Normalize path
+    src = src.replaceAll(RegExp(r'^/+'), '');
+    if (src.isNotEmpty && !src.contains('assets/images')) {
+      src = 'assets/images/$src';
+    }
+
+    if (src.isEmpty) {
+      return Container(
+        color: Colors.grey[300],
+        child: const Center(child: Icon(Icons.image, color: Colors.grey)),
+      );
+    }
+
+    return Image.asset(
+      src,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => Container(
+        color: Colors.grey[300],
+        child: const Center(
+          child: Icon(Icons.image_not_supported, color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final priceStr = _formatPrice(price);
-    final discountStr =
-        discountPrice != null ? _formatPrice(discountPrice) : null;
-    final hasDiscount = discountStr != null && discountStr.isNotEmpty;
+    final priceStr = _formatPrice(widget.price);
+    final discountStr = widget.discountPrice != null
+        ? _formatPrice(widget.discountPrice)
+        : null;
+    final hasDiscount = discountStr != null &&
+        discountStr.isNotEmpty &&
+        _parsePrice(widget.discountPrice) < _parsePrice(widget.price);
 
-    return Card(
-      elevation: 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: imageUrl.isNotEmpty
-                ? Image.asset(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.image_not_supported),
-                    ),
-                  )
-                : Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.image_not_supported),
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    final image = AspectRatio(
+      aspectRatio: 3 / 2,
+      child: ClipRRect(
+        borderRadius: BorderRadius.zero,
+        child: _buildImage(),
+      ),
+    );
+
+    final overlay = AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
+      color: Colors.white.withOpacity(_hover ? 0.25 : 0.15),
+    );
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => context.go(
+          '/product',
+          extra: {
+            'title': widget.title,
+            'price': priceStr,
+            'imageUrl': widget.imageUrl,
+            if (hasDiscount) 'discountPrice': discountStr,
+          },
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                if (hasDiscount) ...[
+                image,
+                Positioned.fill(child: overlay),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+                decoration:
+                    _hover ? TextDecoration.underline : TextDecoration.none,
+              ),
+            ),
+            const SizedBox(height: 6),
+            if (hasDiscount)
+              Row(
+                children: [
                   Text(
                     priceStr,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
+                      color: Color(0xFF555555),
+                      fontWeight: FontWeight.w600,
                       decoration: TextDecoration.lineThrough,
-                      color: Colors.grey,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     discountStr,
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                ] else ...[
-                  Text(
-                    priceStr,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
-              ],
-            ),
-          ),
-        ],
+              )
+            else
+              Text(
+                priceStr,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
