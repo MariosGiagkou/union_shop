@@ -10,7 +10,6 @@ class HomePage extends StatelessWidget {
 
   void _placeholderCallbackForButtons() {}
 
-  
   Stream<QuerySnapshot<Map<String, dynamic>>> _productsStream() {
     try {
       return FirebaseFirestore.instance.collection('products').snapshots();
@@ -161,36 +160,78 @@ class HomePage extends StatelessWidget {
                                 ));
                               }
 
+                              final allDocs = docs;
+                              final orderedDocs = <QueryDocumentSnapshot<
+                                  Map<String, dynamic>>>[];
+                              final orderedCards = <Widget>[];
+                              final usedIds = <String>{};
+
+                              const List<String> preferredTitles = [
+                                'Limited Edition Essential Zip Hoodies',
+                                'Essential T-Shirt',
+                              ];
+
+                              for (final pref in preferredTitles) {
+                                final idx = allDocs.indexWhere((d) {
+                                  final t = (d.data()['title'] ?? '')
+                                      .toString()
+                                      .toLowerCase();
+                                  return t.contains(pref.toLowerCase());
+                                });
+                                if (idx != -1) {
+                                  final d = allDocs[idx];
+                                  if (!usedIds.contains(d.id)) {
+                                    orderedDocs.add(d);
+                                    orderedCards.add(allCards[idx]);
+                                    usedIds.add(d.id);
+                                  }
+                                }
+                              }
+
+                              // Append the rest in original Firestore order
+                              for (var i = 0; i < allDocs.length; i++) {
+                                final d = allDocs[i];
+                                if (usedIds.contains(d.id)) continue;
+                                orderedDocs.add(d);
+                                orderedCards.add(allCards[i]);
+                              }
+
+                              // Now operate on orderedDocs / orderedCards for any
+                              // subsequent swaps or partitioning.
+                              final docsOrdered = orderedDocs;
+                              final cardsOrdered = orderedCards;
+
                               // Before partitioning, allow swapping specific
                               // products by title (useful for manual ordering).
                               // Swap 'Portsmouth City Postcard' with 'Signiture T-Shirt'
                               // if both are present in the fetched documents.
-                              final postcardIndex = docs.indexWhere((d) {
+                              final postcardIndex = docsOrdered.indexWhere((d) {
                                 final t = d.data()['title'];
                                 return t is String &&
                                     t.toLowerCase() ==
                                         'portsmouth city postcard';
                               });
-                              final signitureIndex = docs.indexWhere((d) {
+                              final signitureIndex =
+                                  docsOrdered.indexWhere((d) {
                                 final t = d.data()['title'];
                                 return t is String &&
                                     t.toLowerCase() == 'signiture t-shirt';
                               });
                               if (postcardIndex != -1 && signitureIndex != -1) {
-                                final tmp = allCards[postcardIndex];
-                                allCards[postcardIndex] =
-                                    allCards[signitureIndex];
-                                allCards[signitureIndex] = tmp;
+                                final tmp = cardsOrdered[postcardIndex];
+                                cardsOrdered[postcardIndex] =
+                                    cardsOrdered[signitureIndex];
+                                cardsOrdered[signitureIndex] = tmp;
                               }
 
                               // Partition into discounted and regular lists
                               final discountedCards = <Widget>[];
                               final regularCards = <Widget>[];
-                              for (var i = 0; i < docs.length; i++) {
-                                final data = docs[i].data();
+                              for (var i = 0; i < docsOrdered.length; i++) {
+                                final data = docsOrdered[i].data();
                                 final p = _toDouble(data['price']);
                                 final dp = _toDouble(data['discountPrice']);
-                                final card = allCards[i];
+                                final card = cardsOrdered[i];
                                 if (dp != null && p != null && dp < p) {
                                   discountedCards.add(card);
                                 } else {

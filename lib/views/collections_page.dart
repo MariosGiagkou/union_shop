@@ -85,9 +85,11 @@ class CollectionsPage extends StatelessWidget {
                               final data = d.data();
                               String src =
                                   (data['imageUrl'] ?? '').toString().trim();
-                              if (src.startsWith('/')) src = src.substring(1);
+                              // Remove any leading slashes
+                              src = src.replaceAll(RegExp(r'^/+'), '');
+                              // Avoid double-prefixing if clients already stored a full asset path
                               if (src.isNotEmpty &&
-                                  !src.startsWith('assets/')) {
+                                  !src.contains('assets/images')) {
                                 src = 'assets/images/$src';
                               }
 
@@ -165,17 +167,31 @@ class _HoverImageTileState extends State<_HoverImageTile> {
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
                   color: Colors.grey[300],
-                  child: const Center(
-                    child: Icon(Icons.image_not_supported, color: Colors.grey),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.image_not_supported,
+                            color: Colors.grey),
+                        if (widget.label != null &&
+                            widget.label!.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.label!,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ]
+                      ],
+                    ),
                   ),
                 ),
               ),
 
-              // Baseline dark overlay and a darker state on hover.
+              // Baseline transparent overlay; darken on hover so images remain visible.
               Positioned.fill(
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 160),
-                  color: Colors.black.withOpacity(_hover ? 0.55 : 0.35),
+                  color: Colors.black.withOpacity(_hover ? 0.35 : 0.0),
                 ),
               ),
 
