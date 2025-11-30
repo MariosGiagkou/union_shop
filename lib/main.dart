@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:union_shop/views/product_page.dart';
 import 'package:union_shop/views/home_page.dart';
 import 'package:union_shop/views/about_us.dart';
+import 'package:union_shop/views/about_us_printshack.dart';
 import 'package:union_shop/views/sign_in.dart';
 import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/personalise_page.dart';
@@ -48,6 +49,11 @@ class UnionShopApp extends StatelessWidget {
           path: '/about',
           name: 'about',
           builder: (context, state) => const AboutUsPage(),
+        ),
+        GoRoute(
+          path: '/printshack/about',
+          name: 'printshack-about',
+          builder: (context, state) => const PrintShackAboutPage(),
         ),
         GoRoute(
           path: '/sign-in',

@@ -116,7 +116,7 @@ class _SiteHeaderState extends State<SiteHeader> {
   void _showPrintShackDropdown(BuildContext context) {
     // Print Shack dropdown options
     final options = [
-      {'title': 'About', 'route': '/about'},
+      {'title': 'About', 'route': '/printshack/about'},
       {'title': 'Personalisation', 'route': '/personalise'},
     ];
 
