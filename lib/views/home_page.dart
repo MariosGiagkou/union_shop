@@ -850,6 +850,7 @@ class ProductCard extends StatefulWidget {
   final String price;
   final String imageUrl;
   final String? discountPrice;
+  final String? categorySlug; // Add category slug
 
   const ProductCard({
     super.key,
@@ -857,6 +858,7 @@ class ProductCard extends StatefulWidget {
     required this.price,
     required this.imageUrl,
     this.discountPrice,
+    this.categorySlug,
   });
 
   @override
@@ -870,6 +872,39 @@ class _ProductCardState extends State<ProductCard> {
   double _parsePrice(String price) {
     final cleaned = price.replaceAll(RegExp(r'[^0-9.]'), '');
     return double.tryParse(cleaned) ?? 0.0;
+  }
+
+  // Create URL-friendly slug from title
+  String _createProductSlug(String title) {
+    return title
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^\w\s-]'), '') // Remove special characters
+        .replaceAll(RegExp(r'\s+'), '_') // Replace spaces with underscores
+        .replaceAll(
+            RegExp(r'-+'), '-') // Replace multiple dashes with single dash
+        .trim();
+  }
+
+  // Determine category slug based on product characteristics
+  String _determineCategorySlug() {
+    if (widget.categorySlug != null) return widget.categorySlug!;
+
+    final title = widget.title.toLowerCase();
+    final hasDiscount = widget.discountPrice != null &&
+        _parsePrice(widget.discountPrice!) < _parsePrice(widget.price);
+
+    // Check for Portsmouth City products
+    if (title.contains('portsmouth city')) {
+      return 'portsmouth-city';
+    }
+
+    // Check for discounted products (sale)
+    if (hasDiscount) {
+      return 'sale';
+    }
+
+    // Default to signature collection
+    return 'signature';
   }
 
   Widget _buildImage() {
@@ -925,16 +960,20 @@ class _ProductCardState extends State<ProductCard> {
       onExit: (_) => setState(() => _hover = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => context.go(
-          '/product',
-          extra: {
-            'title': widget.title,
-            'price': widget.price,
-            'imageUrl': widget.imageUrl,
-            if (widget.discountPrice != null)
-              'discountPrice': widget.discountPrice,
-          },
-        ),
+        onTap: () {
+          final categorySlug = _determineCategorySlug();
+          final productSlug = _createProductSlug(widget.title);
+          context.go(
+            '/collections/$categorySlug/product/$productSlug',
+            extra: {
+              'title': widget.title,
+              'price': widget.price,
+              'imageUrl': widget.imageUrl,
+              if (widget.discountPrice != null)
+                'discountPrice': widget.discountPrice,
+            },
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
