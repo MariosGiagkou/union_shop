@@ -428,7 +428,7 @@ class _SiteHeaderState extends State<SiteHeader> {
                             padding: const EdgeInsets.all(10),
                             constraints: const BoxConstraints(
                                 minWidth: 40, minHeight: 40),
-                            onPressed: _placeholderCallbackForButtons,
+                            onPressed: () => _navigate(context, '/search'),
                           ),
                           IconButton(
                             icon: const Icon(Icons.person_outline,
