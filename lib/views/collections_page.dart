@@ -156,10 +156,11 @@ class CollectionsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Products grid from Firebase (for signature, sale, and merchandise collections)
+                  // Products grid from Firebase (for signature, sale, merchandise, and portsmouth-city collections)
                   if (categorySlug == 'signature' ||
                       categorySlug == 'sale' ||
-                      categorySlug == 'merchandise')
+                      categorySlug == 'merchandise' ||
+                      categorySlug == 'portsmouth-city')
                     StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection('products')
@@ -200,6 +201,13 @@ class CollectionsPage extends StatelessWidget {
                             final slug =
                                 (data['slug'] ?? '').toString().toLowerCase();
                             return slug.contains('merch');
+                          }
+
+                          // For portsmouth-city category: show items with title containing 'Portsmouth City'
+                          if (categorySlug == 'portsmouth-city') {
+                            final title =
+                                (data['title'] ?? '').toString().toLowerCase();
+                            return title.contains('portsmouth city');
                           }
 
                           // For other categories: match by slug
