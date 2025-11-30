@@ -156,8 +156,10 @@ class CollectionsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Products grid from Firebase (only for signature collection)
-                  if (categorySlug == 'signature')
+                  // Products grid from Firebase (for signature, sale, and merchandise collections)
+                  if (categorySlug == 'signature' ||
+                      categorySlug == 'sale' ||
+                      categorySlug == 'merchandise')
                     StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection('products')
@@ -182,20 +184,36 @@ class CollectionsPage extends StatelessWidget {
                           );
                         }
 
-                        // Filter products by slug field matching categorySlug
+                        // Filter products based on category
                         final allDocs = snapshot.data!.docs;
                         final filteredDocs = allDocs.where((doc) {
                           final data = doc.data();
+
+                          // For sale category: show items with discountPrice
+                          if (categorySlug == 'sale') {
+                            return data.containsKey('discountPrice') &&
+                                data['discountPrice'] != null;
+                          }
+
+                          // For merchandise category: show items with slug containing 'merch'
+                          if (categorySlug == 'merchandise') {
+                            final slug =
+                                (data['slug'] ?? '').toString().toLowerCase();
+                            return slug.contains('merch');
+                          }
+
+                          // For other categories: match by slug
                           final slug =
                               (data['slug'] ?? '').toString().toLowerCase();
                           return slug == categorySlug.toLowerCase();
                         }).toList();
 
                         if (filteredDocs.isEmpty) {
-                          return const Center(
+                          return Center(
                             child: Padding(
-                              padding: EdgeInsets.all(40.0),
-                              child: Text('No signature products found'),
+                              padding: const EdgeInsets.all(40.0),
+                              child: Text(
+                                  'No ${categoryTitle.toLowerCase()} products found'),
                             ),
                           );
                         }
@@ -231,6 +249,7 @@ class CollectionsPage extends StatelessWidget {
                               price: price,
                               discountPrice: discountPrice,
                               imageUrl: imageUrl,
+                              categorySlug: categorySlug,
                             );
                           },
                         );
@@ -263,12 +282,14 @@ class _ProductCard extends StatefulWidget {
   final dynamic price;
   final dynamic discountPrice;
   final String imageUrl;
+  final String categorySlug;
 
   const _ProductCard({
     required this.title,
     required this.price,
     required this.discountPrice,
     required this.imageUrl,
+    required this.categorySlug,
   });
 
   @override
@@ -348,7 +369,7 @@ class _ProductCardState extends State<_ProductCard> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () => context.go(
-          '/product',
+          '/collections/${widget.categorySlug}/product',
           extra: {
             'title': widget.title,
             'price': priceStr,

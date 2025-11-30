@@ -65,6 +65,21 @@ class UnionShopApp extends StatelessWidget {
                 final category = state.pathParameters['category'];
                 return CollectionsPage(category: category);
               },
+              routes: [
+                GoRoute(
+                  path: 'product',
+                  name: 'collection-product',
+                  builder: (context, state) {
+                    final args = state.extra as Map<String, dynamic>?;
+                    return ProductPage(
+                      titleOverride: args?['title'] as String?,
+                      priceOverride: args?['price'] as String?,
+                      imageUrlOverride: args?['imageUrl'] as String?,
+                      discountPriceOverride: args?['discountPrice'] as String?,
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
