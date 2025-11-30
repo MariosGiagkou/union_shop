@@ -19,9 +19,14 @@ class _SiteHeaderState extends State<SiteHeader> {
   OverlayEntry? _shopDropdownOverlay;
   final LayerLink _shopLayerLink = LayerLink();
 
+  // Track if print shack dropdown is open
+  OverlayEntry? _printShackDropdownOverlay;
+  final LayerLink _printShackLayerLink = LayerLink();
+
   @override
   void dispose() {
     _removeShopDropdown();
+    _removePrintShackDropdown();
     super.dispose();
   }
 
@@ -29,6 +34,12 @@ class _SiteHeaderState extends State<SiteHeader> {
     _shopDropdownOverlay?.remove();
     _shopDropdownOverlay = null;
     setState(() => _shopHover = false);
+  }
+
+  void _removePrintShackDropdown() {
+    _printShackDropdownOverlay?.remove();
+    _printShackDropdownOverlay = null;
+    setState(() => _tpsHover = false);
   }
 
   void _showShopDropdown(BuildContext context) {
@@ -100,6 +111,71 @@ class _SiteHeaderState extends State<SiteHeader> {
     );
 
     Overlay.of(context).insert(_shopDropdownOverlay!);
+  }
+
+  void _showPrintShackDropdown(BuildContext context) {
+    // Print Shack dropdown options
+    final options = [
+      {'title': 'About', 'route': '/about'},
+      {'title': 'Personalisation', 'route': '/personalise'},
+    ];
+
+    setState(() => _tpsHover = true);
+
+    _printShackDropdownOverlay = OverlayEntry(
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _removePrintShackDropdown,
+        child: Stack(
+          children: [
+            // Transparent overlay to catch clicks outside
+            Positioned.fill(
+              child: Container(color: Colors.transparent),
+            ),
+            // Dropdown menu
+            Positioned(
+              width: 220,
+              child: CompositedTransformFollower(
+                link: _printShackLayerLink,
+                showWhenUnlinked: false,
+                offset: const Offset(0, 5),
+                child: Material(
+                  elevation: 8,
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: options.map((option) {
+                      return InkWell(
+                        onTap: () {
+                          _removePrintShackDropdown();
+                          _navigate(context, option['route']!);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          child: Text(
+                            option['title']!,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_printShackDropdownOverlay!);
   }
 
   void _placeholderCallbackForButtons() {
@@ -210,6 +286,44 @@ class _SiteHeaderState extends State<SiteHeader> {
     );
   }
 
+  // Print Shack button with dropdown arrow
+  Widget _printShackButtonWithArrow() {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _tpsHover = true),
+      onExit: (_) => setState(() => _tpsHover = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => _showPrintShackDropdown(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'The Printing Shack',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 16,
+                  fontWeight: _tpsHover ? FontWeight.w700 : FontWeight.w500,
+                  decoration: _tpsHover
+                      ? TextDecoration.underline
+                      : TextDecoration.none,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 18,
+                color: Colors.grey[800],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isWideNav = MediaQuery.of(context).size.width >= 800; // added
@@ -278,11 +392,10 @@ class _SiteHeaderState extends State<SiteHeader> {
                             link: _shopLayerLink,
                             child: _shopButtonWithArrow(),
                           ),
-                          _navButton(
-                            'The Printing Shack',
-                            _tpsHover,
-                            (v) => _tpsHover = v,
-                            _placeholderCallbackForButtons,
+                          // Print Shack button with dropdown and arrow
+                          CompositedTransformTarget(
+                            link: _printShackLayerLink,
+                            child: _printShackButtonWithArrow(),
                           ),
                           _navButton(
                             'SALES!',

@@ -124,7 +124,19 @@ class CollectionsPage extends StatelessWidget {
 
   // Build a specific category page
   Widget _buildCategoryPage(BuildContext context, String categorySlug) {
+    // Special handling for personalisation - redirect to PersonalisePage
+    if (categorySlug == 'personalisation') {
+      // Navigate to the personalise route
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/personalise');
+      });
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final categoryData = allCollections[categorySlug]!;
+    ;
     final categoryTitle = categoryData['title']!;
 
     return Scaffold(

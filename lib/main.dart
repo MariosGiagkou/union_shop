@@ -7,6 +7,7 @@ import 'package:union_shop/views/home_page.dart';
 import 'package:union_shop/views/about_us.dart';
 import 'package:union_shop/views/sign_in.dart';
 import 'package:union_shop/views/collections_page.dart';
+import 'package:union_shop/views/personalise_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,11 @@ class UnionShopApp extends StatelessWidget {
           path: '/sign-in',
           name: 'sign-in',
           builder: (context, state) => const SignInPage(),
+        ),
+        GoRoute(
+          path: '/personalise',
+          name: 'personalise',
+          builder: (context, state) => const PersonalisePage(),
         ),
         GoRoute(
           path: '/collections',
