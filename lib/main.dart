@@ -62,6 +62,11 @@ class UnionShopApp extends StatelessWidget {
           builder: (context, state) => const SignInPage(),
         ),
         GoRoute(
+          path: '/search',
+          name: 'search',
+          builder: (context, state) => const SearchPage(),
+        ),
+        GoRoute(
           path: '/personalise',
           name: 'personalise',
           builder: (context, state) => const PersonalisePage(),

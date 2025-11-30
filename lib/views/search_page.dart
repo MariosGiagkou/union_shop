@@ -120,7 +120,8 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       const SizedBox(height: 32),
                       // Search results
-                      StreamBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
+                      StreamBuilder<
+                          List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
                         stream: _searchProducts(),
                         builder: (context, snapshot) {
                           if (_searchQuery.isEmpty) {
@@ -138,7 +139,8 @@ class _SearchPageState extends State<SearchPage> {
                             );
                           }
 
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const Center(
                               child: Padding(
                                 padding: EdgeInsets.all(40.0),
@@ -179,7 +181,8 @@ class _SearchPageState extends State<SearchPage> {
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 4,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16,
@@ -191,11 +194,15 @@ class _SearchPageState extends State<SearchPage> {
                                   final title = data['title'] ?? 'Untitled';
                                   final price = data['price'] ?? 0;
                                   final discountPrice = data['discountPrice'];
-                                  String imageUrl = (data['imageUrl'] ?? '').toString().trim();
+                                  String imageUrl = (data['imageUrl'] ?? '')
+                                      .toString()
+                                      .trim();
 
                                   // Normalize image path
-                                  imageUrl = imageUrl.replaceAll(RegExp(r'^/+'), '');
-                                  if (imageUrl.isNotEmpty && !imageUrl.contains('assets/images')) {
+                                  imageUrl =
+                                      imageUrl.replaceAll(RegExp(r'^/+'), '');
+                                  if (imageUrl.isNotEmpty &&
+                                      !imageUrl.contains('assets/images')) {
                                     imageUrl = 'assets/images/$imageUrl';
                                   }
 
@@ -293,8 +300,11 @@ class _SearchResultCardState extends State<_SearchResultCard> {
   @override
   Widget build(BuildContext context) {
     final priceStr = _formatPrice(widget.price);
-    final discountStr = widget.discountPrice != null ? _formatPrice(widget.discountPrice) : null;
-    final hasDiscount = discountStr != null && _parsePrice(widget.discountPrice) < _parsePrice(widget.price);
+    final discountStr = widget.discountPrice != null
+        ? _formatPrice(widget.discountPrice)
+        : null;
+    final hasDiscount = discountStr != null &&
+        _parsePrice(widget.discountPrice) < _parsePrice(widget.price);
 
     String imageUrl = widget.imageUrl;
     if (imageUrl.isEmpty) {
@@ -334,7 +344,8 @@ class _SearchResultCardState extends State<_SearchResultCard> {
                       errorBuilder: (_, __, ___) => Container(
                         color: Colors.grey[300],
                         child: const Center(
-                          child: Icon(Icons.image_not_supported, color: Colors.grey),
+                          child: Icon(Icons.image_not_supported,
+                              color: Colors.grey),
                         ),
                       ),
                     ),
@@ -357,7 +368,8 @@ class _SearchResultCardState extends State<_SearchResultCard> {
                 fontSize: 14,
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
-                decoration: _hover ? TextDecoration.underline : TextDecoration.none,
+                decoration:
+                    _hover ? TextDecoration.underline : TextDecoration.none,
               ),
             ),
             const SizedBox(height: 6),
