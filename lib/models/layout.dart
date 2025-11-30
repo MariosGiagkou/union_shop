@@ -15,6 +15,93 @@ class _SiteHeaderState extends State<SiteHeader> {
   bool _salesHover = false; // added
   bool _aboutHover = false; // added
 
+  // Track if shop dropdown is open
+  OverlayEntry? _shopDropdownOverlay;
+  final LayerLink _shopLayerLink = LayerLink();
+
+  @override
+  void dispose() {
+    _removeShopDropdown();
+    super.dispose();
+  }
+
+  void _removeShopDropdown() {
+    _shopDropdownOverlay?.remove();
+    _shopDropdownOverlay = null;
+    setState(() => _shopHover = false);
+  }
+
+  void _showShopDropdown(BuildContext context) {
+    // Collection items matching collections_page.dart (without personalisation)
+    final collections = [
+      {'title': 'Signature', 'slug': 'signature'},
+      {'title': 'Sale', 'slug': 'sale'},
+      {'title': 'Merchandise', 'slug': 'merchandise'},
+      {'title': 'Portsmouth City', 'slug': 'portsmouth-city'},
+      {'title': 'Pride', 'slug': 'pride'},
+      {'title': 'Halloween', 'slug': 'halloween'},
+      {'title': 'Graduation', 'slug': 'graduation'},
+    ];
+
+    setState(() => _shopHover = true);
+
+    _shopDropdownOverlay = OverlayEntry(
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _removeShopDropdown,
+        child: Stack(
+          children: [
+            // Transparent overlay to catch clicks outside
+            Positioned.fill(
+              child: Container(color: Colors.transparent),
+            ),
+            // Dropdown menu
+            Positioned(
+              width: 220,
+              child: CompositedTransformFollower(
+                link: _shopLayerLink,
+                showWhenUnlinked: false,
+                offset: const Offset(0, 5),
+                child: Material(
+                  elevation: 8,
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: collections.map((collection) {
+                      return InkWell(
+                        onTap: () {
+                          _removeShopDropdown();
+                          _navigate(
+                              context, '/collections/${collection['slug']}');
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          child: Text(
+                            collection['title']!,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_shopDropdownOverlay!);
+  }
+
   void _placeholderCallbackForButtons() {
     // placeholder for buttons that don't do anything yet
   }
@@ -85,6 +172,44 @@ class _SiteHeaderState extends State<SiteHeader> {
     );
   }
 
+  // Shop button with dropdown arrow
+  Widget _shopButtonWithArrow() {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _shopHover = true),
+      onExit: (_) => setState(() => _shopHover = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => _showShopDropdown(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Shop',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 16,
+                  fontWeight: _shopHover ? FontWeight.w700 : FontWeight.w500,
+                  decoration: _shopHover
+                      ? TextDecoration.underline
+                      : TextDecoration.none,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 18,
+                color: Colors.grey[800],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isWideNav = MediaQuery.of(context).size.width >= 800; // added
@@ -148,11 +273,10 @@ class _SiteHeaderState extends State<SiteHeader> {
                             () => _goHome(context),
                             active: _isHome(context),
                           ),
-                          _navButton(
-                            'Shop',
-                            _shopHover,
-                            (v) => _shopHover = v,
-                            _placeholderCallbackForButtons,
+                          // Shop button with dropdown and arrow
+                          CompositedTransformTarget(
+                            link: _shopLayerLink,
+                            child: _shopButtonWithArrow(),
                           ),
                           _navButton(
                             'The Printing Shack',

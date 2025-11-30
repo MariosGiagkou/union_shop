@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CollectionsPage extends StatelessWidget {
   final String? category;
@@ -155,22 +156,203 @@ class CollectionsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Category content placeholder
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(40.0),
-                      child: Text(
-                        'Category page content goes here',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                  // Products grid from Firebase (only for signature collection)
+                  if (categorySlug == 'signature')
+                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      stream: FirebaseFirestore.instance
+                          .collection('products')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(40.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(40.0),
+                              child: Text('No products found'),
+                            ),
+                          );
+                        }
+
+                        // Filter products by slug field matching categorySlug
+                        final allDocs = snapshot.data!.docs;
+                        final filteredDocs = allDocs.where((doc) {
+                          final data = doc.data();
+                          final slug =
+                              (data['slug'] ?? '').toString().toLowerCase();
+                          return slug == categorySlug.toLowerCase();
+                        }).toList();
+
+                        if (filteredDocs.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(40.0),
+                              child: Text('No signature products found'),
+                            ),
+                          );
+                        }
+
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.75,
+                          ),
+                          itemCount: filteredDocs.length,
+                          itemBuilder: (context, index) {
+                            final data = filteredDocs[index].data();
+                            final title = data['title'] ?? 'Untitled';
+                            final price = data['price'] ?? 0;
+                            final discountPrice = data['discountPrice'];
+                            String imageUrl =
+                                (data['imageUrl'] ?? '').toString().trim();
+
+                            // Normalize image path
+                            imageUrl = imageUrl.replaceAll(RegExp(r'^/+'), '');
+                            if (imageUrl.isNotEmpty &&
+                                !imageUrl.contains('assets/images')) {
+                              imageUrl = 'assets/images/$imageUrl';
+                            }
+
+                            return _ProductCard(
+                              title: title,
+                              price: price,
+                              discountPrice: discountPrice,
+                              imageUrl: imageUrl,
+                            );
+                          },
+                        );
+                      },
+                    )
+                  else
+                    // Category content placeholder for other collections
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(40.0),
+                        child: Text(
+                          'Category page content goes here',
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
             const SiteFooter(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Product card widget for category pages
+class _ProductCard extends StatelessWidget {
+  final String title;
+  final dynamic price;
+  final dynamic discountPrice;
+  final String imageUrl;
+
+  const _ProductCard({
+    required this.title,
+    required this.price,
+    required this.discountPrice,
+    required this.imageUrl,
+  });
+
+  String _formatPrice(dynamic value) {
+    if (value == null) return '';
+    final numValue = value is double || value is int
+        ? value as num
+        : double.tryParse(value.toString()) ?? 0;
+    return '£${numValue.toStringAsFixed(2)}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final priceStr = _formatPrice(price);
+    final discountStr =
+        discountPrice != null ? _formatPrice(discountPrice) : null;
+    final hasDiscount = discountStr != null && discountStr.isNotEmpty;
+
+    return Card(
+      elevation: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: imageUrl.isNotEmpty
+                ? Image.asset(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.image_not_supported),
+                    ),
+                  )
+                : Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.image_not_supported),
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                if (hasDiscount) ...[
+                  Text(
+                    priceStr,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      decoration: TextDecoration.lineThrough,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    discountStr,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ] else ...[
+                  Text(
+                    priceStr,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
