@@ -62,6 +62,72 @@ class _CollectionsPageState extends State<CollectionsPage> {
     },
   };
 
+  // Helper method to apply category filter based on cat field
+  List<DocumentSnapshot<Map<String, dynamic>>> _applyFilter(
+      List<DocumentSnapshot<Map<String, dynamic>>> docs) {
+    if (_filterBy == 'All products') {
+      return docs;
+    } else if (_filterBy == 'Merchandise') {
+      return docs.where((doc) {
+        final cat = (doc.data()?['cat'] ?? '').toString().toLowerCase();
+        return cat == 'prod';
+      }).toList();
+    } else if (_filterBy == 'Clothing') {
+      return docs.where((doc) {
+        final cat = (doc.data()?['cat'] ?? '').toString().toLowerCase();
+        return cat == 'cloth';
+      }).toList();
+    }
+    return docs;
+  }
+
+  // Helper method to apply sorting
+  List<DocumentSnapshot<Map<String, dynamic>>> _applySort(
+      List<DocumentSnapshot<Map<String, dynamic>>> docs) {
+    final sortedDocs = List<DocumentSnapshot<Map<String, dynamic>>>.from(docs);
+
+    if (_sortBy == 'Alphabetically: A-Z') {
+      sortedDocs.sort((a, b) {
+        final titleA = (a.data()?['title'] ?? '').toString().toLowerCase();
+        final titleB = (b.data()?['title'] ?? '').toString().toLowerCase();
+        return titleA.compareTo(titleB);
+      });
+    } else if (_sortBy == 'Alphabetically: Z-A') {
+      sortedDocs.sort((a, b) {
+        final titleA = (a.data()?['title'] ?? '').toString().toLowerCase();
+        final titleB = (b.data()?['title'] ?? '').toString().toLowerCase();
+        return titleB.compareTo(titleA);
+      });
+    } else if (_sortBy == 'Price: Low to High') {
+      sortedDocs.sort((a, b) {
+        final priceA = _getProductPrice(a.data());
+        final priceB = _getProductPrice(b.data());
+        return priceA.compareTo(priceB);
+      });
+    } else if (_sortBy == 'Price: High to Low') {
+      sortedDocs.sort((a, b) {
+        final priceA = _getProductPrice(a.data());
+        final priceB = _getProductPrice(b.data());
+        return priceB.compareTo(priceA);
+      });
+    }
+    // 'Featured' - no sorting, keep original order
+    return sortedDocs;
+  }
+
+  // Helper to get the effective price (use discountPrice if available)
+  double _getProductPrice(Map<String, dynamic>? data) {
+    if (data == null) return 0.0;
+    final discountPrice = data['discountPrice'];
+    if (discountPrice != null) {
+      if (discountPrice is num) return discountPrice.toDouble();
+      return double.tryParse(discountPrice.toString()) ?? 0.0;
+    }
+    final price = data['price'] ?? 0;
+    if (price is num) return price.toDouble();
+    return double.tryParse(price.toString()) ?? 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     // If category is specified, show that category's products
