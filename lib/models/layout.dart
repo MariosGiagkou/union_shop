@@ -377,27 +377,33 @@ class _SiteHeaderState extends State<SiteHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isWideNav = MediaQuery.of(context).size.width >= 800; // added
+    final bool isWideNav = MediaQuery.of(context).size.width >= 800;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+
     return Container(
-      height: 140,
+      height: isMobile ? 120 : 140,
       color: Colors.white,
       child: Column(
         children: [
           // Top banner
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12),
             color: const Color(0xFF4d2963),
-            child: const Text(
+            child: Text(
               'BIG SALE! OUR ESSENTIAL RANGE HAS DROPPED IN PRICE! OVER 20% OFF! COME GRAB YOURS WHILE STOCK LASTS!',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: isMobile ? 12 : 16,
+              ),
             ),
           ),
           // Main header
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 16),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -407,8 +413,8 @@ class _SiteHeaderState extends State<SiteHeader> {
                     child: GestureDetector(
                       onTap: () => _goHome(context),
                       child: Image.asset(
-                        'assets/images/logo1.png', // fixed path to load from assets folder
-                        height: 90,
+                        'assets/images/logo1.png',
+                        height: isMobile ? 60 : 90,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -476,7 +482,9 @@ class _SiteHeaderState extends State<SiteHeader> {
                           // Search icon with expandable text field
                           if (_showSearchBox) ...[
                             SizedBox(
-                              width: 200,
+                              width: MediaQuery.of(context).size.width > 600
+                                  ? 200
+                                  : 150,
                               height: 40,
                               child: TextField(
                                 controller: _searchController,
@@ -508,6 +516,7 @@ class _SiteHeaderState extends State<SiteHeader> {
                                   ),
                                   suffixIcon: IconButton(
                                     icon: const Icon(Icons.close, size: 18),
+                                    padding: EdgeInsets.zero,
                                     onPressed: () {
                                       setState(() {
                                         _showSearchBox = false;
@@ -519,38 +528,42 @@ class _SiteHeaderState extends State<SiteHeader> {
                                 style: const TextStyle(fontSize: 14),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 4),
                           ],
                           IconButton(
-                            icon: const Icon(Icons.search,
-                                size: 24, color: Colors.grey),
-                            padding: const EdgeInsets.all(10),
-                            constraints: const BoxConstraints(
-                                minWidth: 40, minHeight: 40),
+                            icon: Icon(Icons.search,
+                                size: isMobile ? 20 : 24, color: Colors.grey),
+                            padding: EdgeInsets.all(isMobile ? 6 : 10),
+                            constraints: BoxConstraints(
+                                minWidth: isMobile ? 32 : 40,
+                                minHeight: isMobile ? 32 : 40),
                             onPressed: _handleSearchIconClick,
                           ),
                           IconButton(
-                            icon: const Icon(Icons.person_outline,
-                                size: 24, color: Colors.grey),
-                            padding: const EdgeInsets.all(10),
-                            constraints: const BoxConstraints(
-                                minWidth: 40, minHeight: 40),
+                            icon: Icon(Icons.person_outline,
+                                size: isMobile ? 20 : 24, color: Colors.grey),
+                            padding: EdgeInsets.all(isMobile ? 6 : 10),
+                            constraints: BoxConstraints(
+                                minWidth: isMobile ? 32 : 40,
+                                minHeight: isMobile ? 32 : 40),
                             onPressed: () => _navigate(context, '/sign-in'),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.shopping_bag_outlined,
-                                size: 24, color: Colors.grey),
-                            padding: const EdgeInsets.all(10),
-                            constraints: const BoxConstraints(
-                                minWidth: 40, minHeight: 40),
+                            icon: Icon(Icons.shopping_bag_outlined,
+                                size: isMobile ? 20 : 24, color: Colors.grey),
+                            padding: EdgeInsets.all(isMobile ? 6 : 10),
+                            constraints: BoxConstraints(
+                                minWidth: isMobile ? 32 : 40,
+                                minHeight: isMobile ? 32 : 40),
                             onPressed: _placeholderCallbackForButtons,
                           ),
                           IconButton(
-                            icon: const Icon(Icons.menu,
-                                size: 24, color: Colors.grey),
-                            padding: const EdgeInsets.all(10),
-                            constraints: const BoxConstraints(
-                                minWidth: 40, minHeight: 40),
+                            icon: Icon(Icons.menu,
+                                size: isMobile ? 20 : 24, color: Colors.grey),
+                            padding: EdgeInsets.all(isMobile ? 6 : 10),
+                            constraints: BoxConstraints(
+                                minWidth: isMobile ? 32 : 40,
+                                minHeight: isMobile ? 32 : 40),
                             onPressed: _placeholderCallbackForButtons,
                           ),
                         ],

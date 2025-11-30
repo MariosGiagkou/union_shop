@@ -89,68 +89,77 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       const SizedBox(height: 32),
                       // Search input field with button
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _searchController,
-                              onSubmitted: (_) => _performSearch(),
-                              decoration: InputDecoration(
-                                hintText: 'Search for products...',
-                                hintStyle: const TextStyle(fontSize: 16),
-                                prefixIcon: const Icon(Icons.search,
-                                    color: Colors.grey),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide:
-                                      const BorderSide(color: Colors.grey),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final isMobile =
+                              MediaQuery.of(context).size.width < 600;
+
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _searchController,
+                                  onSubmitted: (_) => _performSearch(),
+                                  decoration: InputDecoration(
+                                    hintText: 'Search for products...',
+                                    hintStyle:
+                                        TextStyle(fontSize: isMobile ? 14 : 16),
+                                    prefixIcon: const Icon(Icons.search,
+                                        color: Colors.grey),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide:
+                                          const BorderSide(color: Colors.grey),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide:
+                                          const BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFF4d2963),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 12 : 16,
+                                      vertical: isMobile ? 12 : 16,
+                                    ),
+                                  ),
+                                  style:
+                                      TextStyle(fontSize: isMobile ? 14 : 16),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide:
-                                      const BorderSide(color: Colors.grey),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFF4d2963),
-                                    width: 2,
+                              ),
+                              SizedBox(width: isMobile ? 8 : 16),
+                              SizedBox(
+                                height: isMobile ? 48 : 56,
+                                child: ElevatedButton(
+                                  onPressed: _performSearch,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF4d2963),
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 16 : 32,
+                                      vertical: isMobile ? 12 : 16,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Search',
+                                    style: TextStyle(
+                                      fontSize: isMobile ? 14 : 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 16,
-                                ),
                               ),
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          SizedBox(
-                            height: 56,
-                            child: ElevatedButton(
-                              onPressed: _performSearch,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF4d2963),
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 32,
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: const Text(
-                                'Search',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 32),
                       // Search results
@@ -212,39 +221,57 @@ class _SearchPageState extends State<SearchPage> {
                                 ),
                               ),
                               const SizedBox(height: 24),
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 0.75,
-                                ),
-                                itemCount: results.length,
-                                itemBuilder: (context, index) {
-                                  final data = results[index].data();
-                                  final title = data['title'] ?? 'Untitled';
-                                  final price = data['price'] ?? 0;
-                                  final discountPrice = data['discountPrice'];
-                                  String imageUrl = (data['imageUrl'] ?? '')
-                                      .toString()
-                                      .trim();
-
-                                  // Normalize image path
-                                  imageUrl =
-                                      imageUrl.replaceAll(RegExp(r'^/+'), '');
-                                  if (imageUrl.isNotEmpty &&
-                                      !imageUrl.contains('assets/images')) {
-                                    imageUrl = 'assets/images/$imageUrl';
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final screenWidth =
+                                      MediaQuery.of(context).size.width;
+                                  int crossAxisCount = 4;
+                                  if (screenWidth < 600) {
+                                    crossAxisCount = 1; // Mobile: 1 column
+                                  } else if (screenWidth < 900) {
+                                    crossAxisCount = 2; // Tablet: 2 columns
+                                  } else if (screenWidth < 1200) {
+                                    crossAxisCount =
+                                        3; // Small desktop: 3 columns
                                   }
 
-                                  return _SearchResultCard(
-                                    title: title,
-                                    price: price,
-                                    discountPrice: discountPrice,
-                                    imageUrl: imageUrl,
+                                  return GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: crossAxisCount,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                      childAspectRatio: 0.75,
+                                    ),
+                                    itemCount: results.length,
+                                    itemBuilder: (context, index) {
+                                      final data = results[index].data();
+                                      final title = data['title'] ?? 'Untitled';
+                                      final price = data['price'] ?? 0;
+                                      final discountPrice =
+                                          data['discountPrice'];
+                                      String imageUrl = (data['imageUrl'] ?? '')
+                                          .toString()
+                                          .trim();
+
+                                      // Normalize image path
+                                      imageUrl = imageUrl.replaceAll(
+                                          RegExp(r'^/+'), '');
+                                      if (imageUrl.isNotEmpty &&
+                                          !imageUrl.contains('assets/images')) {
+                                        imageUrl = 'assets/images/$imageUrl';
+                                      }
+
+                                      return _SearchResultCard(
+                                        title: title,
+                                        price: price,
+                                        discountPrice: discountPrice,
+                                        imageUrl: imageUrl,
+                                      );
+                                    },
                                   );
                                 },
                               ),

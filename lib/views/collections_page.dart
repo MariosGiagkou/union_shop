@@ -449,39 +449,57 @@ class _CollectionsPageState extends State<CollectionsPage> {
                             const SizedBox(height: 16),
 
                             // Products Grid
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
-                                crossAxisSpacing: 16,
-                                mainAxisSpacing: 16,
-                                childAspectRatio: 0.75,
-                              ),
-                              itemCount: processedDocs.length,
-                              itemBuilder: (context, index) {
-                                final data = processedDocs[index].data();
-                                final title = data?['title'] ?? 'Untitled';
-                                final price = data?['price'] ?? 0;
-                                final discountPrice = data?['discountPrice'];
-                                String imageUrl =
-                                    (data?['imageUrl'] ?? '').toString().trim();
-
-                                // Normalize image path
-                                imageUrl =
-                                    imageUrl.replaceAll(RegExp(r'^/+'), '');
-                                if (imageUrl.isNotEmpty &&
-                                    !imageUrl.contains('assets/images')) {
-                                  imageUrl = 'assets/images/$imageUrl';
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final screenWidth =
+                                    MediaQuery.of(context).size.width;
+                                int crossAxisCount = 4;
+                                if (screenWidth < 600) {
+                                  crossAxisCount = 1; // Mobile: 1 column
+                                } else if (screenWidth < 900) {
+                                  crossAxisCount = 2; // Tablet: 2 columns
+                                } else if (screenWidth < 1200) {
+                                  crossAxisCount =
+                                      3; // Small desktop: 3 columns
                                 }
 
-                                return _ProductCard(
-                                  title: title,
-                                  price: price,
-                                  discountPrice: discountPrice,
-                                  imageUrl: imageUrl,
-                                  categorySlug: categorySlug,
+                                return GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: crossAxisCount,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                    childAspectRatio: 0.75,
+                                  ),
+                                  itemCount: processedDocs.length,
+                                  itemBuilder: (context, index) {
+                                    final data = processedDocs[index].data();
+                                    final title = data?['title'] ?? 'Untitled';
+                                    final price = data?['price'] ?? 0;
+                                    final discountPrice =
+                                        data?['discountPrice'];
+                                    String imageUrl = (data?['imageUrl'] ?? '')
+                                        .toString()
+                                        .trim();
+
+                                    // Normalize image path
+                                    imageUrl =
+                                        imageUrl.replaceAll(RegExp(r'^/+'), '');
+                                    if (imageUrl.isNotEmpty &&
+                                        !imageUrl.contains('assets/images')) {
+                                      imageUrl = 'assets/images/$imageUrl';
+                                    }
+
+                                    return _ProductCard(
+                                      title: title,
+                                      price: price,
+                                      discountPrice: discountPrice,
+                                      imageUrl: imageUrl,
+                                      categorySlug: categorySlug,
+                                    );
+                                  },
                                 );
                               },
                             ),
