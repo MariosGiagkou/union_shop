@@ -12,6 +12,7 @@ import 'package:union_shop/views/collections_page.dart';
 import 'package:union_shop/views/personalise_page.dart';
 import 'package:union_shop/views/search_page.dart';
 import 'package:union_shop/views/cart_page.dart';
+import 'package:union_shop/views/order_history_page.dart';
 import 'package:union_shop/repositories/cart_repository.dart';
 import 'package:union_shop/services/auth_service.dart';
 
@@ -82,6 +83,11 @@ class UnionShopApp extends StatelessWidget {
           path: '/cart',
           name: 'cart',
           builder: (context, state) => const CartPage(),
+        ),
+        GoRoute(
+          path: '/order-history',
+          name: 'order-history',
+          builder: (context, state) => const OrderHistoryPage(),
         ),
         GoRoute(
           path: '/collections',
