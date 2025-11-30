@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../repositories/cart_repository.dart';
+import '../services/auth_service.dart';
 
 class SiteHeader extends StatefulWidget {
   const SiteHeader({super.key});
@@ -542,14 +543,67 @@ class _SiteHeaderState extends State<SiteHeader> {
                                 minHeight: isMobile ? 32 : 40),
                             onPressed: _handleSearchIconClick,
                           ),
-                          IconButton(
-                            icon: Icon(Icons.person_outline,
-                                size: isMobile ? 20 : 24, color: Colors.grey),
-                            padding: EdgeInsets.all(isMobile ? 6 : 10),
-                            constraints: BoxConstraints(
-                                minWidth: isMobile ? 32 : 40,
-                                minHeight: isMobile ? 32 : 40),
-                            onPressed: () => _navigate(context, '/sign-in'),
+                          // User account icon with auth state
+                          Consumer<AuthService>(
+                            builder: (context, authService, child) {
+                              return PopupMenuButton<String>(
+                                icon: Icon(
+                                  authService.isSignedIn
+                                      ? Icons.person
+                                      : Icons.person_outline,
+                                  size: isMobile ? 20 : 24,
+                                  color: Colors.grey,
+                                ),
+                                padding: EdgeInsets.all(isMobile ? 6 : 10),
+                                offset: const Offset(0, 45),
+                                onSelected: (value) {
+                                  if (value == 'signout') {
+                                    authService.signOut();
+                                  } else if (value == 'signin') {
+                                    _navigate(context, '/sign-in');
+                                  }
+                                },
+                                itemBuilder: (context) {
+                                  if (authService.isSignedIn) {
+                                    return [
+                                      PopupMenuItem(
+                                        enabled: false,
+                                        child: Text(
+                                          authService.userEmail ?? 'User',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'signout',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.logout, size: 18),
+                                            SizedBox(width: 8),
+                                            Text('Sign Out'),
+                                          ],
+                                        ),
+                                      ),
+                                    ];
+                                  } else {
+                                    return [
+                                      const PopupMenuItem(
+                                        value: 'signin',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.login, size: 18),
+                                            SizedBox(width: 8),
+                                            Text('Sign In'),
+                                          ],
+                                        ),
+                                      ),
+                                    ];
+                                  }
+                                },
+                              );
+                            },
                           ),
                           // Shopping bag with badge
                           Consumer<CartRepository>(
