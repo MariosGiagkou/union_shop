@@ -313,6 +313,17 @@ class _ProductCardState extends State<_ProductCard> {
     return double.tryParse(value.toString()) ?? 0.0;
   }
 
+  String _createProductSlug(String title) {
+    // Convert title to URL-friendly slug
+    return title
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^\w\s-]'), '') // Remove special characters
+        .replaceAll(RegExp(r'\s+'), '_') // Replace spaces with underscores
+        .replaceAll(
+            RegExp(r'-+'), '-') // Replace multiple dashes with single dash
+        .trim();
+  }
+
   Widget _buildImage() {
     String src = widget.imageUrl.trim();
     // Normalize path
@@ -368,15 +379,18 @@ class _ProductCardState extends State<_ProductCard> {
       onExit: (_) => setState(() => _hover = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => context.go(
-          '/collections/${widget.categorySlug}/product',
-          extra: {
-            'title': widget.title,
-            'price': priceStr,
-            'imageUrl': widget.imageUrl,
-            if (hasDiscount) 'discountPrice': discountStr,
-          },
-        ),
+        onTap: () {
+          final productSlug = _createProductSlug(widget.title);
+          context.go(
+            '/collections/${widget.categorySlug}/product/$productSlug',
+            extra: {
+              'title': widget.title,
+              'price': priceStr,
+              'imageUrl': widget.imageUrl,
+              if (hasDiscount) 'discountPrice': discountStr,
+            },
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

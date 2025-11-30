@@ -67,9 +67,10 @@ class UnionShopApp extends StatelessWidget {
               },
               routes: [
                 GoRoute(
-                  path: 'product',
+                  path: 'product/:productId',
                   name: 'collection-product',
                   builder: (context, state) {
+                    // productId available from state.pathParameters['productId'] if needed
                     final args = state.extra as Map<String, dynamic>?;
                     return ProductPage(
                       titleOverride: args?['title'] as String?,
