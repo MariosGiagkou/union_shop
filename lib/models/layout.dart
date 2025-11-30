@@ -216,8 +216,16 @@ class _SiteHeaderState extends State<SiteHeader> {
   }
 
   void _performQuickSearch() {
-    if (_searchController.text.trim().isNotEmpty) {
-      _navigate(context, '/search');
+    final query = _searchController.text.trim();
+    if (query.isNotEmpty) {
+      // Navigate to search page with query parameter
+      final uri = Uri(path: '/search', queryParameters: {'q': query});
+      _navigate(context, uri.toString());
+      // Clear the search box after navigating
+      setState(() {
+        _showSearchBox = false;
+        _searchController.clear();
+      });
     }
   }
 
