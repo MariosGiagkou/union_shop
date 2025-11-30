@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:union_shop/views/personalise_page.dart';
 
-class CollectionsPage extends StatelessWidget {
+class CollectionsPage extends StatefulWidget {
   final String? category;
 
   const CollectionsPage({super.key, this.category});
+
+  @override
+  State<CollectionsPage> createState() => _CollectionsPageState();
+}
+
+class _CollectionsPageState extends State<CollectionsPage> {
+  // Filter and sort state
+  String _filterBy = 'All products';
+  String _sortBy = 'Featured';
 
   // Define all collection categories
   static final Map<String, Map<String, String>> allCollections = {
@@ -56,8 +66,9 @@ class CollectionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // If category is specified, show that category's products
     // Otherwise show the collection grid overview
-    if (category != null && allCollections.containsKey(category)) {
-      return _buildCategoryPage(context, category!);
+    if (widget.category != null &&
+        allCollections.containsKey(widget.category)) {
+      return _buildCategoryPage(context, widget.category!);
     } else {
       return _buildCollectionsOverview(context);
     }
