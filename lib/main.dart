@@ -13,6 +13,7 @@ import 'package:union_shop/views/personalise_page.dart';
 import 'package:union_shop/views/search_page.dart';
 import 'package:union_shop/views/cart_page.dart';
 import 'package:union_shop/repositories/cart_repository.dart';
+import 'package:union_shop/services/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -116,8 +117,11 @@ class UnionShopApp extends StatelessWidget {
       ],
     );
 
-    return ChangeNotifierProvider(
-      create: (context) => CartRepository(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartRepository()),
+        ChangeNotifierProvider(create: (context) => AuthService()),
+      ],
       child: MaterialApp.router(
         title: 'Union Shop',
         debugShowCheckedModeBanner: false,
