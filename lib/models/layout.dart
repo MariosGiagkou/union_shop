@@ -23,10 +23,19 @@ class _SiteHeaderState extends State<SiteHeader> {
   OverlayEntry? _printShackDropdownOverlay;
   final LayerLink _printShackLayerLink = LayerLink();
 
+  // Track search box state
+  bool _showSearchBox = false;
+  int _searchClickCount = 0;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  DateTime? _lastSearchClick;
+
   @override
   void dispose() {
     _removeShopDropdown();
     _removePrintShackDropdown();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -176,6 +185,40 @@ class _SiteHeaderState extends State<SiteHeader> {
     );
 
     Overlay.of(context).insert(_printShackDropdownOverlay!);
+  }
+
+  void _handleSearchIconClick() {
+    final now = DateTime.now();
+
+    // Check if this is a double click (within 500ms)
+    if (_lastSearchClick != null &&
+        now.difference(_lastSearchClick!).inMilliseconds < 500) {
+      // Double click - navigate to search page
+      setState(() {
+        _showSearchBox = false;
+        _searchClickCount = 0;
+        _lastSearchClick = null;
+      });
+      _navigate(context, '/search');
+    } else {
+      // Single click - toggle search box
+      setState(() {
+        _showSearchBox = !_showSearchBox;
+        _lastSearchClick = now;
+        if (_showSearchBox) {
+          // Focus the search box when it appears
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _searchFocusNode.requestFocus();
+          });
+        }
+      });
+    }
+  }
+
+  void _performQuickSearch() {
+    if (_searchController.text.trim().isNotEmpty) {
+      _navigate(context, '/search');
+    }
   }
 
   void _placeholderCallbackForButtons() {
@@ -422,13 +465,61 @@ class _SiteHeaderState extends State<SiteHeader> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          // Search icon with expandable text field
+                          if (_showSearchBox) ...[
+                            SizedBox(
+                              width: 200,
+                              height: 40,
+                              child: TextField(
+                                controller: _searchController,
+                                focusNode: _searchFocusNode,
+                                onSubmitted: (_) => _performQuickSearch(),
+                                decoration: InputDecoration(
+                                  hintText: 'Search...',
+                                  hintStyle: const TextStyle(fontSize: 14),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    borderSide:
+                                        const BorderSide(color: Colors.grey),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    borderSide:
+                                        const BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF4d2963),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        _showSearchBox = false;
+                                        _searchController.clear();
+                                      });
+                                    },
+                                  ),
+                                ),
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
                           IconButton(
                             icon: const Icon(Icons.search,
                                 size: 24, color: Colors.grey),
                             padding: const EdgeInsets.all(10),
                             constraints: const BoxConstraints(
                                 minWidth: 40, minHeight: 40),
-                            onPressed: () => _navigate(context, '/search'),
+                            onPressed: _handleSearchIconClick,
                           ),
                           IconButton(
                             icon: const Icon(Icons.person_outline,
