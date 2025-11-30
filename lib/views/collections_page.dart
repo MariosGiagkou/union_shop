@@ -168,13 +168,14 @@ class CollectionsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Products grid from Firebase (for signature, sale, merchandise, portsmouth-city, pride, and halloween collections)
+                  // Products grid from Firebase (for signature, sale, merchandise, portsmouth-city, pride, halloween, and graduation collections)
                   if (categorySlug == 'signature' ||
                       categorySlug == 'sale' ||
                       categorySlug == 'merchandise' ||
                       categorySlug == 'portsmouth-city' ||
                       categorySlug == 'pride' ||
-                      categorySlug == 'halloween')
+                      categorySlug == 'halloween' ||
+                      categorySlug == 'graduation')
                     StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection('products')
@@ -222,6 +223,20 @@ class CollectionsPage extends StatelessWidget {
                             final title =
                                 (data['title'] ?? '').toString().toLowerCase();
                             return title.contains('portsmouth city');
+                          }
+
+                          // For halloween category: show items with title containing 'Halloween'
+                          if (categorySlug == 'halloween') {
+                            final title =
+                                (data['title'] ?? '').toString().toLowerCase();
+                            return title.contains('halloween');
+                          }
+
+                          // For graduation category: show items with title containing 'grad'
+                          if (categorySlug == 'graduation') {
+                            final title =
+                                (data['title'] ?? '').toString().toLowerCase();
+                            return title.contains('grad');
                           }
 
                           // For other categories: match by slug
