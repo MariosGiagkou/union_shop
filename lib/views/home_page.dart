@@ -201,38 +201,23 @@ class HomePage extends StatelessWidget {
                               final docsOrdered = orderedDocs;
                               final cardsOrdered = orderedCards;
 
-                              // Before partitioning, allow swapping specific
-                              // products by title (useful for manual ordering).
-                              // Swap 'Portsmouth City Postcard' with 'Signiture T-Shirt'
-                              // if both are present in the fetched documents.
-                              final postcardIndex = docsOrdered.indexWhere((d) {
-                                final t = d.data()['title'];
-                                return t is String &&
-                                    t.toLowerCase() ==
-                                        'portsmouth city postcard';
-                              });
-                              final signitureIndex =
-                                  docsOrdered.indexWhere((d) {
-                                final t = d.data()['title'];
-                                return t is String &&
-                                    t.toLowerCase() == 'signiture t-shirt';
-                              });
-                              if (postcardIndex != -1 && signitureIndex != -1) {
-                                final tmp = cardsOrdered[postcardIndex];
-                                cardsOrdered[postcardIndex] =
-                                    cardsOrdered[signitureIndex];
-                                cardsOrdered[signitureIndex] = tmp;
-                              }
-
-                              // Partition into discounted and regular lists
+                              // Partition into discounted, regular, and Portsmouth lists
                               final discountedCards = <Widget>[];
                               final regularCards = <Widget>[];
+                              final portsmouthCards = <Widget>[];
                               for (var i = 0; i < docsOrdered.length; i++) {
                                 final data = docsOrdered[i].data();
                                 final p = _toDouble(data['price']);
                                 final dp = _toDouble(data['discountPrice']);
                                 final card = cardsOrdered[i];
-                                if (dp != null && p != null && dp < p) {
+                                final title = (data['title'] ?? '')
+                                    .toString()
+                                    .toLowerCase();
+
+                                // Check if this is a Portsmouth City product
+                                if (title.contains('portsmouth city')) {
+                                  portsmouthCards.add(card);
+                                } else if (dp != null && p != null && dp < p) {
                                   discountedCards.add(card);
                                 } else {
                                   regularCards.add(card);
@@ -275,9 +260,9 @@ class HomePage extends StatelessWidget {
                               final secondRow =
                                   buildPairFromList(regularCards, 0, 1);
                               final portsmouthRow1 =
-                                  buildPairFromList(regularCards, 2, 3);
+                                  buildPairFromList(portsmouthCards, 0, 1);
                               final portsmouthRow2 =
-                                  buildPairFromList(regularCards, 4, 5);
+                                  buildPairFromList(portsmouthCards, 2, 3);
 
                               return Column(
                                 children: [
