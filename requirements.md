@@ -20,6 +20,6 @@
 - [ ] Responsiveness (adaptive layouts across all pages) *(Product page responsive; rest pending)*
 - [ ] Authentication System (full accounts + dashboard)
 - [ ] Cart Management (edit/remove, price calculations, persistence)
-- [ ] Search System (functional search in navbar and footer)
+- [x] Search System (functional search in navbar and footer)
 
 
