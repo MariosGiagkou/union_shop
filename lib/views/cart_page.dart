@@ -35,37 +35,29 @@ class CartPage extends StatelessWidget {
         children: [
           Icon(
             Icons.shopping_bag_outlined,
-            size: 100,
+            size: 80,
             color: Colors.grey[400],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           Text(
             'Your cart is empty',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w600,
               color: Colors.grey[700],
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Add some items to get started!',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pushNamed('/'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4d2963),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
             ),
             child: const Text(
               'Continue Shopping',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -80,7 +72,7 @@ class CartPage extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(isMobile ? 16 : 32),
+            padding: EdgeInsets.all(isMobile ? 16 : 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -88,20 +80,20 @@ class CartPage extends StatelessWidget {
                 Text(
                   'Shopping Cart',
                   style: TextStyle(
-                    fontSize: isMobile ? 28 : 36,
+                    fontSize: isMobile ? 24 : 30,
                     fontWeight: FontWeight.w700,
                     color: Colors.grey[900],
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   '${cartRepo.itemCount} ${cartRepo.itemCount == 1 ? 'item' : 'items'}',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
 
                 // Cart Items and Summary
                 isMobile
@@ -157,10 +149,10 @@ class CartPage extends StatelessWidget {
   Widget _buildCartItemCard(BuildContext context, CartRepository cartRepo,
       CartItem item, bool isMobile) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 1,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: isMobile
             ? _buildMobileCartItem(context, cartRepo, item)
             : _buildDesktopCartItem(context, cartRepo, item),
@@ -377,39 +369,35 @@ class CartPage extends StatelessWidget {
   Widget _buildOrderSummary(
       BuildContext context, CartRepository cartRepo, bool isMobile) {
     return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
         border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(4),
       ),
-      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
             'Order Summary',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           _buildSummaryRow(
               'Subtotal', '£${cartRepo.cartTotal.toStringAsFixed(2)}'),
-          const SizedBox(height: 12),
-          _buildSummaryRow('Shipping', 'Calculated at checkout'),
-          const SizedBox(height: 12),
-          const Divider(thickness: 1),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          const Divider(),
+          const SizedBox(height: 8),
           _buildSummaryRow(
             'Total',
             '£${cartRepo.cartTotal.toStringAsFixed(2)}',
             isTotal: true,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // TODO: Implement checkout
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Checkout coming soon!'),
@@ -420,17 +408,13 @@ class CartPage extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4d2963),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             child: const Text(
-              'Proceed to Checkout',
+              'Checkout',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
               ),
             ),
           ),
