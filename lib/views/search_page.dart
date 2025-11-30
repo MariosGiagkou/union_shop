@@ -12,7 +12,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  String _submittedQuery = ''; // Track what was actually searched
 
   @override
   void dispose() {
@@ -20,18 +20,18 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
-  void _onSearchChanged(String query) {
+  void _performSearch() {
     setState(() {
-      _searchQuery = query.trim();
+      _submittedQuery = _searchController.text.trim();
     });
   }
 
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _searchProducts() {
-    if (_searchQuery.isEmpty) {
+    if (_submittedQuery.isEmpty) {
       return Stream.value([]);
     }
 
-    final query = _searchQuery.toLowerCase();
+    final query = _submittedQuery.toLowerCase();
 
     return FirebaseFirestore.instance
         .collection('products')
@@ -77,46 +77,69 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      // Search input field
-                      TextField(
-                        controller: _searchController,
-                        onChanged: _onSearchChanged,
-                        decoration: InputDecoration(
-                          hintText: 'Search for products...',
-                          hintStyle: const TextStyle(fontSize: 16),
-                          prefixIcon:
-                              const Icon(Icons.search, color: Colors.grey),
-                          suffixIcon: _searchQuery.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear,
-                                      color: Colors.grey),
-                                  onPressed: () {
-                                    _searchController.clear();
-                                    _onSearchChanged('');
-                                  },
-                                )
-                              : null,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Colors.grey),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF4d2963),
-                              width: 2,
+                      // Search input field with button
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onSubmitted: (_) => _performSearch(),
+                              decoration: InputDecoration(
+                                hintText: 'Search for products...',
+                                hintStyle: const TextStyle(fontSize: 16),
+                                prefixIcon: const Icon(Icons.search,
+                                    color: Colors.grey),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      const BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF4d2963),
+                                    width: 2,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 16,
+                                ),
+                              ),
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
+                          const SizedBox(width: 16),
+                          SizedBox(
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: _performSearch,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4d2963),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Search',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        style: const TextStyle(fontSize: 16),
+                        ],
                       ),
                       const SizedBox(height: 32),
                       // Search results
@@ -124,12 +147,12 @@ class _SearchPageState extends State<SearchPage> {
                           List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
                         stream: _searchProducts(),
                         builder: (context, snapshot) {
-                          if (_searchQuery.isEmpty) {
+                          if (_submittedQuery.isEmpty) {
                             return const Center(
                               child: Padding(
                                 padding: EdgeInsets.all(40.0),
                                 child: Text(
-                                  'Enter a search term to find products',
+                                  'Enter a search term and click Search to find products',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
@@ -156,7 +179,7 @@ class _SearchPageState extends State<SearchPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(40.0),
                                 child: Text(
-                                  'No products found for "$_searchQuery"',
+                                  'No products found for "$_submittedQuery"',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
@@ -387,7 +410,7 @@ class _SearchResultCardState extends State<_SearchResultCard> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    discountStr!,
+                    discountStr,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.blueGrey,
