@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CollectionsPage extends StatelessWidget {
   const CollectionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Define the collection items with their images and titles
+    final collectionItems = [
+      {'image': 'assets/images/signature_hoodie.webp', 'title': 'Signature'},
+      {'image': 'assets/images/sale.webp', 'title': 'Sale'},
+      {'image': 'assets/images/id.jpg', 'title': 'Merchandise'},
+      {
+        'image': 'assets/images/personalazedhoodie.webp',
+        'title': 'Personalisation'
+      },
+      {
+        'image': 'assets/images/PortsmouthCityBookmark.jpg',
+        'title': 'Portsmouth City'
+      },
+      {'image': 'assets/images/RainbowHoodie.webp', 'title': 'Pride'},
+      {'image': 'assets/images/Halloween_tote_bag.jpg', 'title': 'Halloween'},
+      {'image': 'assets/images/GradGrey.webp', 'title': 'Graduation'},
+    ];
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -26,107 +43,30 @@ class CollectionsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Centered, constrained grid: up to 15 square images (3 cols)
+                  // Centered, constrained grid: 8 square images (3 cols)
                   Center(
                     child: ConstrainedBox(
-                      // Allow more room so larger square tiles can fit comfortably
-                      // The Grid will size three columns across this width.
                       constraints: const BoxConstraints(maxWidth: 1100),
-                      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        stream: FirebaseFirestore.instance
-                            .collection('products')
-                            .snapshots(),
-                        builder: (context, snap) {
-                          if (snap.connectionState == ConnectionState.waiting) {
-                            return const SizedBox(
-                              height: 120,
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
-
-                          final docs = snap.data?.docs ?? [];
-                          if (docs.isEmpty) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                              child: Center(child: Text('No images')),
-                            );
-                          }
-
-                          final items =
-                              docs.length <= 15 ? docs : docs.sublist(0, 15);
-
-                          // Fixed labels for the first 8 tiles as requested by the user.
-                          const List<String> fixedLabels = [
-                            'Clothing',
-                            'SALES',
-                            'Essentials Range',
-                            'Graduation',
-                            'Personalisation',
-                            'Portsmouth Collection',
-                            'Pride Collection',
-                            'Limited Edition - Zip Up Collection',
-                          ];
-
-                          return GridView.count(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 1,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            // When GridView is inside a scrollable (SingleChildScrollView)
-                            // it must shrink to its content and disable its own scrolling.
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            // Let the outer SingleChildScrollView handle scrolling
-                            children:
-                                items.asMap().entries.map<Widget>((entry) {
-                              final idx = entry.key;
-                              final d = entry.value;
-                              final data = d.data();
-                              String src =
-                                  (data['imageUrl'] ?? '').toString().trim();
-                              // Remove any leading slashes
-                              src = src.replaceAll(RegExp(r'^/+'), '');
-                              // Avoid double-prefixing if clients already stored a full asset path
-                              if (src.isNotEmpty &&
-                                  !src.contains('assets/images')) {
-                                src = 'assets/images/$src';
-                              }
-
-                              if (src.isEmpty) {
-                                // Keep placeholder tile consistent with hover look
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child:
-                                        Icon(Icons.image, color: Colors.grey),
-                                  ),
-                                );
-                              }
-
-                              // Choose fixed label for early tiles, otherwise fall back to document title
-                              final docTitle = (data['title'] ?? '').toString();
-                              final label = idx < fixedLabels.length &&
-                                      fixedLabels[idx].isNotEmpty
-                                  ? fixedLabels[idx]
-                                  : (docTitle.isNotEmpty ? docTitle : null);
-
-                              return _HoverImageTile(
-                                src: src,
-                                label: label,
-                              );
-                            }).toList(),
+                      child: GridView.count(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 1,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: collectionItems.map<Widget>((item) {
+                          return _HoverImageTile(
+                            src: item['image']!,
+                            label: item['title']!,
                           );
-                        },
+                        }).toList(),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // Footer sits after the content — will only be visible when
-            // the user scrolls to the bottom of the page.
             const SiteFooter(),
           ],
         ),
