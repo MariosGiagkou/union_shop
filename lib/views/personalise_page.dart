@@ -82,33 +82,143 @@ class _PersonalisePageState extends State<PersonalisePage> {
                 Container(
                   color: Colors.white,
                   padding: const EdgeInsets.all(24),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          title,
-                          key: const Key('product:title'),
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final bool isWide = constraints.maxWidth >= 800;
+
+                      Widget imageWidget = Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.grey[200],
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          (discountStr != null &&
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: imageUrl.isEmpty
+                              ? Container(
+                                  key: const Key('product:image'),
+                                  color: Colors.grey[300],
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      size: 64,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              : Image.asset(
+                                  key: const Key('product:image'),
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.image_not_supported,
+                                            size: 64,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text('Image unavailable',
+                                              style: TextStyle(
+                                                  color: Colors.grey)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      );
+
+                      Widget detailsColumn = Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            key: const Key('product:title'),
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              if (discountStr != null &&
                                   _parsePrice(discountPrice) <
                                       _parsePrice(price))
-                              ? discountStr
-                              : priceStr,
-                          key: const Key('product:price'),
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF4d2963),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    priceStr.isNotEmpty ? priceStr : '—',
+                                    key: const Key('product:originalPrice'),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      color: Color(0xFF666666),
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ),
+                              Text(
+                                (discountStr != null &&
+                                        _parsePrice(discountPrice) <
+                                            _parsePrice(price))
+                                    ? discountStr
+                                    : (priceStr.isNotEmpty ? priceStr : '—'),
+                                key: const Key('product:price'),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4d2963),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(height: 16),
+                        ],
+                      );
+
+                      if (isWide) {
+                        // Two-column layout
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: imageWidget,
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              flex: 6,
+                              child: detailsColumn,
+                            ),
+                          ],
+                        );
+                      } else {
+                        // Stacked layout (mobile)
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 220,
+                              width: double.infinity,
+                              child: imageWidget,
+                            ),
+                            const SizedBox(height: 24),
+                            detailsColumn,
+                          ],
+                        );
+                      }
+                    },
                   ),
                 ),
                 const SiteFooter(),
