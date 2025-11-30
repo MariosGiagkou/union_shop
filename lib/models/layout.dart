@@ -25,6 +25,7 @@ class _SiteHeaderState extends State<SiteHeader> {
 
   // Track search box state
   bool _showSearchBox = false;
+  // ignore: unused_field
   int _searchClickCount = 0;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
