@@ -19,7 +19,7 @@ class OrderService {
         'items': items.map((item) => item.toMap()).toList(),
         'total': total,
         'orderDate': FieldValue.serverTimestamp(),
-        'status': 'pending',
+        'status': 'completed',
       };
 
       final docRef =
@@ -35,10 +35,12 @@ class OrderService {
     return _firestore
         .collection(_ordersCollection)
         .where('userId', isEqualTo: userId)
-        .orderBy('orderDate', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) => Order.fromFirestore(doc)).toList();
+      final orders =
+          snapshot.docs.map((doc) => Order.fromFirestore(doc)).toList();
+      orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+      return orders;
     });
   }
 
