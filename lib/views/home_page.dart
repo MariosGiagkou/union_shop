@@ -665,7 +665,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                     const SizedBox(height: 32),
                     ElevatedButton(
                       key: const Key('hero:browse:1'),
-                      onPressed: () {},
+                      onPressed: () => context.go('/collections/sale'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
                         foregroundColor: Colors.white,
@@ -711,7 +711,8 @@ class _HeroCarouselState extends State<HeroCarousel> {
                     const SizedBox(height: 32),
                     ElevatedButton(
                       key: const Key('hero:browse:2'),
-                      onPressed: () {},
+                      onPressed: () =>
+                          context.go('/collections/personalisation'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4d2963),
                         foregroundColor: Colors.white,
