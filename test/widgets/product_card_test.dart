@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/home_page.dart';
+import '../helpers/test_helpers.dart';
 
 void main() {
   group('ProductCard', () {
@@ -92,21 +93,28 @@ void main() {
       expect(afterHover.style?.decoration, TextDecoration.underline);
     });
 
-    testWidgets('view all button exists and is tappable', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: HomePage()));
+    testWidgets('view all button exists and has correct styling',
+        (tester) async {
+      await pumpWithProviders(tester, const HomePage());
       await tester.pumpAndSettle();
 
-      final buttonFinder = find.widgetWithText(ElevatedButton, 'VIEW ALL');
+      final buttonFinder = find.byKey(const Key('home:view-all'));
       expect(buttonFinder, findsOneWidget);
 
-      // Tap and ensure no exception (placeholder callback)
-      await tester.tap(buttonFinder);
-      await tester.pump();
+      // Scroll to make the button visible
+      await tester.dragUntilVisible(
+        buttonFinder,
+        find.byType(SingleChildScrollView),
+        const Offset(0, -50),
+      );
+      await tester.pumpAndSettle();
 
-      // Optional style assertions
+      // Verify button exists and has correct styling
       final ElevatedButton button = tester.widget(buttonFinder);
       expect(
           button.style?.backgroundColor?.resolve({}), const Color(0xFF4d2963));
+      expect(find.descendant(of: buttonFinder, matching: find.text('VIEW ALL')),
+          findsOneWidget);
     });
   });
 }
