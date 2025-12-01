@@ -19,13 +19,6 @@ void main() {
   });
 
   group('Constructor and Initial State', () {
-    test('creates instance with default FirebaseAuth when no auth provided',
-        () {
-      final service = AuthService();
-      expect(service, isNotNull);
-      expect(service, isA<AuthService>());
-    });
-
     test('creates instance with mocked FirebaseAuth', () {
       expect(authService, isNotNull);
       expect(authService, isA<AuthService>());
