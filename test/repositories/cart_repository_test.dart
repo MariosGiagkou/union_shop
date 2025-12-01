@@ -641,13 +641,15 @@ void main() {
 
         final items = repository.cartItems;
 
-        expect(() => items.add(CartItem(
-          productId: 'fake',
-          title: 'Fake',
-          price: 5.00,
-          quantity: 1,
-          imageUrl: 'https://example.com/fake.jpg',
-        )), throwsUnsupportedError);
+        expect(
+            () => items.add(CartItem(
+                  productId: 'fake',
+                  title: 'Fake',
+                  price: 5.00,
+                  quantity: 1,
+                  imageUrl: 'https://example.com/fake.jpg',
+                )),
+            throwsUnsupportedError);
       });
     });
 
