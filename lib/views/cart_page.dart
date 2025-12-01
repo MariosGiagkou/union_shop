@@ -314,59 +314,56 @@ class _CartPageState extends State<CartPage> {
       BuildContext context, CartRepository cartRepo, CartItem item) {
     return Row(
       children: [
-        // Product Image
-        _buildProductImage(item, 100),
-        const SizedBox(width: 20),
-        // Product Info
+        // Product Image - very compact for tight spacing
+        _buildProductImage(item, 60),
+        const SizedBox(width: 8),
+        // Product Info - Expanded to take available space
         Expanded(
-          flex: 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 item.title,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               if (item.selectedOptions != null &&
                   item.selectedOptions!.isNotEmpty)
                 _buildSelectedOptions(item),
             ],
           ),
         ),
-        const SizedBox(width: 16),
-        // Price
-        Expanded(
-          flex: 1,
-          child: Text(
-            '£${item.price.toStringAsFixed(2)}',
-            style: const TextStyle(fontSize: 16),
-          ),
+        const SizedBox(width: 4),
+        // Price - Very compact display
+        Text(
+          '£${item.price.toStringAsFixed(2)}',
+          style: const TextStyle(fontSize: 12),
+          overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(width: 16),
-        // Quantity Controls
+        const SizedBox(width: 4),
+        // Quantity Controls - Already has intrinsic width (~84px)
         _buildQuantityControls(cartRepo, item),
-        const SizedBox(width: 16),
-        // Total Price
-        SizedBox(
-          width: 100,
-          child: Text(
-            '£${item.totalPrice.toStringAsFixed(2)}',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF4d2963),
-            ),
-            textAlign: TextAlign.right,
+        const SizedBox(width: 4),
+        // Total Price - Compact display
+        Text(
+          '£${item.totalPrice.toStringAsFixed(2)}',
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF4d2963),
           ),
+          overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(width: 8),
-        // Remove button
+        // Remove button - minimal padding
         IconButton(
-          icon: const Icon(Icons.close, size: 22),
+          icon: const Icon(Icons.close, size: 18),
+          padding: const EdgeInsets.all(2),
+          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
           onPressed: () => cartRepo.removeCartItem(item),
         ),
       ],
@@ -422,26 +419,28 @@ class _CartPageState extends State<CartPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: const Icon(Icons.remove, size: 18),
+            icon: const Icon(Icons.remove, size: 16),
             onPressed: () => cartRepo.decrementQuantity(item),
-            padding: const EdgeInsets.all(8),
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            padding: const EdgeInsets.all(4),
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            constraints: const BoxConstraints(minWidth: 24),
             child: Text(
               '${item.quantity}',
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.add, size: 18),
+            icon: const Icon(Icons.add, size: 16),
             onPressed: () => cartRepo.incrementQuantity(item),
-            padding: const EdgeInsets.all(8),
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            padding: const EdgeInsets.all(4),
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
           ),
         ],
       ),
@@ -511,14 +510,18 @@ class _CartPageState extends State<CartPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: isTotal ? 18 : 15,
-            fontWeight: isTotal ? FontWeight.w700 : FontWeight.w500,
-            color: isTotal ? Colors.black : Colors.grey[700],
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: isTotal ? 18 : 15,
+              fontWeight: isTotal ? FontWeight.w700 : FontWeight.w500,
+              color: isTotal ? Colors.black : Colors.grey[700],
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
+        const SizedBox(width: 8),
         Text(
           value,
           style: TextStyle(
@@ -526,6 +529,7 @@ class _CartPageState extends State<CartPage> {
             fontWeight: isTotal ? FontWeight.w700 : FontWeight.w600,
             color: isTotal ? const Color(0xFF4d2963) : Colors.black,
           ),
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
