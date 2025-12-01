@@ -4,8 +4,11 @@ import '../models/cart_item.dart';
 
 /// Service for managing orders in Firestore
 class OrderService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
   final String _ordersCollection = 'orders';
+
+  OrderService({FirebaseFirestore? firestore})
+      : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// Create a new order
   Future<String> createOrder({
