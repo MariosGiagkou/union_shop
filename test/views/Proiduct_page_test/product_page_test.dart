@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/product_page.dart';
+import '../../helpers/test_helpers.dart';
 
 void main() {
   group('ProductPage (views)', () {
-    Widget _wrap(Widget child) => MaterialApp(home: child);
-
     testWidgets('renders core elements and keys by default', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       expect(find.byKey(const Key('product:image')), findsOneWidget);
@@ -27,13 +26,13 @@ void main() {
     });
 
     testWidgets('shows original price when provided', (tester) async {
-      await tester.pumpWidget(
-        _wrap(const ProductPage(
-          titleOverride: 'Tee',
-          priceOverride: '£20.00',
-          discountPriceOverride: '£15.00',
-        )),
-      );
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Tee',
+            priceOverride: '£20.00',
+            discountPriceOverride: '£15.00',
+          ));
       await tester.pump();
 
       expect(find.text('Tee'), findsOneWidget);
@@ -44,12 +43,12 @@ void main() {
     });
 
     testWidgets('omits original price when not provided', (tester) async {
-      await tester.pumpWidget(
-        _wrap(const ProductPage(
-          titleOverride: 'Hoodie',
-          priceOverride: '£30.00',
-        )),
-      );
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Hoodie',
+            priceOverride: '£30.00',
+          ));
       await tester.pump();
 
       expect(find.text('Hoodie'), findsOneWidget);
@@ -93,13 +92,13 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(1200, 800));
       addTearDown(() async => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(
-        _wrap(const ProductPage(
-          titleOverride: 'Wide',
-          priceOverride: '£1.00',
-          imageUrlOverride: 'assets/images/fidget.avif',
-        )),
-      );
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Wide',
+            priceOverride: '£1.00',
+            imageUrlOverride: 'assets/images/fidget.avif',
+          ));
       await tester.pump();
 
       // Title should have a Row ancestor from the two-column layout
@@ -125,13 +124,13 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(780, 1200));
       addTearDown(() async => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(
-        _wrap(const ProductPage(
-          titleOverride: 'Narrow',
-          priceOverride: '£2.00',
-          imageUrlOverride: 'assets/images/fidget.avif',
-        )),
-      );
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Narrow',
+            priceOverride: '£2.00',
+            imageUrlOverride: 'assets/images/fidget.avif',
+          ));
       await tester.pumpAndSettle();
 
       // Title should NOT have the outer Row ancestor in narrow mode
@@ -145,7 +144,7 @@ void main() {
     });
 
     testWidgets('add to cart button is tappable (no crash)', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       await tester.tap(find.byKey(const Key('product:add-to-cart')));
@@ -156,7 +155,7 @@ void main() {
     });
 
     testWidgets('header and footer basic presence', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       // Sale banner text from SiteHeader
@@ -173,7 +172,7 @@ void main() {
     });
 
     testWidgets('quantity input is present with inline arrows', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       expect(find.byKey(const Key('product:quantity-input')), findsOneWidget);
@@ -186,7 +185,7 @@ void main() {
     });
 
     testWidgets('typing a valid quantity updates the input', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       await tester.enterText(
@@ -199,7 +198,7 @@ void main() {
     });
 
     testWidgets('invalid input resets to minimum 1', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       await tester.enterText(
@@ -220,7 +219,7 @@ void main() {
     });
 
     testWidgets('arrow increase increments quantity', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       await tester.tap(find.byKey(const Key('product:qty-increase')));
@@ -232,7 +231,7 @@ void main() {
     });
 
     testWidgets('arrow decrease decrements but not below 1', (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage()));
+      await pumpWithProviders(tester, const ProductPage());
       await tester.pump();
 
       // Try to go below 1
@@ -257,10 +256,12 @@ void main() {
 
     testWidgets('clothing options are hidden for non-clothing titles',
         (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage(
-        titleOverride: 'Mug',
-        priceOverride: '£5.00',
-      )));
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Mug',
+            priceOverride: '£5.00',
+          ));
       await tester.pump();
 
       expect(find.byKey(const Key('product:size-selector')), findsNothing);
@@ -270,10 +271,12 @@ void main() {
 
     testWidgets('clothing options show and default to first values',
         (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage(
-        titleOverride: 'Hoodie',
-        priceOverride: '£30.00',
-      )));
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Hoodie',
+            priceOverride: '£30.00',
+          ));
       await tester.pump();
 
       expect(find.byKey(const Key('product:size-selector')), findsOneWidget);
@@ -283,10 +286,12 @@ void main() {
 
     testWidgets('size dropdown changes selected size and summary',
         (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage(
-        titleOverride: 'Hoodie',
-        priceOverride: '£30.00',
-      )));
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Hoodie',
+            priceOverride: '£30.00',
+          ));
       await tester.pump();
 
       // Open size menu
@@ -303,10 +308,12 @@ void main() {
 
     testWidgets('selected options persist after quantity change (rebuild)',
         (tester) async {
-      await tester.pumpWidget(_wrap(const ProductPage(
-        titleOverride: 'Hoodie',
-        priceOverride: '£30.00',
-      )));
+      await pumpWithProviders(
+          tester,
+          const ProductPage(
+            titleOverride: 'Hoodie',
+            priceOverride: '£30.00',
+          ));
       await tester.pump();
 
       // Change size to L
