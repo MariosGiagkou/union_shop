@@ -699,12 +699,10 @@ class _SiteHeaderState extends State<SiteHeader> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Search icon with expandable text field
-                          if (_showSearchBox) ...[
+                          // Search icon with expandable text field (desktop only)
+                          if (_showSearchBox && !isMobile) ...[
                             SizedBox(
-                              width: MediaQuery.of(context).size.width > 600
-                                  ? 200
-                                  : 150,
+                              width: 200,
                               height: 40,
                               child: TextField(
                                 controller: _searchController,
@@ -899,6 +897,57 @@ class _SiteHeaderState extends State<SiteHeader> {
               ),
             ),
           ),
+          // Mobile search box overlay
+          if (_showSearchBox && isMobile)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey[300]!),
+                ),
+              ),
+              child: TextField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                onSubmitted: (_) => _performQuickSearch(),
+                decoration: InputDecoration(
+                  hintText: 'Search products...',
+                  hintStyle: const TextStyle(fontSize: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF4d2963),
+                      width: 1.5,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: () {
+                      setState(() {
+                        _showSearchBox = false;
+                        _searchController.clear();
+                      });
+                    },
+                  ),
+                ),
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
         ],
       ),
     );
