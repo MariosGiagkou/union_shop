@@ -343,68 +343,72 @@ class HomePage extends StatelessWidget {
                               ),
                               const SizedBox(height: 32),
 
-                              // Clamp width to available space to avoid horizontal overflow on narrower viewports
+                              // Responsive grid for category cards
                               LayoutBuilder(
                                 builder: (context, constraints) {
-                                  final span = math.min(
-                                      totalProductSpan, constraints.maxWidth);
-                                  // Recompute square side based on clamped span to preserve spacing & proportions
-                                  final adjustedSquareSide =
-                                      ((span - 3 * categorySpacing) / 4).clamp(
-                                          120.0,
-                                          squareSide); // keep sensible lower bound
-                                  return SizedBox(
-                                    width: span,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: adjustedSquareSide,
-                                          child: const RangeCategoryCard(
-                                            key: ValueKey('category:Clothing'),
-                                            imageAsset:
-                                                'assets/images/PurpleHoodie.webp',
-                                            label: 'Clothing',
-                                            route: '/collections/signature',
-                                          ),
+                                  final screenWidth = constraints.maxWidth;
+                                  final isMobile = screenWidth < 600;
+                                  final isTablet =
+                                      screenWidth >= 600 && screenWidth < 900;
+
+                                  // Determine number of columns based on screen size
+                                  final columns = isMobile
+                                      ? 2
+                                      : isTablet
+                                          ? 3
+                                          : 4;
+                                  final spacing =
+                                      isMobile ? 12.0 : categorySpacing;
+
+                                  // Calculate card width
+                                  final totalSpacing = spacing * (columns - 1);
+                                  final cardWidth =
+                                      (screenWidth - totalSpacing) / columns;
+
+                                  return Wrap(
+                                    spacing: spacing,
+                                    runSpacing: spacing,
+                                    children: [
+                                      SizedBox(
+                                        width: cardWidth,
+                                        child: const RangeCategoryCard(
+                                          key: ValueKey('category:Clothing'),
+                                          imageAsset:
+                                              'assets/images/PurpleHoodie.webp',
+                                          label: 'Clothing',
+                                          route: '/collections/signature',
                                         ),
-                                        const SizedBox(width: categorySpacing),
-                                        SizedBox(
-                                          width: adjustedSquareSide,
-                                          child: const RangeCategoryCard(
-                                            key: ValueKey(
-                                                'category:Merchandise'),
-                                            imageAsset: 'assets/images/id.jpg',
-                                            label: 'Merchandise',
-                                            route: '/collections/merchandise',
-                                          ),
+                                      ),
+                                      SizedBox(
+                                        width: cardWidth,
+                                        child: const RangeCategoryCard(
+                                          key: ValueKey('category:Merchandise'),
+                                          imageAsset: 'assets/images/id.jpg',
+                                          label: 'Merchandise',
+                                          route: '/collections/merchandise',
                                         ),
-                                        const SizedBox(width: categorySpacing),
-                                        SizedBox(
-                                          width: adjustedSquareSide,
-                                          child: const RangeCategoryCard(
-                                            key:
-                                                ValueKey('category:Graduation'),
-                                            imageAsset:
-                                                'assets/images/GradGrey.webp',
-                                            label: 'Graduation',
-                                            route: '/collections/graduation',
-                                          ),
+                                      ),
+                                      SizedBox(
+                                        width: cardWidth,
+                                        child: const RangeCategoryCard(
+                                          key: ValueKey('category:Graduation'),
+                                          imageAsset:
+                                              'assets/images/GradGrey.webp',
+                                          label: 'Graduation',
+                                          route: '/collections/graduation',
                                         ),
-                                        const SizedBox(width: categorySpacing),
-                                        SizedBox(
-                                          width: adjustedSquareSide,
-                                          child: const RangeCategoryCard(
-                                            key: ValueKey('category:SALE'),
-                                            imageAsset:
-                                                'assets/images/notepad.webp',
-                                            label: 'SALE',
-                                            route: '/collections/sale',
-                                          ),
+                                      ),
+                                      SizedBox(
+                                        width: cardWidth,
+                                        child: const RangeCategoryCard(
+                                          key: ValueKey('category:SALE'),
+                                          imageAsset:
+                                              'assets/images/notepad.webp',
+                                          label: 'SALE',
+                                          route: '/collections/sale',
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   );
                                 },
                               ),
