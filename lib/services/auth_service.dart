@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 /// Service for handling Firebase Authentication
 class AuthService extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
 
   /// Get current user
   User? get currentUser => _auth.currentUser;
@@ -17,7 +17,7 @@ class AuthService extends ChangeNotifier {
   /// Stream of auth state changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  AuthService() {
+  AuthService({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance {
     // Listen to auth state changes and notify listeners
     _auth.authStateChanges().listen((User? user) {
       notifyListeners();
