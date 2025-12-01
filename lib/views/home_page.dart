@@ -8,8 +8,6 @@ import 'dart:async';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  void _placeholderCallbackForButtons() {}
-
   Stream<QuerySnapshot<Map<String, dynamic>>> _productsStream() {
     try {
       return FirebaseFirestore.instance.collection('products').snapshots();
@@ -310,7 +308,8 @@ class HomePage extends StatelessWidget {
                                 height: 44,
                                 child: ElevatedButton(
                                   key: const Key('home:view-all'),
-                                  onPressed: _placeholderCallbackForButtons,
+                                  onPressed: () => context
+                                      .go('/collections/portsmouth-city'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF4d2963),
                                     foregroundColor: Colors.white,
@@ -465,8 +464,8 @@ class HomePage extends StatelessWidget {
                                                 child: ElevatedButton(
                                                   key: const Key(
                                                       'home:add-text'),
-                                                  onPressed:
-                                                      _placeholderCallbackForButtons,
+                                                  onPressed: () => context.go(
+                                                      '/collections/personalisation'),
                                                   style:
                                                       ElevatedButton.styleFrom(
                                                     backgroundColor:
