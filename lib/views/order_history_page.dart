@@ -78,7 +78,6 @@ class OrderHistoryPage extends StatelessWidget {
               },
             ),
           ),
-          const SiteFooter(),
         ],
       ),
     );
@@ -141,6 +140,8 @@ class OrderHistoryPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ...orders.map((order) => _buildOrderCard(context, order, isMobile)),
+            const SizedBox(height: 40),
+            const SiteFooter(),
           ],
         ),
       ),
