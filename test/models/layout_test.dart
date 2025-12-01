@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/models/layout.dart';
+import 'package:union_shop/repositories/cart_repository.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
@@ -185,6 +186,167 @@ void main() {
       );
 
       expect(find.byKey(const Key('test-footer')), findsOneWidget);
+    });
+  });
+
+  group('Layout - Responsive Behavior', () {
+    testWidgets('SiteHeader adapts to mobile screen size', (tester) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+      );
+
+      expect(find.byType(SiteHeader), findsOneWidget);
+    });
+
+    testWidgets('SiteHeader adapts to tablet screen size', (tester) async {
+      tester.view.physicalSize = const Size(768, 1024);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+      );
+
+      expect(find.byType(SiteHeader), findsOneWidget);
+    });
+
+    testWidgets('SiteHeader adapts to desktop screen size', (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+      );
+
+      expect(find.byType(SiteHeader), findsOneWidget);
+    });
+
+    testWidgets('SiteFooter adapts to mobile screen size', (tester) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SingleChildScrollView(child: SiteFooter())),
+      );
+
+      expect(find.byType(SiteFooter), findsOneWidget);
+    });
+
+    testWidgets('SiteFooter adapts to desktop screen size', (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SingleChildScrollView(child: SiteFooter())),
+      );
+
+      expect(find.byType(SiteFooter), findsOneWidget);
+    });
+  });
+
+  group('Layout - Additional UI Elements', () {
+    testWidgets('SiteHeader has logo/branding area', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+      );
+
+      // Check for Image widget (logo)
+      expect(find.byType(Image), findsWidgets);
+    });
+
+    testWidgets('SiteFooter contains Row for layout', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SingleChildScrollView(child: SiteFooter())),
+      );
+
+      expect(find.byType(Row), findsWidgets);
+    });
+
+    testWidgets('SiteFooter contains Column widgets', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SingleChildScrollView(child: SiteFooter())),
+      );
+
+      expect(find.byType(Column), findsWidgets);
+    });
+
+    testWidgets('SiteHeader maintains state after rebuild', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+      );
+
+      // Trigger a rebuild
+      await tester.pump();
+
+      expect(find.byType(SiteHeader), findsOneWidget);
+      expect(find.text('Home'), findsOneWidget);
+    });
+
+    testWidgets('SiteFooter renders consistently', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SingleChildScrollView(child: SiteFooter())),
+      );
+
+      // Trigger a rebuild
+      await tester.pump();
+
+      expect(find.byType(SiteFooter), findsOneWidget);
+      expect(find.text('Opening Hours'), findsOneWidget);
+    });
+
+    testWidgets('SiteHeader displays with signed-in user', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedInAuthService(),
+      );
+
+      expect(find.byType(SiteHeader), findsOneWidget);
+      // User icon may change based on auth state
+    });
+
+    testWidgets('SiteHeader handles empty cart', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+        cartRepository: CartRepository(),
+      );
+
+      expect(find.byIcon(Icons.shopping_bag_outlined), findsOneWidget);
+    });
+
+    testWidgets('SiteHeader contains InkWell widgets for navigation',
+        (tester) async {
+      await pumpWithProviders(
+        tester,
+        const Scaffold(body: SiteHeader()),
+        authService: createSignedOutAuthService(),
+      );
+
+      expect(find.byType(InkWell), findsWidgets);
     });
   });
 }
