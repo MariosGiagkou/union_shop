@@ -26,6 +26,9 @@ class _SiteHeaderState extends State<SiteHeader> {
   OverlayEntry? _printShackDropdownOverlay;
   final LayerLink _printShackLayerLink = LayerLink();
 
+  // Track mobile menu dropdown
+  OverlayEntry? _mobileMenuOverlay;
+
   // Track search box state
   bool _showSearchBox = false;
   // ignore: unused_field
@@ -38,6 +41,7 @@ class _SiteHeaderState extends State<SiteHeader> {
   void dispose() {
     _removeShopDropdown();
     _removePrintShackDropdown();
+    _removeMobileMenu();
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
@@ -53,6 +57,222 @@ class _SiteHeaderState extends State<SiteHeader> {
     _printShackDropdownOverlay?.remove();
     _printShackDropdownOverlay = null;
     setState(() => _tpsHover = false);
+  }
+
+  void _removeMobileMenu() {
+    _mobileMenuOverlay?.remove();
+    _mobileMenuOverlay = null;
+  }
+
+  void _showMobileMenu(BuildContext context) {
+    _mobileMenuOverlay = OverlayEntry(
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _removeMobileMenu,
+        child: Stack(
+          children: [
+            // Transparent overlay to catch clicks outside
+            Positioned.fill(
+              child: Container(color: Colors.transparent),
+            ),
+            // Dropdown menu
+            Positioned(
+              right: 16,
+              top: 120, // Below header
+              width: 220,
+              child: Material(
+                elevation: 8,
+                color: Colors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _removeMobileMenu();
+                        _goHome(context);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          'Home',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    // Shop submenu
+                    ExpansionTile(
+                      title: const Text(
+                        'Shop',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/signature');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Signature'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/sale');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Sale'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/merchandise');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Merchandise'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/portsmouth-city');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Portsmouth City'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/pride');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Pride'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/halloween');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Halloween'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/collections/graduation');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Graduation'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 1),
+                    // Print Shack submenu
+                    ExpansionTile(
+                      title: const Text(
+                        'The Printing Shack',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/printshack/about');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('About'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _removeMobileMenu();
+                            _navigate(context, '/personalise');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(32, 8, 16, 8),
+                            child: Text('Personalisation'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 1),
+                    InkWell(
+                      onTap: () {
+                        _removeMobileMenu();
+                        _navigate(context, '/collections/sale');
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          'SALES!',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    InkWell(
+                      onTap: () {
+                        _removeMobileMenu();
+                        _navigate(context, '/about');
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          'About',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_mobileMenuOverlay!);
   }
 
   void _showShopDropdown(BuildContext context) {
@@ -231,10 +451,6 @@ class _SiteHeaderState extends State<SiteHeader> {
         _searchController.clear();
       });
     }
-  }
-
-  void _placeholderCallbackForButtons() {
-    // placeholder for buttons that don't do anything yet
   }
 
   String _currentLocation(BuildContext context) {
@@ -664,15 +880,17 @@ class _SiteHeaderState extends State<SiteHeader> {
                               );
                             },
                           ),
-                          IconButton(
-                            icon: Icon(Icons.menu,
-                                size: isMobile ? 20 : 24, color: Colors.grey),
-                            padding: EdgeInsets.all(isMobile ? 6 : 10),
-                            constraints: BoxConstraints(
-                                minWidth: isMobile ? 32 : 40,
-                                minHeight: isMobile ? 32 : 40),
-                            onPressed: _placeholderCallbackForButtons,
-                          ),
+                          // Hamburger menu - only show on mobile
+                          if (!isWideNav)
+                            IconButton(
+                              icon: Icon(Icons.menu,
+                                  size: isMobile ? 20 : 24, color: Colors.grey),
+                              padding: EdgeInsets.all(isMobile ? 6 : 10),
+                              constraints: BoxConstraints(
+                                  minWidth: isMobile ? 32 : 40,
+                                  minHeight: isMobile ? 32 : 40),
+                              onPressed: () => _showMobileMenu(context),
+                            ),
                         ],
                       ),
                     ),
