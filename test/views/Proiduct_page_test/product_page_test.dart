@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:union_shop/services/auth_service.dart';
+import 'package:union_shop/repositories/cart_repository.dart';
 import 'package:union_shop/views/product_page.dart';
 import '../../helpers/test_helpers.dart';
 
@@ -65,16 +68,25 @@ void main() {
         'useAsset': true,
       };
 
+      final authService = createSignedOutAuthService();
+      final cartRepository = createCartWithItems();
+
       await tester.pumpWidget(
-        MaterialApp(
-          routes: {
-            '/product': (_) => const ProductPage(),
-          },
-          home: Builder(
-            builder: (context) => ElevatedButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/product', arguments: args),
-              child: const Text('GO'),
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<AuthService>.value(value: authService),
+            ChangeNotifierProvider<CartRepository>.value(value: cartRepository),
+          ],
+          child: MaterialApp(
+            routes: {
+              '/product': (_) => const ProductPage(),
+            },
+            home: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/product', arguments: args),
+                child: const Text('GO'),
+              ),
             ),
           ),
         ),
