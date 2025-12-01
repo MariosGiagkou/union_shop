@@ -129,108 +129,257 @@ class _CollectionsPageState extends State<CollectionsPage> {
 
   // Build filter and sort banner
   Widget _buildFilterSortBanner(int productCount) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Left side: Filter dropdown
-          Row(
-            children: [
-              const Text(
-                'Filter by',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(4),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+
+        if (isMobile) {
+          // Mobile layout: Stack vertically
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Product count at top
+                Center(
+                  child: Text(
+                    '$productCount ${productCount == 1 ? 'product' : 'products'}',
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
                 ),
-                child: DropdownButton<String>(
-                  value: _filterBy,
-                  underline: const SizedBox(),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'All products',
-                      child: Text('All products'),
+                const SizedBox(height: 12),
+                // Filter and Sort in a row
+                Row(
+                  children: [
+                    // Filter dropdown
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Filter',
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: DropdownButton<String>(
+                                value: _filterBy,
+                                underline: const SizedBox(),
+                                isExpanded: true,
+                                isDense: true,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'All products',
+                                    child: Text('All',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Merchandise',
+                                    child: Text('Merch',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Clothing',
+                                    child: Text('Clothing',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => _filterBy = value);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    DropdownMenuItem(
-                      value: 'Merchandise',
-                      child: Text('Merchandise'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Clothing',
-                      child: Text('Clothing'),
+                    const SizedBox(width: 12),
+                    // Sort dropdown
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Sort',
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: DropdownButton<String>(
+                                value: _sortBy,
+                                underline: const SizedBox(),
+                                isExpanded: true,
+                                isDense: true,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'Featured',
+                                    child: Text('Featured',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Alphabetically: A-Z',
+                                    child: Text('A-Z',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Alphabetically: Z-A',
+                                    child: Text('Z-A',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Price: Low to High',
+                                    child: Text('Price: Low',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Price: High to Low',
+                                    child: Text('Price: High',
+                                        style: TextStyle(fontSize: 13)),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => _sortBy = value);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _filterBy = value);
-                    }
-                  },
                 ),
-              ),
-            ],
-          ),
-
-          // Center: Product count
-          Text(
-            '$productCount ${productCount == 1 ? 'product' : 'products'}',
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-
-          // Right side: Sort dropdown
-          Row(
-            children: [
-              const Text(
-                'Sort by',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: DropdownButton<String>(
-                  value: _sortBy,
-                  underline: const SizedBox(),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'Featured',
-                      child: Text('Featured'),
+              ],
+            ),
+          );
+        } else {
+          // Desktop layout: Original horizontal layout
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Left side: Filter dropdown
+                Row(
+                  children: [
+                    const Text(
+                      'Filter by',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                     ),
-                    DropdownMenuItem(
-                      value: 'Alphabetically: A-Z',
-                      child: Text('Alphabetically: A-Z'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Alphabetically: Z-A',
-                      child: Text('Alphabetically: Z-A'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Price: Low to High',
-                      child: Text('Price: Low to High'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Price: High to Low',
-                      child: Text('Price: High to Low'),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: DropdownButton<String>(
+                        value: _filterBy,
+                        underline: const SizedBox(),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'All products',
+                            child: Text('All products'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Merchandise',
+                            child: Text('Merchandise'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Clothing',
+                            child: Text('Clothing'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => _filterBy = value);
+                          }
+                        },
+                      ),
                     ),
                   ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _sortBy = value);
-                    }
-                  },
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+
+                // Center: Product count
+                Text(
+                  '$productCount ${productCount == 1 ? 'product' : 'products'}',
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+
+                // Right side: Sort dropdown
+                Row(
+                  children: [
+                    const Text(
+                      'Sort by',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: DropdownButton<String>(
+                        value: _sortBy,
+                        underline: const SizedBox(),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Featured',
+                            child: Text('Featured'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Alphabetically: A-Z',
+                            child: Text('Alphabetically: A-Z'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Alphabetically: Z-A',
+                            child: Text('Alphabetically: Z-A'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Price: Low to High',
+                            child: Text('Price: Low to High'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Price: High to Low',
+                            child: Text('Price: High to Low'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => _sortBy = value);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 
