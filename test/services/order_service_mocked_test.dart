@@ -351,14 +351,12 @@ void main() {
       final statuses = ['processing', 'shipped', 'delivered', 'cancelled'];
       for (final status in statuses) {
         await orderService.updateOrderStatus(orderId, status);
-        final doc =
-            await fakeFirestore.collection('orders').doc(orderId).get();
+        final doc = await fakeFirestore.collection('orders').doc(orderId).get();
         expect(doc.data()?['status'], equals(status));
       }
     });
 
-    test('updateOrderStatus completes without error for valid order',
-        () async {
+    test('updateOrderStatus completes without error for valid order', () async {
       final orderId = await orderService.createOrder(
         userId: 'user',
         items: [
