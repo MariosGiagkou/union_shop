@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/models/cart_item.dart';
@@ -81,8 +80,8 @@ void main() {
     test('createOrder sets default status to completed', () async {
       final items = [
         CartItem(
-          id: 'item1',
-          name: 'Test',
+          productId: 'item1',
+          title: 'Test',
           price: 5.0,
           quantity: 1,
           imageUrl: 'test.jpg',
@@ -103,8 +102,8 @@ void main() {
       final items = List.generate(
         5,
         (i) => CartItem(
-          id: 'item$i',
-          name: 'Product $i',
+          productId: 'item$i',
+          title: 'Product $i',
           price: (i + 1) * 10.0,
           quantity: i + 1,
           imageUrl: 'product$i.jpg',
@@ -139,8 +138,8 @@ void main() {
         userId: 'user1',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Product 1',
+            productId: 'item1',
+            title: 'Product 1',
             price: 10.0,
             quantity: 1,
             imageUrl: 'p1.jpg',
@@ -153,8 +152,8 @@ void main() {
         userId: 'user2',
         items: [
           CartItem(
-            id: 'item2',
-            name: 'Product 2',
+            productId: 'item2',
+            title: 'Product 2',
             price: 20.0,
             quantity: 1,
             imageUrl: 'p2.jpg',
@@ -167,8 +166,8 @@ void main() {
         userId: 'user1',
         items: [
           CartItem(
-            id: 'item3',
-            name: 'Product 3',
+            productId: 'item3',
+            title: 'Product 3',
             price: 30.0,
             quantity: 1,
             imageUrl: 'p3.jpg',
@@ -189,8 +188,8 @@ void main() {
         userId: 'streamUser',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test',
+            productId: 'item1',
+            title: 'Test',
             price: 5.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -212,8 +211,8 @@ void main() {
         userId: 'sortUser',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'First',
+            productId: 'item1',
+            title: 'First',
             price: 10.0,
             quantity: 1,
             imageUrl: 'f.jpg',
@@ -228,8 +227,8 @@ void main() {
         userId: 'sortUser',
         items: [
           CartItem(
-            id: 'item2',
-            name: 'Second',
+            productId: 'item2',
+            title: 'Second',
             price: 20.0,
             quantity: 1,
             imageUrl: 's.jpg',
@@ -243,8 +242,8 @@ void main() {
 
       expect(orders.length, equals(2));
       // The second order should be first (newest)
-      expect(orders[0].id, equals(order2Id));
-      expect(orders[1].id, equals(order1Id));
+      expect(orders[0].orderId, equals(order2Id));
+      expect(orders[1].orderId, equals(order1Id));
     });
   });
 
@@ -259,8 +258,8 @@ void main() {
         userId: 'testUser',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test Product',
+            productId: 'item1',
+            title: 'Test Product',
             price: 15.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -273,7 +272,7 @@ void main() {
 
       expect(order, isNotNull);
       expect(order, isA<Order>());
-      expect(order!.id, equals(orderId));
+      expect(order!.orderId, equals(orderId));
       expect(order.userId, equals('testUser'));
       expect(order.total, equals(15.0));
     });
@@ -281,15 +280,15 @@ void main() {
     test('getOrder retrieves correct order data', () async {
       final items = [
         CartItem(
-          id: 'item1',
-          name: 'Product A',
+          productId: 'item1',
+          title: 'Product A',
           price: 10.0,
           quantity: 2,
           imageUrl: 'a.jpg',
         ),
         CartItem(
-          id: 'item2',
-          name: 'Product B',
+          productId: 'item2',
+          title: 'Product B',
           price: 5.0,
           quantity: 1,
           imageUrl: 'b.jpg',
@@ -305,8 +304,8 @@ void main() {
       final order = await orderService.getOrder(orderId);
 
       expect(order!.items.length, equals(2));
-      expect(order.items[0].name, equals('Product A'));
-      expect(order.items[1].name, equals('Product B'));
+      expect(order.items[0].title, equals('Product A'));
+      expect(order.items[1].title, equals('Product B'));
     });
   });
 
@@ -316,8 +315,8 @@ void main() {
         userId: 'statusUser',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test',
+            productId: 'item1',
+            title: 'Test',
             price: 10.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -337,8 +336,8 @@ void main() {
         userId: 'statusUser2',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test',
+            productId: 'item1',
+            title: 'Test',
             price: 10.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -361,8 +360,8 @@ void main() {
         userId: 'user',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test',
+            productId: 'item1',
+            title: 'Test',
             price: 10.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -384,8 +383,8 @@ void main() {
         userId: 'deleteUser',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test',
+            productId: 'item1',
+            title: 'Test',
             price: 10.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -411,8 +410,8 @@ void main() {
         userId: 'user',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Test',
+            productId: 'item1',
+            title: 'Test',
             price: 10.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -432,8 +431,8 @@ void main() {
         userId: 'immediateDelete',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Quick Delete',
+            productId: 'item1',
+            title: 'Quick Delete',
             price: 5.0,
             quantity: 1,
             imageUrl: 'test.jpg',
@@ -456,8 +455,8 @@ void main() {
         userId: 'flowUser',
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Flow Test',
+            productId: 'item1',
+            title: 'Flow Test',
             price: 30.0,
             quantity: 1,
             imageUrl: 'flow.jpg',
@@ -491,8 +490,8 @@ void main() {
         userId: userId,
         items: [
           CartItem(
-            id: 'item1',
-            name: 'Order 1',
+            productId: 'item1',
+            title: 'Order 1',
             price: 10.0,
             quantity: 1,
             imageUrl: 'o1.jpg',
@@ -505,8 +504,8 @@ void main() {
         userId: userId,
         items: [
           CartItem(
-            id: 'item2',
-            name: 'Order 2',
+            productId: 'item2',
+            title: 'Order 2',
             price: 20.0,
             quantity: 1,
             imageUrl: 'o2.jpg',
@@ -519,8 +518,8 @@ void main() {
         userId: userId,
         items: [
           CartItem(
-            id: 'item3',
-            name: 'Order 3',
+            productId: 'item3',
+            title: 'Order 3',
             price: 30.0,
             quantity: 1,
             imageUrl: 'o3.jpg',
@@ -535,7 +534,7 @@ void main() {
 
       expect(orders.length, equals(3));
       expect(
-        orders.map((o) => o.id).toSet(),
+        orders.map((o) => o.orderId).toSet(),
         containsAll([order1, order2, order3]),
       );
     });
