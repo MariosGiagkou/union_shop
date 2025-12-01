@@ -1,19 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:union_shop/views/home_page.dart';
 import 'package:union_shop/views/about_us.dart';
-
-Widget _buildApp() => MaterialApp(
-      home: const HomePage(),
-      routes: {
-        '/about': (_) => const AboutUsPage(),
-      },
-    );
+import '../../helpers/test_helpers.dart';
 
 void main() {
   group('AboutUsPage content', () {
     testWidgets('renders all expected text blocks', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: AboutUsPage()));
+      await pumpWithProviders(tester, const AboutUsPage());
       await tester.pumpAndSettle();
 
       expect(find.text('About us'), findsOneWidget);
@@ -37,22 +29,23 @@ void main() {
     });
   });
 
-  group('About navigation', () {
-    testWidgets('navigating to /about shows AboutUsPage', (tester) async {
-      await tester.pumpWidget(_buildApp());
+  group('AboutUsPage layout', () {
+    testWidgets('renders with header and footer', (tester) async {
+      await pumpWithProviders(tester, const AboutUsPage());
       await tester.pumpAndSettle();
 
-      // Find the About nav text
-      final aboutFinder = find.text('About');
-      expect(aboutFinder, findsOneWidget);
+      // Verify header is present (sale banner text)
+      expect(
+        find.text(
+          'BIG SALE! OUR ESSENTIAL RANGE HAS DROPPED IN PRICE! OVER 20% OFF! COME GRAB YOURS WHILE STOCK LASTS!',
+        ),
+        findsOneWidget,
+      );
 
-      // Use Navigator directly to ensure route change (tap can miss in test due to hitTest quirks)
-      final context = tester.element(aboutFinder);
-      Navigator.of(context).pushNamed('/about');
-      await tester.pumpAndSettle();
-
-      expect(find.text('About us'), findsOneWidget);
-      expect(find.text('Welcome to the Union Shop.'), findsOneWidget);
+      // Verify footer sections are present
+      expect(find.text('Opening Hours'), findsOneWidget);
+      expect(find.text('Help and Information'), findsOneWidget);
+      expect(find.text('Latest Offers'), findsOneWidget);
     });
   });
 }
