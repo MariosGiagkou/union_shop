@@ -366,7 +366,7 @@ class HomePage extends StatelessWidget {
                                             imageAsset:
                                                 'assets/images/PurpleHoodie.webp',
                                             label: 'Clothing',
-                                            route: '/category/clothing',
+                                            route: '/collections/signature',
                                           ),
                                         ),
                                         const SizedBox(width: categorySpacing),
@@ -377,7 +377,7 @@ class HomePage extends StatelessWidget {
                                                 'category:Merchandise'),
                                             imageAsset: 'assets/images/id.jpg',
                                             label: 'Merchandise',
-                                            route: '/category/merch',
+                                            route: '/collections/merchandise',
                                           ),
                                         ),
                                         const SizedBox(width: categorySpacing),
@@ -389,7 +389,7 @@ class HomePage extends StatelessWidget {
                                             imageAsset:
                                                 'assets/images/GradGrey.webp',
                                             label: 'Graduation',
-                                            route: '/category/graduation',
+                                            route: '/collections/graduation',
                                           ),
                                         ),
                                         const SizedBox(width: categorySpacing),
@@ -400,7 +400,7 @@ class HomePage extends StatelessWidget {
                                             imageAsset:
                                                 'assets/images/notepad.webp',
                                             label: 'SALE',
-                                            route: '/category/sale',
+                                            route: '/collections/sale',
                                           ),
                                         ),
                                       ],
