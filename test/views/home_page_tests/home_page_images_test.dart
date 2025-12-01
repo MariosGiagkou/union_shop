@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/home_page.dart';
+import '../../helpers/test_helpers.dart';
 
 void main() {
   testWidgets('essential + signature + category assets appear', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: HomePage()));
+    await pumpWithProviders(tester, const HomePage());
     await tester.pumpAndSettle();
 
     expect(
@@ -44,7 +45,7 @@ void main() {
   });
 
   testWidgets('total product/category cards count', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: HomePage()));
+    await pumpWithProviders(tester, const HomePage());
     await tester.pumpAndSettle();
     // ProductCard + RangeCategoryCard instances
     final productCards = find.byType(ProductCard);

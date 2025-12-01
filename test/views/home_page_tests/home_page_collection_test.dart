@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/home_page.dart';
+import '../../helpers/test_helpers.dart';
 
 void main() {
   group('Portsmouth City Collection', () {
     testWidgets('collection headings and product keys', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: HomePage()));
+      await pumpWithProviders(tester, const HomePage());
       await tester.pumpAndSettle();
 
       // Section headings
@@ -40,7 +41,7 @@ void main() {
 
     testWidgets('Portsmouth City collection product cards exist via keys',
         (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: HomePage()));
+      await pumpWithProviders(tester, const HomePage());
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('product:Portsmouth City Postcard')),
@@ -56,7 +57,7 @@ void main() {
 
   group('Hero Section', () {
     testWidgets('HomePage builds and shows hero text', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: HomePage()));
+      await pumpWithProviders(tester, const HomePage());
       await tester.pumpAndSettle();
       // Updated hero first slide text
       expect(find.text('essential range 20% OFF'), findsOneWidget);
