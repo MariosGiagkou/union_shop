@@ -39,9 +39,13 @@ class _SiteHeaderState extends State<SiteHeader> {
 
   @override
   void dispose() {
-    _removeShopDropdown();
-    _removePrintShackDropdown();
-    _removeMobileMenu();
+    // Remove overlays without calling setState
+    _shopDropdownOverlay?.remove();
+    _shopDropdownOverlay = null;
+    _printShackDropdownOverlay?.remove();
+    _printShackDropdownOverlay = null;
+    _mobileMenuOverlay?.remove();
+    _mobileMenuOverlay = null;
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
@@ -50,13 +54,19 @@ class _SiteHeaderState extends State<SiteHeader> {
   void _removeShopDropdown() {
     _shopDropdownOverlay?.remove();
     _shopDropdownOverlay = null;
-    setState(() => _shopHover = false);
+    // Don't call setState during dispose
+    if (mounted) {
+      setState(() => _shopHover = false);
+    }
   }
 
   void _removePrintShackDropdown() {
     _printShackDropdownOverlay?.remove();
     _printShackDropdownOverlay = null;
-    setState(() => _tpsHover = false);
+    // Don't call setState during dispose
+    if (mounted) {
+      setState(() => _tpsHover = false);
+    }
   }
 
   void _removeMobileMenu() {
