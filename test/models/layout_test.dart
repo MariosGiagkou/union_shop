@@ -575,8 +575,7 @@ void main() {
       expect(find.text('Opening Hours'), findsOneWidget);
     });
 
-    testWidgets('SiteHeader contains proper widget hierarchy',
-        (tester) async {
+    testWidgets('SiteHeader contains proper widget hierarchy', (tester) async {
       await pumpWithProviders(
         tester,
         const Scaffold(body: SiteHeader()),
@@ -589,8 +588,7 @@ void main() {
       expect(find.byType(Row), findsWidgets);
     });
 
-    testWidgets('SiteFooter contains proper widget hierarchy',
-        (tester) async {
+    testWidgets('SiteFooter contains proper widget hierarchy', (tester) async {
       await pumpWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: SiteFooter())),
