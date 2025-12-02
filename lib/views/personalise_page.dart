@@ -208,453 +208,459 @@ class _PersonalisePageState extends State<PersonalisePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance
-            .collection('products')
-            .doc('personalise')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Column(
-              children: [
-                SiteHeader(),
-                Expanded(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-              ],
-            );
-          }
-
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Column(
-              children: [
-                SiteHeader(),
-                Expanded(
-                  child: Center(
-                    child: Text('Personalise product not found'),
+    return PopScope(
+      canPop: true,
+      child: Scaffold(
+        body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance
+              .collection('products')
+              .doc('personalise')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Column(
+                children: [
+                  SiteHeader(),
+                  Expanded(
+                    child: Center(child: CircularProgressIndicator()),
                   ),
-                ),
-                SiteFooter(),
-              ],
-            );
-          }
+                ],
+              );
+            }
 
-          final data = snapshot.data!.data()!;
-          final String title = data['title'] ?? 'Personalise Product';
-          final price = data['price'] ?? 0;
-          final discountPrice = data['discountPrice'];
-          final String rawImageUrl = (data['imageUrl'] ?? '').toString().trim();
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return const Column(
+                children: [
+                  SiteHeader(),
+                  Expanded(
+                    child: Center(
+                      child: Text('Personalise product not found'),
+                    ),
+                  ),
+                  SiteFooter(),
+                ],
+              );
+            }
 
-          // Normalize image path
-          String imageUrl = rawImageUrl;
-          if (imageUrl.startsWith('/')) imageUrl = imageUrl.substring(1);
-          if (imageUrl.isNotEmpty && !imageUrl.startsWith('assets/')) {
-            imageUrl = 'assets/images/$imageUrl';
-          }
+            final data = snapshot.data!.data()!;
+            final String title = data['title'] ?? 'Personalise Product';
+            final price = data['price'] ?? 0;
+            final discountPrice = data['discountPrice'];
+            final String rawImageUrl =
+                (data['imageUrl'] ?? '').toString().trim();
 
-          final priceStr = _formatPrice(price);
-          final discountStr =
-              discountPrice != null ? _formatPrice(discountPrice) : null;
+            // Normalize image path
+            String imageUrl = rawImageUrl;
+            if (imageUrl.startsWith('/')) imageUrl = imageUrl.substring(1);
+            if (imageUrl.isNotEmpty && !imageUrl.startsWith('assets/')) {
+              imageUrl = 'assets/images/$imageUrl';
+            }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                const SiteHeader(),
-                Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.all(24),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final bool isWide = constraints.maxWidth >= 800;
+            final priceStr = _formatPrice(price);
+            final discountStr =
+                discountPrice != null ? _formatPrice(discountPrice) : null;
 
-                      Widget imageWidget = Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.grey[200],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: imageUrl.isEmpty
-                              ? Container(
-                                  key: const Key('product:image'),
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      size: 64,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                              : Image.asset(
-                                  key: const Key('product:image'),
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SiteHeader(),
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(24),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final bool isWide = constraints.maxWidth >= 800;
+
+                        Widget imageWidget = Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey[200],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: imageUrl.isEmpty
+                                ? Container(
+                                    key: const Key('product:image'),
                                     color: Colors.grey[300],
                                     child: const Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.image_not_supported,
-                                            size: 64,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text('Image unavailable',
-                                              style: TextStyle(
-                                                  color: Colors.grey)),
-                                        ],
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        size: 64,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )
+                                : Image.asset(
+                                    key: const Key('product:image'),
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                      color: Colors.grey[300],
+                                      child: const Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.image_not_supported,
+                                              size: 64,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text('Image unavailable',
+                                                style: TextStyle(
+                                                    color: Colors.grey)),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                        ),
-                      );
-
-                      Widget detailsColumn = Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            key: const Key('product:title'),
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              if (discountStr != null &&
-                                  _parsePrice(discountPrice) <
-                                      _parsePrice(price))
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Text(
-                                    priceStr.isNotEmpty ? priceStr : '—',
-                                    key: const Key('product:originalPrice'),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      color: Color(0xFF666666),
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  ),
-                                ),
-                              Text(
-                                (discountStr != null &&
-                                        _parsePrice(discountPrice) <
-                                            _parsePrice(price))
-                                    ? discountStr
-                                    : (priceStr.isNotEmpty ? priceStr : '—'),
-                                key: const Key('product:price'),
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF4d2963),
-                                ),
+                        );
+
+                        Widget detailsColumn = Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              key: const Key('product:title'),
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Personalisation options
-                          const SizedBox(height: 12),
-                          const Text('Per Line:'),
-                          const SizedBox(height: 6),
-                          _buildBoxDropdown(
-                            key: const Key('product:personalisation-selector'),
-                            value: _selectedPersonalisation,
-                            options: _personalisationOptions,
-                            onChanged: (v) =>
-                                setState(() => _selectedPersonalisation = v),
-                            keyPrefix: 'personalisation',
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Text input fields (shown only for text options)
-                          if (_getNumberOfLines() > 0) ...[
+                            ),
                             const SizedBox(height: 12),
-                            const Text(
-                              'Customization Text:',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-
-                            // Line 1
-                            TextField(
-                              controller: _line1Controller,
-                              decoration: const InputDecoration(
-                                labelText: 'Line 1',
-                                hintText: 'Enter text for line 1',
-                                isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 12,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Color(0xFF4d2963)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color(0xFF4d2963),
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            // Line 2
-                            if (_getNumberOfLines() >= 2) ...[
-                              const SizedBox(height: 12),
-                              TextField(
-                                controller: _line2Controller,
-                                decoration: const InputDecoration(
-                                  labelText: 'Line 2',
-                                  hintText: 'Enter text for line 2',
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 12,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Color(0xFF4d2963)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Color(0xFF4d2963),
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-
-                            // Line 3
-                            if (_getNumberOfLines() >= 3) ...[
-                              const SizedBox(height: 12),
-                              TextField(
-                                controller: _line3Controller,
-                                decoration: const InputDecoration(
-                                  labelText: 'Line 3',
-                                  hintText: 'Enter text for line 3',
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 12,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Color(0xFF4d2963)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Color(0xFF4d2963),
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 12),
-                          ],
-
-                          // Quantity selector
-                          SizedBox(
-                            key: const Key('product:quantity-row'),
-                            width: 120,
-                            height: 36,
-                            child: Stack(
+                            Row(
                               children: [
+                                if (discountStr != null &&
+                                    _parsePrice(discountPrice) <
+                                        _parsePrice(price))
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: Text(
+                                      priceStr.isNotEmpty ? priceStr : '—',
+                                      key: const Key('product:originalPrice'),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Color(0xFF666666),
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                  ),
+                                Text(
+                                  (discountStr != null &&
+                                          _parsePrice(discountPrice) <
+                                              _parsePrice(price))
+                                      ? discountStr
+                                      : (priceStr.isNotEmpty ? priceStr : '—'),
+                                  key: const Key('product:price'),
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF4d2963),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Personalisation options
+                            const SizedBox(height: 12),
+                            const Text('Per Line:'),
+                            const SizedBox(height: 6),
+                            _buildBoxDropdown(
+                              key:
+                                  const Key('product:personalisation-selector'),
+                              value: _selectedPersonalisation,
+                              options: _personalisationOptions,
+                              onChanged: (v) =>
+                                  setState(() => _selectedPersonalisation = v),
+                              keyPrefix: 'personalisation',
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Text input fields (shown only for text options)
+                            if (_getNumberOfLines() > 0) ...[
+                              const SizedBox(height: 12),
+                              const Text(
+                                'Customization Text:',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+
+                              // Line 1
+                              TextField(
+                                controller: _line1Controller,
+                                decoration: const InputDecoration(
+                                  labelText: 'Line 1',
+                                  hintText: 'Enter text for line 1',
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Color(0xFF4d2963)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF4d2963),
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // Line 2
+                              if (_getNumberOfLines() >= 2) ...[
+                                const SizedBox(height: 12),
                                 TextField(
-                                  key: const Key('product:quantity-input'),
-                                  controller: _qtyController,
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  onChanged: (val) {
-                                    final parsed = int.tryParse(val);
-                                    setState(() {
-                                      _quantity =
-                                          (parsed == null || parsed <= 0)
-                                              ? 1
-                                              : parsed;
-                                      if (_quantity == 1 &&
-                                          (parsed == null || parsed <= 0)) {
-                                        _qtyController.text = '1';
-                                        _qtyController.selection =
-                                            TextSelection.collapsed(
-                                                offset:
-                                                    _qtyController.text.length);
-                                      }
-                                    });
-                                  },
+                                  controller: _line2Controller,
                                   decoration: const InputDecoration(
+                                    labelText: 'Line 2',
+                                    hintText: 'Enter text for line 2',
                                     isDense: true,
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(8, 8, 36, 8),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 12,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Color(0xFF4d2963)),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: Color(0xFF4d2963), width: 2),
-                                    ),
-                                  ),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  bottom: 0,
-                                  child: Container(
-                                    width: 36,
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                          left: BorderSide(
-                                              color: Color(0xFF4d2963))),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: InkWell(
-                                            key: const Key(
-                                                'product:qty-increase'),
-                                            onTap: () {
-                                              setState(() {
-                                                _quantity++;
-                                                _qtyController.text =
-                                                    '$_quantity';
-                                              });
-                                            },
-                                            child: const Icon(
-                                                Icons.keyboard_arrow_up,
-                                                size: 18,
-                                                color: Color(0xFF4d2963)),
-                                          ),
-                                        ),
-                                        const Divider(
-                                            height: 1,
-                                            thickness: 1,
-                                            color: Color(0xFF4d2963)),
-                                        Expanded(
-                                          child: InkWell(
-                                            key: const Key(
-                                                'product:qty-decrease'),
-                                            onTap: () {
-                                              if (_quantity > 1) {
-                                                setState(() {
-                                                  _quantity--;
-                                                  _qtyController.text =
-                                                      '$_quantity';
-                                                });
-                                              }
-                                            },
-                                            child: const Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 18,
-                                                color: Color(0xFF4d2963)),
-                                          ),
-                                        ),
-                                      ],
+                                        color: Color(0xFF4d2963),
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
 
-                          // Add to Cart button
-                          SizedBox(
-                            height: 44,
-                            child: ElevatedButton(
-                              key: const Key('product:add-to-cart'),
-                              onPressed: () {
-                                final actualPrice = discountPrice != null
-                                    ? _parsePrice(discountPrice)
-                                    : _parsePrice(price);
-                                _addToCart(
-                                    context, title, actualPrice, imageUrl);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF4d2963),
-                                foregroundColor: Colors.white,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero,
+                              // Line 3
+                              if (_getNumberOfLines() >= 3) ...[
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _line3Controller,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Line 3',
+                                    hintText: 'Enter text for line 3',
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 12,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Color(0xFF4d2963)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF4d2963),
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              const SizedBox(height: 12),
+                            ],
+
+                            // Quantity selector
+                            SizedBox(
+                              key: const Key('product:quantity-row'),
+                              width: 120,
+                              height: 36,
+                              child: Stack(
+                                children: [
+                                  TextField(
+                                    key: const Key('product:quantity-input'),
+                                    controller: _qtyController,
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    onChanged: (val) {
+                                      final parsed = int.tryParse(val);
+                                      setState(() {
+                                        _quantity =
+                                            (parsed == null || parsed <= 0)
+                                                ? 1
+                                                : parsed;
+                                        if (_quantity == 1 &&
+                                            (parsed == null || parsed <= 0)) {
+                                          _qtyController.text = '1';
+                                          _qtyController.selection =
+                                              TextSelection.collapsed(
+                                                  offset: _qtyController
+                                                      .text.length);
+                                        }
+                                      });
+                                    },
+                                    decoration: const InputDecoration(
+                                      isDense: true,
+                                      contentPadding:
+                                          EdgeInsets.fromLTRB(8, 8, 36, 8),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xFF4d2963)),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xFF4d2963), width: 2),
+                                      ),
+                                    ),
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0,
+                                    child: Container(
+                                      width: 36,
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                            left: BorderSide(
+                                                color: Color(0xFF4d2963))),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: InkWell(
+                                              key: const Key(
+                                                  'product:qty-increase'),
+                                              onTap: () {
+                                                setState(() {
+                                                  _quantity++;
+                                                  _qtyController.text =
+                                                      '$_quantity';
+                                                });
+                                              },
+                                              child: const Icon(
+                                                  Icons.keyboard_arrow_up,
+                                                  size: 18,
+                                                  color: Color(0xFF4d2963)),
+                                            ),
+                                          ),
+                                          const Divider(
+                                              height: 1,
+                                              thickness: 1,
+                                              color: Color(0xFF4d2963)),
+                                          Expanded(
+                                            child: InkWell(
+                                              key: const Key(
+                                                  'product:qty-decrease'),
+                                              onTap: () {
+                                                if (_quantity > 1) {
+                                                  setState(() {
+                                                    _quantity--;
+                                                    _qtyController.text =
+                                                        '$_quantity';
+                                                  });
+                                                }
+                                              },
+                                              child: const Icon(
+                                                  Icons.keyboard_arrow_down,
+                                                  size: 18,
+                                                  color: Color(0xFF4d2963)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Add to Cart button
+                            SizedBox(
+                              height: 44,
+                              child: ElevatedButton(
+                                key: const Key('product:add-to-cart'),
+                                onPressed: () {
+                                  final actualPrice = discountPrice != null
+                                      ? _parsePrice(discountPrice)
+                                      : _parsePrice(price);
+                                  _addToCart(
+                                      context, title, actualPrice, imageUrl);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF4d2963),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'ADD TO CART',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1,
+                                  ),
                                 ),
                               ),
-                              child: const Text(
-                                'ADD TO CART',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 1,
+                            ),
+                          ],
+                        );
+
+                        if (isWide) {
+                          // Two-column layout
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 4,
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: imageWidget,
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
-                      );
-
-                      if (isWide) {
-                        // Two-column layout
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 4,
-                              child: AspectRatio(
-                                aspectRatio: 1,
+                              const SizedBox(width: 24),
+                              Expanded(
+                                flex: 6,
+                                child: detailsColumn,
+                              ),
+                            ],
+                          );
+                        } else {
+                          // Stacked layout (mobile)
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 220,
+                                width: double.infinity,
                                 child: imageWidget,
                               ),
-                            ),
-                            const SizedBox(width: 24),
-                            Expanded(
-                              flex: 6,
-                              child: detailsColumn,
-                            ),
-                          ],
-                        );
-                      } else {
-                        // Stacked layout (mobile)
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 220,
-                              width: double.infinity,
-                              child: imageWidget,
-                            ),
-                            const SizedBox(height: 24),
-                            detailsColumn,
-                          ],
-                        );
-                      }
-                    },
+                              const SizedBox(height: 24),
+                              detailsColumn,
+                            ],
+                          );
+                        }
+                      },
+                    ),
                   ),
-                ),
-                const SiteFooter(),
-              ],
-            ),
-          );
-        },
+                  const SiteFooter(),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
