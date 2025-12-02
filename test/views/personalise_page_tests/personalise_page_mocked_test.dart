@@ -195,7 +195,10 @@ void main() {
 
     setUp(() async {
       firestoreWithDiscount = FakeFirebaseFirestore();
-      await firestoreWithDiscount.collection('products').doc('personalise').set({
+      await firestoreWithDiscount
+          .collection('products')
+          .doc('personalise')
+          .set({
         'title': 'Personalised Hoodie',
         'price': 45.99,
         'discountPrice': 35.99,

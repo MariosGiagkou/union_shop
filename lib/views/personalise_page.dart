@@ -216,10 +216,8 @@ class _PersonalisePageState extends State<PersonalisePage> {
       canPop: true,
       child: Scaffold(
         body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: firestore
-              .collection('products')
-              .doc('personalise')
-              .snapshots(),
+          stream:
+              firestore.collection('products').doc('personalise').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Column(
