@@ -1,296 +1,567 @@
-# Union Shop — Flutter Coursework
+# 🛍️ Union Shop - Flutter E-Commerce Application
 
-This repository contains the coursework project for students enrolled in the **Programming Applications and Programming Languages (M30235)** and **User Experience Design and Implementation (M32605)** modules at the University of Portsmouth.
+A comprehensive e-commerce Flutter application built for the University of Portsmouth Student Union. This app replicates the functionality of the [UPSU Shop website](https://shop.upsu.net) with a modern, responsive Flutter implementation featuring Firebase integration for authentication, real-time database, and cloud storage.
 
-## Overview
+![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)
+![Firebase](https://img.shields.io/badge/Firebase-Integrated-orange.svg)
+![Test Coverage](https://img.shields.io/badge/Coverage-60%25+-green.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-The Student Union has an e-commerce website, which you can access via this link: [shop.upsu.net](https://shop.upsu.net)
+## ✨ Key Features
 
-In short, your task is to recreate the same website using Flutter. You must not start from scratch, as you need to begin by forking the GitHub repository that contains the incomplete code. [The getting started section of this document](#getting-started) will explain more. Once you have completed the application, you will submit the link to your forked repository on Moodle for assessment and demonstrate your application in a practical session. See the [submission](#submission) and [demonstration](#demonstration) sections for more information.
+### 🏪 E-Commerce Functionality
+- **Product Catalog**: Browse products with real-time Firebase Firestore integration
+- **Dynamic Collections**: Filter and sort products by categories (Essentials, Graduation, Sale, etc.)
+- **Product Search**: Full-text search functionality across all products
+- **Shopping Cart**: Add, update, and remove items with persistent state management
+- **Order Checkout**: Complete purchase flow with Firebase order management
+- **Order History**: View past orders (Firebase authenticated users only)
 
-⚠️ The UPSU.net link on the navbar of the union website is a link to an external site. This is not part of the application that you need to develop. So ignore the link highlighted below:
+### 🎨 Print Shack Personalization
+- **Custom Product Designer**: Interactive form for personalizing merchandise
+- **Dynamic Options**: Configurable product options (colors, sizes, quantities)
+- **Image Upload Support**: Preview and customize product designs
 
-![Union Shop Header](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_union_site_header.png)
+### 🔐 Authentication System
+- **Firebase Authentication**: Secure user sign-in and registration
+- **Email/Password Login**: Traditional authentication method
+- **Session Management**: Persistent user sessions with Provider state management
+- **Protected Routes**: Order history and checkout require authentication
 
-## Getting Started
+### 📱 Responsive Design
+- **Mobile-First**: Optimized layouts for smartphones (375px - 767px)
+- **Tablet Support**: Adaptive design for tablets (768px - 1023px)
+- **Desktop Ready**: Full-screen layouts for desktops (1024px+)
+- **Collapsible Navigation**: Mobile hamburger menu with smooth transitions
 
-### Prerequisites
+### 🎯 Advanced UI/UX
+- **Auto-Rotating Hero Carousel**: Smooth product showcase with timer
+- **Smooth Animations**: Page transitions and hover effects
+- **Dark Theme Elements**: Consistent brand colors (#4d2963 purple theme)
+- **Loading States**: Skeleton screens and progress indicators
+- **Error Handling**: User-friendly error messages and fallbacks
 
-You have three options for your development environment:
+## 📋 Prerequisites
 
-1. **Firebase Studio** (browser-based, no installation required)
-2. **University Windows computers** (via AppsAnywhere)
-3. **Personal computer** (Windows or macOS)
+Before you begin, ensure you have the following installed:
 
-Below is a quick guide for each option. For more information, you can refer to [Worksheet 0 — Introduction to Dart, Git and GitHub](https://manighahrmani.github.io/sandwich_shop/worksheet-0.html) and [Worksheet 1 — Introduction to Flutter](https://manighahrmani.github.io/sandwich_shop/worksheet-1.html).
+### Required Software
+- **Flutter SDK**: Version 3.0.0 or higher
+  - [Download Flutter](https://flutter.dev/docs/get-started/install)
+- **Dart SDK**: Version 2.17.0 or higher (bundled with Flutter)
+- **IDE**: One of the following:
+  - [Android Studio](https://developer.android.com/studio) with Flutter plugin
+  - [VS Code](https://code.visualstudio.com/) with Flutter extension
+  - [IntelliJ IDEA](https://www.jetbrains.com/idea/) with Flutter plugin
 
-**Firebase Studio:**
+### Platform-Specific Requirements
 
-- Access [idx.google.com](https://idx.google.com) with a personal Google account
-- Create a new Flutter Workspace (choose the Flutter template in the "Start coding an app" section)
-- Once the Flutter Workspace is created, open the integrated terminal (View → Terminal) and link this project to your forked GitHub repository by running the following commands (replace `YOUR-USERNAME` in the URL):
+**For Android Development:**
+- Android SDK (API level 21 or higher)
+- Android Emulator or physical device
 
-  ```bash
-  rm -rf .git && git init && git remote add origin https://github.com/YOUR-USERNAME/union_shop.git && git fetch origin && git reset --hard origin/main
-  ```
+**For iOS Development (macOS only):**
+- Xcode 13.0 or higher
+- iOS Simulator or physical device
+- CocoaPods (`sudo gem install cocoapods`)
 
-  This command should remove the existing Git history, initialize a new Git repository, add your forked repository as the remote named `origin`, fetch the data from it, and reset the local files to match the `main` branch of your forked repository. After running the above commands, open the Source Control view in Visual Studio Code and commit any local changes. This will create a commit that points to your forked repository. In the terminal you can push the commit to GitHub with:
+**For Web Development:**
+- Chrome browser (for debugging)
 
-  ```bash
-  git push -u origin main
-  ```
+### Firebase Setup
+- Google account for Firebase Console access
+- Firebase project configured with:
+  - Firestore Database
+  - Authentication (Email/Password enabled)
+  - Storage (optional, for image uploads)
 
-  If you're unsure that you're connected to the correct repository, check the remote with:
+## 🚀 Installation and Setup
 
-  ```bash
-  git remote -v
-  ```
-
-  This should show the URL of your forked repository (`https://github.com/YOUR-USERNAME/union_shop.git` where `YOUR-USERNAME` is your GitHub username).
-
-**University Computers:**
-
-- Open [AppsAnywhere](https://appsanywhere.port.ac.uk/sso) and launch the following in the given order:
-  - Git
-  - Flutter And Dart SDK
-  - Visual Studio Code
-
-**Personal Windows Computer:**
-
-- Install [Chocolatey package manager](https://chocolatey.org/install)
-- Run in PowerShell (as Administrator):
-
-  ```bash
-  choco install git vscode flutter -y
-  ```
-
-**Personal macOS Computer:**
-
-- Install [Homebrew package manager](https://brew.sh/)
-- Run in Terminal:
-
-  ```bash
-  brew install --cask visual-studio-code flutter
-  ```
-
-After installation, verify your setup by running:
-
-```bash
-flutter doctor
-```
-
-This command checks your environment and displays a report of the status of your Flutter installation.
-
-For detailed step-by-step instructions, refer to [Worksheet 1 — Introduction to Flutter](https://manighahrmani.github.io/sandwich_shop/worksheet-1.html), which covers the complete setup process for all three options.
-
-### Fork the Repository
-
-Go to the repository containing the code for the coursework and click on the fork button as shown in the screenshot: [github.com/manighahrmani/union_shop/fork](https://github.com/manighahrmani/union_shop/fork) (Alternatively, just use this link: [github.com/manighahrmani/union_shop/fork](https://github.com/manighahrmani/union_shop/fork).)
-
-![Fork Button](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_fork_button.png)
-
-Do not change anything and click on the Create fork button. You should then have a public fork of my repository with a URL like (YOUR-USERNAME replaced with your username): [github.com/YOUR-USERNAME/union_shop](https://github.com/YOUR-USERNAME/union_shop)
-
-![Fork Settings](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_fork_settings.png)
-
-Note that the name of this created fork must be “union_shop”. If you already have a repository with this name, you need to rename it beforehand.
-
-### Clone Your Forked Repository
-
-If you are using Firebase, access idx.google.com with a personal Google account. Create a new Flutter Workspace named `union_shop` (choose the Flutter template in the “Start coding an app” section). Once the Flutter Workspace is created, open the integrated terminal (View → Terminal) and link this project to your forked GitHub repository by running the following commands (replace YOUR-USERNAME in the URL): 
+### 1. Clone the Repository
 
 ```bash
-rm -rf .git && git init && git remote add origin https://github.com/YOUR-USERNAME/union_shop.git && git fetch origin && git reset --hard origin/main 
-```
-
-This command should remove the existing Git history, initialize a new Git repository, add your forked repository as the remote named origin, fetch the data from it. It should also reset the local files to match the main branch of your forked repository. After running the above commands, open the Source Control view and commit any local changes.  
-
-Otherwise, open a terminal, change to your desired directory, and run the following commands:
-
-```bash
-git clone https://github.com/YOUR-USERNAME/union_shop.git
+git clone https://github.com/MariosGiagkou/union_shop.git
 cd union_shop
 ```
 
-Replace `YOUR-USERNAME` with your actual GitHub username.
-
-### Install Dependencies
-
-Your editor should automatically prompt you to install the required dependencies when you open the project. If not, open the integrated terminal (open the Command Palette with `Ctrl+Shift+P` or `Cmd+Shift+P` and type "Terminal: Create New Terminal") and run the following command:
+### 2. Install Dependencies
 
 ```bash
 flutter pub get
 ```
 
-### Run the Application
+### 3. Firebase Configuration
 
-This application is primarily designed to run on the **web** and should be viewed in **mobile view** using your browser's developer tools. We recommend using Google Chrome.
+#### Option A: Use Existing Firebase Project
+The project includes pre-configured Firebase settings in `lib/firebase_options.dart`. This connects to a demo Firebase project.
 
-Select Chrome as the target device and run the application either from the `main.dart` file or by entering the following command in the terminal:
+#### Option B: Set Up Your Own Firebase Project
 
-```bash
-flutter run -d chrome
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project or select an existing one
+3. Enable **Firestore Database** and **Authentication**
+4. Install Firebase CLI:
+   ```bash
+   npm install -g firebase-tools
+   ```
+5. Login to Firebase:
+   ```bash
+   firebase login
+   ```
+6. Configure FlutterFire:
+   ```bash
+   flutterfire configure
+   ```
+7. Select your Firebase project and platforms
+8. This will generate/update `lib/firebase_options.dart`
+
+#### Set Up Firestore Database
+
+1. In Firebase Console, go to **Firestore Database**
+2. Click **Create Database** → Start in **Test Mode**
+3. Create a `products` collection with sample documents:
+
+```json
+{
+  "title": "Essential T-Shirt",
+  "price": "12.99",
+  "discountPrice": "9.99",
+  "imageUrl": "assets/images/essential_t-shirt.webp",
+  "category": "essentials",
+  "description": "Comfortable cotton t-shirt"
+}
 ```
 
-Once the app is running in Chrome, open Chrome DevTools by right-clicking on the page and selecting "Inspect" (or use the shortcut `F12`). Click the "Toggle device toolbar" button as shown in the screenshot below.
+#### Enable Authentication
 
-![Chrome DevTools Mobile View](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_chrome_devtools.png)
+1. Go to **Authentication** → **Sign-in method**
+2. Enable **Email/Password** provider
+3. (Optional) Add test users in the **Users** tab
 
-From the Dimensions menu, select a mobile device preset (e.g., iPhone 12 Pro, Pixel 5):
+### 4. Run the Application
 
-![Device Selection](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_chrome_devtools_device_selection.png)
+```bash
+# Run on connected device/emulator
+flutter run
 
-## Marking Criteria
+# Run on specific device
+flutter devices          # List available devices
+flutter run -d chrome    # Run on Chrome (web)
+flutter run -d android   # Run on Android
+flutter run -d ios       # Run on iOS
+```
 
-This assessment is worth 55% of the marks for the module's assessment item 1 (the remaining 45% comes from the weekly sign-offs). The mark for the assessment is divided into two components:
+### 5. Build for Production
 
-- **[Application (functionality) (30%)](#application)**: Demonstrated through a live demo during practical
-- **[Software Development Practices (25%)](#software-development-practices)**: Assessed through your repository
+```bash
+# Android APK
+flutter build apk --release
 
-⚠️ You will only receive marks if you **both** attend a practical session for the demo **and** submit the link to your forked repository on Moodle before the deadline. Failure to do either will result in a mark of 0 for the entire coursework.
+# iOS
+flutter build ios --release
 
-For info on the overall assessment structure, visit the [Flutter Course homepage](https://manighahrmani.github.io/sandwich_shop/).
+# Web
+flutter build web --release
+```
 
-### Application
+## 🎮 Usage Instructions
 
-30% of the coursework mark comes from functionality demonstrated through a live demo during practical sessions. More information about the demo sessions is provided in the [demonstration section](#demonstration).
+### Main Features
 
-Your objective is to reimplement as many features from the existing [Union Shop website](https://shop.upsu.net) as you can in your forked repository using Flutter.
+#### 1. Browse Products
+- **Home Page**: View featured products and collections
+- **Collections Page**: Filter by category (Essentials, Graduation, Apparel, etc.)
+- Click on any product to view details
 
-The table below is an almost comprehensive list of features present on the website, sorted by difficulty. Each feature has a corresponding percentage value indicating its weight in the 30% application mark and a reference link to the relevant page on the actual website.
+#### 2. Search Products
+- Use the search bar in the navigation header
+- Enter keywords (e.g., "hoodie", "t-shirt")
+- View real-time search results
+- Click to view product details
 
-⚠️ Note that this assessment focuses on functionality over visual design (do not spend a lot of time making it look exactly like the real website). You do not have to list the exact same products or collections as the real website. You are also encouraged to use copyright-free or AI-generated images instead of downloading images from the real website.
+#### 3. Shopping Cart
+- Click "Add to Cart" on any product page
+- Adjust quantities using +/- buttons
+- Remove items with the delete icon
+- View cart total in the header (shows item count)
+- Navigate to `/cart` to review and checkout
 
-| Feature | Description | Marks (%) | Reference |
-|---------|-------------|-----------|-----------|
-| **Basic (40%)** | | | |
-| Static Homepage | Homepage layout and widgets with static content (hardcoded data* acceptable, mobile view focus) | 5% | [Homepage](https://shop.upsu.net/) |
-| Static Navbar | Top navigation bar with menu (links do not have to work at this stage, mobile view focus) | 5% | [Homepage](https://shop.upsu.net/) |
-| About Us Page | Static about us page* with company information (separate page from homepage) | 5% | [About Us](https://shop.upsu.net/pages/about-us) |
-| Footer | Footer with dummy* links and information present in at least one page | 4% | [Homepage](https://shop.upsu.net/) |
-| Dummy* Collections Page | Page displaying various collections of products (hardcoded data* acceptable) | 5% | [Collections](https://shop.upsu.net/collections/) |
-| Dummy* Collection Page | Page displaying products within one collection including dropdowns and filters (hardcoded data* acceptable, widgets do not have to function) | 5% | [Collection Example](https://shop.upsu.net/collections/autumn-favourites) |
-| Dummy* Product Page | Product page showing details and images with dropdowns, buttons and widgets (hardcoded data* acceptable, widgets do not have to function) | 4% | [Product Example](https://shop.upsu.net/collections/autumn-favourites/products/classic-sweatshirt-1) |
-| Sale Collection | Page showing sale products with discounted prices and promotional messaging (hardcoded data* acceptable, widgets do not have to function) | 4% | [Sale Items](https://shop.upsu.net/collections/sale-items) |
-| Authentication UI | Login/signup page with the relevant forms (widgets do not have to function) | 3% | [Sign In](https://shop.upsu.net/account/login) |
-| **Intermediate (35%)** | | | |
-| Navigation | Full navigation across all pages; users should be able to navigate using buttons, navbar, and URLs | 3% | All pages |
-| Dynamic Collections Page | Collections page populated from data models or services with functioning sorting, filtering, pagination widgets | 6% | [Collections](https://shop.upsu.net/collections/) |
-| Dynamic Collection Page | Product listings of a collection populated from data models or services with functioning sorting, filtering, pagination widgets | 6% | [Collection Example](https://shop.upsu.net/collections/autumn-favourites) |
-| Functional Product Pages | Product pages populated from data models or services with functioning dropdowns and counters (add to cart buttons do not have to work yet) | 6% | [Product Example](https://shop.upsu.net/collections/autumn-favourites/products/classic-sweatshirt-1) |
-| Shopping Cart | Add items to cart, view cart page, basic cart functionality (checkout buttons should place order without real monetary transactions) | 6% | [Cart](https://shop.upsu.net/cart) |
-| Print Shack | Text personalisation page with associated about page, the form must dynamically update based on selected fields | 3% | [Personalisation](https://shop.upsu.net/products/personalise-text) |
-| Responsiveness* | The layout of the application should be adaptive and the application should function on desktop in addition to mobile view (no need to test it on real devices) | 5% | All pages |
-| **Advanced (25%)** | | | |
-| Authentication System | Full user authentication and account management (you can implement this with other external authentications like Google, not just Shop), includes the account dashboard and all relevant functionality | 8% | [Account](https://shop.upsu.net/account) |
-| Cart Management | Full cart functionality including quantity editing/removal, price calculations and persistence | 6% | [Cart](https://shop.upsu.net/cart) |
-| Search System | Complete search functionality (search buttons should function on the navbar and the footer) | 4% | [Search](https://shop.upsu.net/search) |
+#### 4. Checkout Process
+1. Add items to cart
+2. Click "Checkout" button
+3. Sign in if not authenticated (redirects to `/sign-in`)
+4. Confirm order details
+5. Order is saved to Firebase Firestore
+6. Cart is cleared upon successful checkout
 
-Below are explanations for some of the terminology used in the table:
+#### 5. Order History
+- Navigate to `/order-history`
+- Requires authentication (redirects to sign-in if not logged in)
+- View all past orders with:
+  - Order date
+  - Items purchased
+  - Total amount
+  - Order status (pending, completed, cancelled)
 
-***Pages** refer to distinct screens or views in your application that users can navigate to. See [line 22 of `lib/main.dart`](https://github.com/manighahrmani/union_shop/blob/main/lib/main.dart#L22) or the `navigateToProduct` function in the same file for an example of how to define routes for different pages.
+#### 6. Personalize Products (Print Shack)
+- Navigate to `/personalise`
+- Select product type
+- Choose customization options (colors, text, logos)
+- Add personalized item to cart
 
-***Hardcoded data** refers to data (text or images) that is directly written into your code files rather than being fetched from a database or external service. For example, you can create a list of products with an AI-generated image and text descriptions directly in your Dart code instead of retrieving them from a backend.
+#### 7. User Authentication
+- Click "Sign In" in navigation
+- **Sign Up**: Create new account with email/password
+- **Sign In**: Login with existing credentials
+- **Sign Out**: Click user icon → Sign Out
 
-***Dummy data** is data that is often hardcoded or (AI) generated for display or testing purposes. It is not meant to represent real-world data stored in your services.
+### Configuration Options
 
-***Responsiveness** refers to the ability of your application to adapt its layout and design based on the screen size and orientation of the device it is being viewed on. Your app should primarily focus on mobile view but to achieve full marks in this section, it should also function correctly on wider screens (desktop view).
+#### Running in Different Environments
 
-### Software Development Practices
+```bash
+# Debug mode (default)
+flutter run
 
-In addition to functionality, you will be assessed on your software development practices demonstrated throughout the project (worth 25% of the coursework mark). These marks are awarded after the demo based on evidence in your repository.
+# Profile mode (performance testing)
+flutter run --profile
 
-The table below outlines the aspects that will be evaluated and the mark (from the 25%) allocated to each:
+# Release mode (production)
+flutter run --release
+```
 
-| Aspect | Description | Marks (%) |
-|--------|-------------|-----------|
-| Git | Regular, small, meaningful commits* to your repository throughout development; clear commit messages | 8% |
-| README | A comprehensive, well-formatted and accurate README file* (delete the current README file first) | 5% |
-| Testing | Tests covering all or almost all of the application; passing tests | 6% |
-| External Services* | Integration and utilization of cloud services | 6% |
+#### Firebase Emulator (Local Development)
 
-⚠️ You may not be awarded the 25% software development practices mark if your code has problems or poor quality. Your code must be properly formatted and free from errors, warnings, or suggestions. Make sure your codebase is also well-structured, refactored and relatively free of repetition too. Your code must be your own work (you need to understand it). **Plagiarised code** (e.g., commits showing large chunks of code copied over, especially from other students) will be penalised according to the University’s academic misconduct policy, and you be awarded 0 marks for the entire coursework.
+```bash
+# Install Firebase emulators
+firebase init emulators
 
-Below are some explanations for the terminology used in the table:
+# Run emulators
+firebase emulators:start
 
-***Regular, small, meaningful commits**: [worksheet 2](https://manighahrmani.github.io/sandwich_shop/worksheet-2.html) onwards on the [Flutter Course homepage](https://manighahrmani.github.io/sandwich_shop/) have demonstrated how to use Git effectively. You need to follow the practice taught in the worksheets.
+# Update code to use emulators (in main.dart)
+# FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+```
 
-***README**: Refer to [worksheet 4](https://manighahrmani.github.io/sandwich_shop/worksheet-4.html#writing-a-readme) for guidance on writing a good README file.
+## 🧪 Testing
 
-***External Services** refer to third-party cloud services like Firebase or Azure that your application integrates with. This could include services like user authentication, database, or hosting the application live on the web. To get marks for this, you must integrate at **least two** separate external services. You are only awarded marks if your README documents this integration and explains how it is used in your application (e.g., provide a live link to the website if you have hosted it).
+### Running Tests
 
-## Submission
+The project includes comprehensive unit and widget tests with **~60% code coverage**.
 
-You need to submit the link to your forked repository on Moodle **before the deadline**. Open the Moodle page for Programming Applications and Programming Languages (M30235) or User Experience Design and Implementation (M32605) and find the submission section titled "Item 1 - Set exercise (coursework) (CW)". See below:
+```bash
+# Run all tests
+flutter test
 
-![Moodle Submission Page](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_moodle_submission_section.png)
+# Run tests with coverage
+flutter test --coverage
 
-Open the On time or the Late/Extenuating Circumstances submission link and click on Add submission. There you will find an editable Online text field. Paste the link to the GitHub repository for your coursework in the provided text field and click on Save changes. You are **not** submitting any files for this coursework.
+# Run specific test file
+flutter test test/views/home_page_tests/home_page_test.dart
 
-![Moodle Submission Online Text](https://raw.githubusercontent.com/manighahrmani/sandwich_shop/refs/heads/main/images/screenshot_moodle_submission_online_text.png)
+# Run tests in Chrome (for debugging)
+flutter test --platform chrome
+```
 
-Make sure the repository is public. Check to see if it opens in an incognito/private window (you should not get a 404 error).
+### View Coverage Report
 
-⚠️ You can edit the link itself before the deadline, but do not edit the repository (do not make new commits) after the deadline. I will label your submission as late if you do this.
+```bash
+# Generate HTML coverage report
+genhtml coverage/lcov.info -o coverage/html
 
-## Demonstration
+# Open coverage report (Windows)
+start coverage/html/index.html
 
-The demos take place during your usual timetabled practical sessions in weeks 19 or 20 (Friday 12/12/2025 or Friday 19/12/2025). More information about the demo sessions will be provided closer to the time.
+# Open coverage report (macOS/Linux)
+open coverage/html/index.html
+```
 
-During the demo, you will have **up to 10 minutes** to demonstrate your application to staff. You must clone your repository and run the application live. You need to be prepared to show the features you have implemented and answer any questions about your code.
 
-⚠️ Make sure your application runs correctly (on your personal device or the university computers) from a fresh clone before attending the demo session.
 
-## Project Structure
+### Test Structure
 
-This starter repository that you will fork provides a minimal skeletal structure with:
+```
+test/
+├── helpers/
+│   └── test_helpers.dart          # Reusable test utilities
+├── models/
+│   ├── cart_item_test.dart        # CartItem model tests
+│   ├── order_test.dart            # Order model tests
+│   └── layout_test.dart           # Layout widget tests
+├── repositories/
+│   └── cart_repository_test.dart  # Cart state management tests
+├── services/
+│   ├── auth_service_test.dart     # Authentication tests
+│   └── order_service_mocked_test.dart
+├── views/
+│   ├── home_page_tests/
+│   ├── cart_page_tests/
+│   ├── collections_page_tests/
+│   ├── search_page_tests/
+│   └── ...
+└── widgets/
+    └── product_card_test.dart
+```
 
-- **Homepage** (`lib/main.dart`): A basic homepage
-- **Product Page** (`lib/product_page.dart`): A single product page
-- **Widget Tests**: Basic tests for both of the above pages (`test/home_test.dart` and `test/product_test.dart`)
+### Dependency Injection for Mock Testing
 
-Here is an overview of the project structure after forking:
+To achieve high test coverage, the project uses **dependency injection** to allow Firebase services to be replaced with mock implementations during testing.
 
-```plaintext
+#### Implementation Pattern
+
+Instead of directly using Firebase instances, widgets accept optional parameters that default to real Firebase instances in production but can be overridden with mocks in tests:
+
+**Example from `collections_page.dart`:**
+```dart
+class CollectionsPage extends StatefulWidget {
+  final FirebaseFirestore? firestore;  // Optional parameter for testing
+  
+  const CollectionsPage({super.key, this.firestore});
+  
+  @override
+  State<CollectionsPage> createState() => _CollectionsPageState();
+}
+
+class _CollectionsPageState extends State<CollectionsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Use injected mock or default to real Firebase instance
+    final firestore = widget.firestore ?? FirebaseFirestore.instance;
+    // Use 'firestore' variable throughout the widget
+  }
+}
+```
+
+#### Testing Implementation
+
+In tests, we inject `FakeFirebaseFirestore` from the `fake_cloud_firestore` package:
+
+```dart
+testWidgets('displays products from Firestore', (tester) async {
+  final fakeFirestore = FakeFirebaseFirestore();
+  
+  // Populate mock data
+  await fakeFirestore.collection('products').add({
+    'title': 'Test Product',
+    'price': '19.99',
+    'category': 'essentials',
+  });
+  
+  // Inject mock into widget
+  await tester.pumpWidget(
+    MaterialApp(
+      home: CollectionsPage(firestore: fakeFirestore),
+    ),
+  );
+  
+  await tester.pumpAndSettle();
+  
+  // Verify product appears
+  expect(find.text('Test Product'), findsOneWidget);
+});
+```
+
+#### Pages Using Dependency Injection
+
+| Page | Injected Service | Coverage Achieved |
+|------|------------------|-------------------|
+| `collections_page.dart` | `FirebaseFirestore?` | 60.4% |
+| `search_page.dart` | `FirebaseFirestore?` | 76.8% |
+| `personalise_page.dart` | `FirebaseFirestore?` | 60.3% |
+| `home_page.dart` | `FirebaseFirestore?` | 59.7% |
+
+#### Benefits
+
+1. **Testability**: No network calls in tests - fast, deterministic results
+2. **Isolation**: Tests don't depend on external Firebase project state
+3. **Flexibility**: Easy to test edge cases (empty data, errors, loading states)
+4. **Production Safety**: Default behavior uses real Firebase - zero impact on production code
+
+#### Libraries Used
+
+- **fake_cloud_firestore** (4.0.0): Mock Firestore implementation with in-memory database
+- **firebase_auth_mocks** (0.15.1): Mock Firebase Authentication for user session testing
+
+### Why No Order History Tests?
+
+**Firebase Integration Complexity**: Order history functionality relies heavily on Firebase Firestore real-time listeners and authenticated user sessions. Testing this requires:
+
+1. **Complex Mocking**: Order history uses `StreamBuilder` with Firebase Firestore snapshots, which are challenging to mock accurately
+2. **Authentication Dependencies**: Tests need both `AuthService` and `OrderService` providers, plus `CartRepository` (used by the SiteHeader)
+3. **Provider Scoping Issues**: The widget tree requires multiple providers in specific scopes, making test setup error-prone
+4. **Real-time Data**: Firestore's real-time listeners don't translate well to mock environments
+
+**Current Approach**: 
+- Order history has basic instantiation tests to verify the page can be created
+- The actual Firebase integration is tested manually in development
+- Other similar pages (personalise, collections, search) have comprehensive mocked tests using `fake_cloud_firestore` and `firebase_auth_mocks`
+
+
+
+## 📁 Project Structure
+
+```
 union_shop/
 ├── lib/
-│   ├── main.dart           # Main application and homepage
-│   └── product_page.dart   # Product detail page
-├── test/
-│   ├── home_test.dart      # Homepage widget tests
-│   └── product_test.dart   # Product page widget tests
-├── pubspec.yaml            # Project dependencies
-└── README.md               # This file
+│   ├── main.dart                      # App entry point, routing configuration
+│   ├── firebase_options.dart          # Firebase configuration
+│   │
+│   ├── models/                        # Data models
+│   │   ├── cart_item.dart             # Shopping cart item model
+│   │   ├── order.dart                 # Order model
+│   │   └── layout.dart                # Reusable layout components (SiteHeader, SiteFooter)
+│   │
+│   ├── views/                         # UI screens
+│   │   ├── home_page.dart             # Landing page with carousel
+│   │   ├── product_page.dart          # Individual product details
+│   │   ├── collections_page.dart      # Product category listings
+│   │   ├── search_page.dart           # Product search interface
+│   │   ├── cart_page.dart             # Shopping cart
+│   │   ├── order_history_page.dart    # Order history (auth required)
+│   │   ├── personalise_page.dart      # Print Shack customization
+│   │   ├── sign_in.dart               # Authentication page
+│   │   ├── about_us.dart              # About Union Shop
+│   │   └── about_us_printshack.dart   # About Print Shack
+│   │
+│   ├── repositories/                  # State management
+│   │   └── cart_repository.dart       # Cart state with ChangeNotifier
+│   │
+│   └── services/                      # Business logic
+│       ├── auth_service.dart          # Firebase Authentication wrapper
+│       └── order_service.dart         # Firestore order operations
+│
+├── assets/
+│   └── images/                        # Product images, logos
+│       ├── logo.avif
+│       ├── essential_t-shirt.webp
+│       ├── signature_hoodie.webp
+│       └── ...
+│
+├── test/                              # Unit and widget tests
+│   ├── helpers/
+│   │   └── test_helpers.dart          # Mock providers, test utilities
+│   ├── models/                        # Model tests (22 tests)
+│   ├── repositories/                  # Repository tests
+│   ├── services/                      # Service tests with mocks
+│   ├── views/                         # Widget tests (300+ tests)
+│   └── widgets/                       # Component tests
+│
+├── android/                           # Android-specific code
+├── ios/                               # iOS-specific code
+├── web/                               # Web-specific code
+├── windows/                           # Windows-specific code (desktop)
+│
+├── pubspec.yaml                       # Dependencies and assets
+├── analysis_options.yaml              # Linter rules
+├── firebase.json                      # Firebase configuration
+└── README.md                          # This file
 ```
 
-Note that this is the initial structure. You are expected to create additional files and directories as needed to complete the coursework. You can also reorganize the project structure as you see fit.
+### Key Files Explained
 
-## Help with Coursework
+| File | Purpose |
+|------|---------|
+| `lib/main.dart` | App initialization, GoRouter setup, Provider configuration |
+| `lib/models/layout.dart` | Reusable `SiteHeader` and `SiteFooter` widgets |
+| `lib/repositories/cart_repository.dart` | Shopping cart state management (Provider) |
+| `lib/services/auth_service.dart` | Firebase Authentication wrapper |
+| `lib/services/order_service.dart` | Firestore order CRUD operations |
+| `lib/firebase_options.dart` | Auto-generated Firebase config |
+| `test/helpers/test_helpers.dart` | `pumpWithProviders()` utility for widget tests |
 
-### Support
+## 🛠️ Technologies Used
 
-If you have questions or encounter issues while working on this coursework, use [the dedicated Discord channel](https://portdotacdotuk-my.sharepoint.com/:b:/g/personal/mani_ghahremani_port_ac_uk/EbX583gvURRAhqsnhYqmbSEBwIFw6tXRyz_Br1GxIyE8dg) to ask for help. Before posting a new question, check the existing posts to see if your question has already been answered. You can also attend your timetabled practical sessions to get face-to-face support from teaching staff.
+### Frontend Framework
+- **Flutter** (3.0+): Cross-platform UI framework
+- **Dart** (2.17+): Programming language
 
-If you are facing external extenuating circumstances that are affecting your ability to complete this coursework, you should submit an [Extenuating Circumstances Form](https://myport.port.ac.uk/my-course/exams/extenuating-circumstances) as soon as possible. You are also welcome to contact me on Discord for additional support without needing to disclose the private details of your situation.
+### State Management
+- **Provider** (6.1.1): State management and dependency injection
+  - `CartRepository`: Shopping cart state
+  - `AuthService`: User authentication state
+  - `OrderService`: Order data access
 
-### Resources
+### Backend & Database
+- **Firebase Core** (4.2.1): Firebase SDK initialization
+- **Cloud Firestore** (6.1.0): NoSQL database
+  - `products` collection: Product catalog
+  - `orders` collection: User order history
+- **Firebase Auth** (6.1.2): User authentication
+  - Email/Password provider
 
-The worksheets listed on [the homepage](https://manighahrmani.github.io/sandwich_shop/) are your primary learning resource for Flutter development. Work through these worksheets systematically as they provide the foundation you need to complete the coursework successfully. Refrain from using other online resources such as Stack Overflow, YouTube tutorials, or other websites for this coursework as they may contain outdated or incorrect information that could lead you astray.
+### Routing & Navigation
+- **go_router** (17.0.0): Declarative routing
+  - Named routes
+  - Query parameters
+  - Deep linking support
 
-### Tips
+### UI Components
+- **Material Design 3**: Google's design system
+- **Cupertino Icons** (1.0.0): iOS-style icons
 
-Starting early is crucial for success in this coursework. The earlier you begin, the more time you have to learn, experiment, and seek help when needed. You should aim to work on the coursework alongside the worksheets rather than leaving everything until the end. As you complete each worksheet, implement the corresponding features in your coursework application. This approach allows you to apply what you learn immediately and build your application incrementally.
+### Utilities
+- **intl** (0.19.0): Internationalization and date formatting
 
-When planning your implementation, prioritize features based on the difficulty levels outlined in the [marking criteria](#application). Start with the basic features to establish a solid foundation before moving on to intermediate and advanced functionality. This strategy ensures you secure marks early and have a working application even if you run out of time for the more complex features.
+### Development Tools
+- **flutter_lints** (2.0.0): Official Flutter linter rules
+- **flutter_test**: Built-in testing framework
 
-Version control is an essential part of this coursework. Commit your changes regularly to Git with clear, descriptive commit messages. Each commit should represent a small, meaningful unit of work rather than large batches of changes. This practice creates checkpoints you can return to if something goes wrong and demonstrates your development process to assessors. To commit and push your changes, use the following commands:
+### Testing Libraries
+- **fake_cloud_firestore** (4.0.0): Mock Firestore for tests
+- **firebase_auth_mocks** (0.15.1): Mock Firebase Auth for tests
 
-```bash
-git add .
-git commit -m "Brief description of what you changed"
-git push
-```
+### Development Environment
+- **Android Studio / VS Code**: Primary IDEs
+- **Flutter DevTools**: Performance and debugging
+- **Firebase Console**: Database and auth management
 
-If you make a mistake and need to revert to a previous commit, you can view your commit history with `git log --oneline`, find the commit hash where things were working (for example, `abc1234`), and revert to that commit with `git reset --hard abc1234`. If necessary, you can force push with `git push --force`. In extreme cases where your repository is completely broken and unrecoverable, you can start fresh by deleting your forked repository on GitHub (Settings → Danger Zone → Delete this repository), forking the original repository again from [github.com/manighahrmani/union_shop](https://github.com/manighahrmani/union_shop), and cloning your fresh fork.
+## 🐛 Known Issues and Limitations
 
-AI tools are valuable during development, and you are encouraged to use them. However, you must apply the best practices taught in the worksheets, particularly those covered in [Worksheet 6](https://manighahrmani.github.io/sandwich_shop/worksheet-6.html). AI-generated code should be reviewed, understood, and adapted to fit your application properly. Blindly copying AI suggestions without understanding them will likely result in poor code quality and may not meet the requirements. Use AI as a learning aid and coding partner rather than a replacement for your own understanding and decision-making.
+### Current Limitations
+
+1. **Order History Testing**
+   - **Issue**: No comprehensive widget tests for `order_history_page.dart`
+   - **Reason**: Complex Firebase Firestore integration with real-time streams makes mocking difficult
+   - **Impact**: Only basic instantiation tests exist (1% coverage)
+   - **Workaround**: Manual testing in development environment
+   - **See**: [Why No Order History Tests?](#why-no-order-history-tests) section above
+
+### Performance Notes
+
+- Initial app load may take 2-3 seconds due to Firebase initialization
+
+
+
+### For Educational Use
+
+If you're a student learning Flutter:
+1. Fork this repository
+2. Experiment with the code
+3. Reference it in your own projects
+4. **Do not** submit this as your own coursework (academic integrity!)
+
+
+## 👨‍💻 Author
+
+**Marios Giagkou**  
+GitHub: [@MariosGiagkou](https://github.com/MariosGiagkou)
+
+## 🙏 Acknowledgments
+
+- University of Portsmouth Student Union for project requirements
+- Flutter team for excellent documentation
+- Firebase team for comprehensive backend services
+- Course instructors for guidance and support
+
+## 📞 Contact Info
+
+1. Check existing [GitHub Issues](https://github.com/MariosGiagkou/union_shop/issues)
+2. Review the [Flutter documentation](https://flutter.dev/docs)
+3. Consult [Firebase documentation](https://firebase.google.com/docs)
+
+---
+
+**Built with ❤️ using Flutter and Firebase**
+
+*Last Updated: December 2025*
