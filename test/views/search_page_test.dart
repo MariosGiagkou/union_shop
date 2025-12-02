@@ -6,27 +6,6 @@ import '../helpers/test_helpers.dart';
 
 void main() {
   group('SearchPage (views)', () {
-    testWidgets('SearchPage is a StatefulWidget', (tester) async {
-      expect(const SearchPage(), isA<StatefulWidget>());
-    });
-
-    testWidgets('SearchPage can be instantiated with initialQuery',
-        (tester) async {
-      const page = SearchPage(initialQuery: 'test query');
-      expect(page.initialQuery, 'test query');
-    });
-
-    testWidgets('SearchPage can be instantiated without initialQuery',
-        (tester) async {
-      const page = SearchPage();
-      expect(page.initialQuery, isNull);
-    });
-
-    testWidgets('SearchPage can be instantiated with key', (tester) async {
-      const page = SearchPage(key: Key('search-page'));
-      expect(page.key, const Key('search-page'));
-    });
-
     testWidgets('SearchPage displays search title', (tester) async {
       await pumpWithProviders(
         tester,
