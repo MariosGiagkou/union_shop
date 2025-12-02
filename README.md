@@ -491,7 +491,6 @@ union_shop/
 - **Flutter DevTools**: Performance and debugging
 - **Firebase Console**: Database and auth management
 
-## 🐛 Known Issues and Limitations
 
 ### Current Limitations
 
