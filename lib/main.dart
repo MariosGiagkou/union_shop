@@ -19,6 +19,7 @@ import 'package:union_shop/services/order_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   /// Initialize Firebase with platform-specific configuration
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
