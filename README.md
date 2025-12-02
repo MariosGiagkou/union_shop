@@ -445,51 +445,207 @@ union_shop/
 | `lib/firebase_options.dart` | Auto-generated Firebase config |
 | `test/helpers/test_helpers.dart` | `pumpWithProviders()` utility for widget tests |
 
-## 🛠️ Technologies Used
+## � Libraries & Dependencies
 
-### Frontend Framework
-- **Flutter** (3.0+): Cross-platform UI framework
-- **Dart** (2.17+): Programming language
+This project uses carefully selected libraries to provide robust functionality while maintaining code quality and testability. Below is a comprehensive list of all dependencies and their purposes.
 
-### State Management
-- **Provider** (6.1.1): State management and dependency injection
-  - `CartRepository`: Shopping cart state
-  - `AuthService`: User authentication state
-  - `OrderService`: Order data access
+### Production Dependencies
 
-### Backend & Database
-- **Firebase Core** (4.2.1): Firebase SDK initialization
-- **Cloud Firestore** (6.1.0): NoSQL database
-  - `products` collection: Product catalog
-  - `orders` collection: User order history
-- **Firebase Auth** (6.1.2): User authentication
-  - Email/Password provider
+#### Core Framework
+- **`flutter`** (SDK)
+  - **Purpose**: The Flutter framework itself - enables cross-platform mobile, web, and desktop development
+  - **Used For**: Building the entire UI and application structure
 
-### Routing & Navigation
-- **go_router** (17.0.0): Declarative routing
-  - Named routes
-  - Query parameters
-  - Deep linking support
+- **`flutter_web_plugins`** (SDK)
+  - **Purpose**: Web-specific plugins for Flutter web apps
+  - **Used For**: URL strategy management (removes the `#` hash from web URLs for cleaner routing)
+  - **Key Usage**: `usePathUrlStrategy()` in `main.dart` for clean URLs like `/products` instead of `/#/products`
 
-### UI Components
-- **Material Design 3**: Google's design system
-- **Cupertino Icons** (1.0.0): iOS-style icons
+#### UI Components & Icons
+- **`cupertino_icons`** (^1.0.0)
+  - **Purpose**: iOS-style icons for Flutter applications
+  - **Used For**: Cross-platform icon consistency, fallback icons for Material Design
+  - **Example**: iOS-style icons in navigation and buttons
 
-### Utilities
-- **intl** (0.19.0): Internationalization and date formatting
+#### Firebase Backend Services
+- **`firebase_core`** (^4.2.1)
+  - **Purpose**: Core Firebase SDK - initializes Firebase services
+  - **Used For**: Connecting the app to Firebase project, prerequisite for all Firebase features
+  - **Key Usage**: `Firebase.initializeApp()` in `main.dart`
 
-### Development Tools
-- **flutter_lints** (2.0.0): Official Flutter linter rules
-- **flutter_test**: Built-in testing framework
+- **`cloud_firestore`** (^6.1.0)
+  - **Purpose**: NoSQL cloud database by Firebase
+  - **Used For**: 
+    - Storing and retrieving product catalog data
+    - Managing user order history
+    - Real-time product updates via snapshot streams
+  - **Collections Used**: `products`, `orders`
+  - **Key Features**: Real-time listeners, offline persistence, scalable queries
 
-### Testing Libraries
-- **fake_cloud_firestore** (4.0.0): Mock Firestore for tests
-- **firebase_auth_mocks** (0.15.1): Mock Firebase Auth for tests
+- **`firebase_auth`** (^6.1.2)
+  - **Purpose**: Firebase Authentication SDK
+  - **Used For**:
+    - User registration (email/password)
+    - User sign-in/sign-out
+    - Session management
+    - Protecting routes (order history, checkout)
+  - **Provider Used**: Email/Password authentication
 
-### Development Environment
-- **Android Studio / VS Code**: Primary IDEs
-- **Flutter DevTools**: Performance and debugging
-- **Firebase Console**: Database and auth management
+#### Routing & Navigation
+- **`go_router`** (^17.0.0)
+  - **Purpose**: Declarative routing package for Flutter
+  - **Used For**:
+    - Named route navigation (`/home`, `/cart`, `/product`, etc.)
+    - Deep linking support (direct URLs to specific pages)
+    - Query parameters (search queries, product IDs)
+    - Nested routes (collections → category → product)
+  - **Why Chosen**: Superior to `Navigator 1.0`, type-safe, supports web URLs natively
+  - **Key Features**: 
+    - Path parameters (e.g., `/collections/:category`)
+    - Extra data passing between routes
+    - Programmatic navigation with `context.go()` and `context.goNamed()`
+
+#### State Management
+- **`provider`** (^6.1.1)
+  - **Purpose**: Recommended state management solution by Flutter team
+  - **Used For**:
+    - Shopping cart state (`CartRepository` with `ChangeNotifier`)
+    - User authentication state (`AuthService`)
+    - Dependency injection for services (`OrderService`)
+  - **Why Chosen**: Simple, lightweight, officially recommended, great for medium-sized apps
+  - **Providers Used**:
+    - `ChangeNotifierProvider`: Cart and Auth state
+    - `Provider`: Order service dependency injection
+  - **Key Features**: Reactive UI updates, scoped access, testability
+
+#### Utilities
+- **`intl`** (^0.19.0)
+  - **Purpose**: Internationalization and localization utilities
+  - **Used For**:
+    - Date formatting (order dates in `order_history_page.dart`)
+    - Number formatting (currency display)
+    - Future support for multi-language translations
+  - **Key Usage**: `DateFormat` for displaying formatted order dates
+
+---
+
+### Development Dependencies
+
+#### Testing Frameworks
+- **`flutter_test`** (SDK)
+  - **Purpose**: Built-in testing framework for Flutter
+  - **Used For**:
+    - Unit tests (models, services, repositories)
+    - Widget tests (UI component testing)
+    - Integration tests
+  - **Test Coverage**: ~60% code coverage across the project
+
+#### Code Quality & Linting
+- **`flutter_lints`** (^2.0.0)
+  - **Purpose**: Official Flutter linting rules recommended by the Flutter team
+  - **Used For**:
+    - Enforcing code style consistency
+    - Catching potential bugs and anti-patterns
+    - Maintaining best practices
+  - **Rules Enforced**: 
+    - Proper const usage
+    - Avoiding deprecated APIs
+    - Naming conventions
+    - Code formatting standards
+
+#### Testing Mocks & Fakes
+- **`fake_cloud_firestore`** (^4.0.0)
+  - **Purpose**: In-memory fake implementation of Cloud Firestore
+  - **Used For**:
+    - Unit testing Firebase Firestore operations without real database
+    - Mocking collections, documents, queries, and snapshots
+    - Fast, deterministic tests without network calls
+  - **Key Benefit**: Tests run offline and ~100x faster than Firebase emulators
+  - **Used In**: 
+    - `order_service_mocked_test.dart`: Testing order CRUD operations
+    - `collections_page_tests/`: Testing product filtering and queries
+
+- **`firebase_auth_mocks`** (^0.15.1)
+  - **Purpose**: Mock implementation of Firebase Authentication
+  - **Used For**:
+    - Testing authentication flows without real Firebase Auth
+    - Simulating signed-in/signed-out states
+    - Testing protected routes and user-specific features
+  - **Key Benefit**: Consistent, controllable test environment
+  - **Used In**:
+    - `auth_service_test.dart`: Testing sign-in, sign-up, sign-out
+    - Widget tests requiring authenticated users
+
+---
+
+### Why These Libraries Were Chosen
+
+#### Architecture Decisions
+
+1. **Firebase Ecosystem** (Core, Firestore, Auth)
+   - **Reason**: Rapid development without building custom backend
+   - **Benefits**: 
+     - Managed infrastructure (no server maintenance)
+     - Real-time data synchronization
+     - Built-in security rules
+     - Automatic scaling
+     - Free tier sufficient for development/testing
+   - **Trade-off**: Vendor lock-in, but offset by ease of development
+
+2. **Provider for State Management**
+   - **Reason**: Officially recommended, simple learning curve
+   - **Alternatives Considered**: BLoC (too complex for this scope), Riverpod (newer but less mature)
+   - **Benefits**:
+     - Minimal boilerplate
+     - Great documentation
+     - Built-in dependency injection
+     - Easy to test with mocks
+
+3. **go_router for Navigation**
+   - **Reason**: Best routing solution for Flutter web + mobile
+   - **Alternatives Considered**: Navigator 2.0 (too verbose), auto_route (code generation overhead)
+   - **Benefits**:
+     - Declarative routing
+     - Deep linking out-of-the-box
+     - Type-safe navigation
+     - Clean URL structure on web
+
+4. **Mock Libraries for Testing** (fake_cloud_firestore, firebase_auth_mocks)
+   - **Reason**: Achieve high test coverage without Firebase dependency
+   - **Benefits**:
+     - Tests run in milliseconds (no network I/O)
+     - No Firebase project setup required for CI/CD
+     - Deterministic test results
+     - Can test offline scenarios
+   - **Result**: 60% code coverage with fast, reliable tests
+
+---
+
+### Dependency Version Strategy
+
+- **Caret (`^`) Versioning**: Used for all dependencies (e.g., `^6.1.0`)
+  - Allows minor and patch updates automatically
+  - Maintains compatibility with major version
+  - Example: `^6.1.0` accepts `6.1.1`, `6.2.0` but not `7.0.0`
+
+- **SDK Dependencies**: Flutter and Flutter Web Plugins use `sdk: flutter`
+  - Ensures compatibility with Flutter version
+  - Updated when Flutter SDK is updated
+
+---
+
+### How to View Installed Versions
+
+```bash
+# View all dependencies and their resolved versions
+flutter pub deps
+
+# Check for outdated packages
+flutter pub outdated
+
+# Upgrade dependencies to latest compatible versions
+flutter pub upgrade
+```
 
 
 ### Current Limitations
