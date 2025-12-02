@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CollectionsPage extends StatefulWidget {
   final String? category;
+  final FirebaseFirestore? firestore;
 
-  const CollectionsPage({super.key, this.category});
+  const CollectionsPage({super.key, this.category, this.firestore});
 
   @override
   State<CollectionsPage> createState() => _CollectionsPageState();
@@ -509,7 +510,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
                       categorySlug == 'halloween' ||
                       categorySlug == 'graduation')
                     StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                      stream: FirebaseFirestore.instance
+                      stream: (widget.firestore ?? FirebaseFirestore.instance)
                           .collection('products')
                           .snapshots(),
                       builder: (context, snapshot) {
