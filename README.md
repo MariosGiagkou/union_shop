@@ -538,7 +538,6 @@ This project uses carefully selected libraries to provide robust functionality w
     - Unit tests (models, services, repositories)
     - Widget tests (UI component testing)
     - Integration tests
-  - **Test Coverage**: ~60% code coverage across the project
 
 #### Code Quality & Linting
 - **`flutter_lints`** (^2.0.0)
