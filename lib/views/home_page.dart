@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
     try {
       return FirebaseFirestore.instance.collection('products').snapshots();
     } catch (_) {
-      return Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
+      return const Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
     }
   }
 
@@ -83,7 +83,7 @@ class HomePage extends StatelessWidget {
                           // and format them as UI strings like '£12.34'.
                           /// Converts various price formats from Firestore to doubles
                           /// Handles: doubles, ints, strings like "£14.99" or "14.99"
-                          double? _toDouble(dynamic raw) {
+                          double? toDouble(dynamic raw) {
                             if (raw == null) return null;
                             if (raw is double) return raw;
                             if (raw is int) return raw.toDouble();
@@ -105,7 +105,7 @@ class HomePage extends StatelessWidget {
                           }
 
                           String fmtPrice(dynamic raw) {
-                            final d = _toDouble(raw);
+                            final d = toDouble(raw);
                             if (d != null) return '£${d.toStringAsFixed(2)}';
                             if (raw is String) {
                               final s = raw.trim();
@@ -199,8 +199,8 @@ class HomePage extends StatelessWidget {
                               final portsmouthCards = <Widget>[];
                               for (var i = 0; i < docsOrdered.length; i++) {
                                 final data = docsOrdered[i].data();
-                                final p = _toDouble(data['price']);
-                                final dp = _toDouble(data['discountPrice']);
+                                final p = toDouble(data['price']);
+                                final dp = toDouble(data['discountPrice']);
                                 final card = cardsOrdered[i];
                                 final title = (data['title'] ?? '')
                                     .toString()
@@ -612,7 +612,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
           ),
         ),
         // Dark overlay
-        ColoredBox(color: Colors.black.withOpacity(0.7)),
+        ColoredBox(color: Colors.black.withValues(alpha: 0.7)),
         // Foreground content
         Center(
           child: Padding(
@@ -804,7 +804,7 @@ class _HeroCarouselState extends State<HeroCarousel> {
                     duration: const Duration(milliseconds: 250),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.45),
+                      color: Colors.black.withValues(alpha: 0.45),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Icon(
@@ -835,7 +835,7 @@ class _NavButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.35),
+          color: Colors.black.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(28),
         ),
         padding: const EdgeInsets.all(8),
@@ -910,8 +910,9 @@ class _ProductCardState extends State<ProductCard> {
     // Normalize asset path locally; do not mutate the widget.
     String src = widget.imageUrl.trim();
     if (src.startsWith('/')) src = src.substring(1);
-    if (src.isNotEmpty && !src.startsWith('assets/'))
+    if (src.isNotEmpty && !src.startsWith('assets/')) {
       src = 'assets/images/$src';
+    }
 
     if (src.isEmpty) {
       return Container(
@@ -935,7 +936,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     Widget baseImage = _buildImage();
     const maxHeight = 520.0;
-    double _defaultAspect() {
+    double defaultAspect() {
       final s = widget.imageUrl.toLowerCase();
       // Preserve prior visuals: PortsmouthCity items used 4/3; others 3/2
       if (s.contains('portsmouthcity')) return 4 / 3;
@@ -945,13 +946,13 @@ class _ProductCardState extends State<ProductCard> {
     final image = ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: maxHeight),
       child: AspectRatio(
-        aspectRatio: _defaultAspect(),
+        aspectRatio: defaultAspect(),
         child: ClipRRect(borderRadius: BorderRadius.zero, child: baseImage),
       ),
     );
     final overlay = AnimatedContainer(
       duration: const Duration(milliseconds: 160),
-      color: Colors.white.withOpacity(_hover ? 0.25 : 0.15),
+      color: Colors.white.withValues(alpha: _hover ? 0.25 : 0.15),
     );
 
     return MouseRegion(
@@ -1096,7 +1097,8 @@ class _RangeCategoryCardState extends State<RangeCategoryCard> {
                     Positioned.fill(
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 160),
-                        color: Colors.black.withOpacity(_hover ? 0.55 : 0.35),
+                        color: Colors.black
+                            .withValues(alpha: _hover ? 0.55 : 0.35),
                       ),
                     ),
                     Positioned.fill(

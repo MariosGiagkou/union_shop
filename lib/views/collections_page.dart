@@ -474,7 +474,6 @@ class _CollectionsPageState extends State<CollectionsPage> {
     }
 
     final categoryData = allCollections[categorySlug]!;
-    ;
     final categoryTitle = categoryData['title']!;
 
     return Scaffold(
@@ -778,7 +777,7 @@ class _ProductCardState extends State<_ProductCard> {
 
     final overlay = AnimatedContainer(
       duration: const Duration(milliseconds: 160),
-      color: Colors.white.withOpacity(_hover ? 0.25 : 0.15),
+      color: Colors.white.withValues(alpha: _hover ? 0.25 : 0.15),
     );
 
     return MouseRegion(
@@ -916,7 +915,7 @@ class _HoverImageTileState extends State<_HoverImageTile> {
               Positioned.fill(
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 160),
-                  color: Colors.black.withOpacity(_hover ? 0.35 : 0.0),
+                  color: Colors.black.withValues(alpha: _hover ? 0.35 : 0.0),
                 ),
               ),
 

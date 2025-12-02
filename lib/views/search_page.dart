@@ -418,7 +418,7 @@ class _SearchResultCardState extends State<_SearchResultCard> {
                 Positioned.fill(
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 160),
-                    color: Colors.white.withOpacity(_hover ? 0.25 : 0.15),
+                    color: Colors.white.withValues(alpha: _hover ? 0.25 : 0.15),
                   ),
                 ),
               ],

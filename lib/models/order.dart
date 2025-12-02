@@ -22,7 +22,7 @@ class Order {
   });
 
   /// Get total number of items in order
-  int get itemCount => items.fold(0, (sum, item) => sum + item.quantity);
+  int get itemCount => items.fold(0, (total, item) => total + item.quantity);
 
   /// Create Order from Firestore document
   factory Order.fromFirestore(DocumentSnapshot doc) {

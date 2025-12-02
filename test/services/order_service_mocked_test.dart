@@ -483,7 +483,7 @@ void main() {
     });
 
     test('multiple orders for same user are handled correctly', () async {
-      final userId = 'multiOrderUser';
+      const userId = 'multiOrderUser';
 
       // Create 3 orders
       final order1 = await orderService.createOrder(

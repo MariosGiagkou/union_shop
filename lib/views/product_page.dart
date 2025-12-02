@@ -212,7 +212,7 @@ class _ProductPageState extends State<ProductPage> {
     final String rawImageUrl =
         widget.imageUrlOverride ?? (args?['imageUrl'] as String?) ?? '';
     // Helper to parse price strings like '£14.99' to double for comparisons
-    double _parsePrice(String price) {
+    double parsePrice(String price) {
       final cleaned = price.replaceAll(RegExp(r'[^0-9.]'), '');
       return double.tryParse(cleaned) ?? 0.0;
     }
@@ -303,7 +303,7 @@ class _ProductPageState extends State<ProductPage> {
                       Row(
                         children: [
                           if (discountPrice != null &&
-                              _parsePrice(discountPrice) < _parsePrice(price))
+                              parsePrice(discountPrice) < parsePrice(price))
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: Text(
@@ -319,8 +319,8 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                           Text(
                             (discountPrice != null &&
-                                    _parsePrice(discountPrice) <
-                                        _parsePrice(price))
+                                    parsePrice(discountPrice) <
+                                        parsePrice(price))
                                 ? discountPrice
                                 : (price.isNotEmpty ? price : '—'),
                             key: const Key('product:price'),

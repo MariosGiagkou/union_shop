@@ -170,7 +170,7 @@ void main() {
 
       await pumpWithProviders(
         tester,
-        Scaffold(body: header),
+        const Scaffold(body: header),
         authService: createSignedOutAuthService(),
       );
 
