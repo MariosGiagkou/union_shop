@@ -5,8 +5,9 @@ import 'package:go_router/go_router.dart';
 
 class SearchPage extends StatefulWidget {
   final String? initialQuery;
+  final FirebaseFirestore? firestore;
 
-  const SearchPage({super.key, this.initialQuery});
+  const SearchPage({super.key, this.initialQuery, this.firestore});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -44,7 +45,7 @@ class _SearchPageState extends State<SearchPage> {
 
     final query = _submittedQuery.toLowerCase();
 
-    return FirebaseFirestore.instance
+    return (widget.firestore ?? FirebaseFirestore.instance)
         .collection('products')
         .snapshots()
         .map((snapshot) {
