@@ -1,4 +1,5 @@
 /// Represents a single item in the shopping cart
+/// Supports product variants through selectedOptions (size, color, etc.)
 class CartItem {
   final String productId;
   final String title;

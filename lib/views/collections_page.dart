@@ -63,6 +63,9 @@ class _CollectionsPageState extends State<CollectionsPage> {
   };
 
   // Helper method to apply category filter based on cat field
+  /// Filters products by category using the 'cat' field from Firestore
+  /// 'prod' = Merchandise items (mugs, stationery, etc.)
+  /// 'cloth' = Clothing items (hoodies, t-shirts, etc.)
   List<DocumentSnapshot<Map<String, dynamic>>> _applyFilter(
       List<DocumentSnapshot<Map<String, dynamic>>> docs) {
     if (_filterBy == 'All products') {
@@ -82,6 +85,8 @@ class _CollectionsPageState extends State<CollectionsPage> {
   }
 
   // Helper method to apply sorting
+  /// Sorts products by selected criteria
+  /// Options: Featured (no sort), A-Z, Z-A, Price Low-High, Price High-Low
   List<DocumentSnapshot<Map<String, dynamic>>> _applySort(
       List<DocumentSnapshot<Map<String, dynamic>>> docs) {
     final sortedDocs = List<DocumentSnapshot<Map<String, dynamic>>>.from(docs);

@@ -19,6 +19,7 @@ import 'package:union_shop/services/order_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  /// Initialize Firebase with platform-specific configuration
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -42,7 +43,6 @@ class UnionShopApp extends StatelessWidget {
           path: '/product',
           name: 'product',
           builder: (context, state) {
-            // Forward extras (provided via context.go('/product', extra: {...}))
             final args = state.extra as Map<String, dynamic>?;
             return ProductPage(
               titleOverride: args?['title'] as String?,
@@ -107,7 +107,6 @@ class UnionShopApp extends StatelessWidget {
                   path: 'product/:productId',
                   name: 'collection-product',
                   builder: (context, state) {
-                    // productId available from state.pathParameters['productId'] if needed
                     final args = state.extra as Map<String, dynamic>?;
                     return ProductPage(
                       titleOverride: args?['title'] as String?,

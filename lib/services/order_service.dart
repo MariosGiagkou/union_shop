@@ -3,6 +3,7 @@ import '../models/order.dart';
 import '../models/cart_item.dart';
 
 /// Service for managing orders in Firestore
+/// Handles CRUD operations for customer orders
 class OrderService {
   final FirebaseFirestore _firestore;
   final String _ordersCollection = 'orders';

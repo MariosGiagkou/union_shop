@@ -17,8 +17,9 @@ class AuthService extends ChangeNotifier {
   /// Stream of auth state changes
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
+  /// Constructor with optional FirebaseAuth injection for testing
+  /// Automatically listens to auth state changes and notifies listeners
   AuthService({FirebaseAuth? auth}) : _auth = auth ?? FirebaseAuth.instance {
-    // Listen to auth state changes and notify listeners
     _auth.authStateChanges().listen((User? user) {
       notifyListeners();
     });

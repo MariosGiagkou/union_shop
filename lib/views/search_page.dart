@@ -38,6 +38,8 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  /// Searches Firestore for products matching the query
+  /// Performs case-insensitive search across title, price, and category fields
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _searchProducts() {
     if (_submittedQuery.isEmpty) {
       return Stream.value([]);

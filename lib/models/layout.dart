@@ -13,23 +13,19 @@ class SiteHeader extends StatefulWidget {
 
 class _SiteHeaderState extends State<SiteHeader> {
   bool _homeHover = false;
-  bool _shopHover = false; // added
-  bool _tpsHover = false; // added
-  bool _salesHover = false; // added
-  bool _aboutHover = false; // added
+  bool _shopHover = false;
+  bool _tpsHover = false;
+  bool _salesHover = false;
+  bool _aboutHover = false;
 
-  // Track if shop dropdown is open
   OverlayEntry? _shopDropdownOverlay;
   final LayerLink _shopLayerLink = LayerLink();
 
-  // Track if print shack dropdown is open
   OverlayEntry? _printShackDropdownOverlay;
   final LayerLink _printShackLayerLink = LayerLink();
 
-  // Track mobile menu dropdown
   OverlayEntry? _mobileMenuOverlay;
 
-  // Track search box state
   bool _showSearchBox = false;
   // ignore: unused_field
   int _searchClickCount = 0;
@@ -39,7 +35,6 @@ class _SiteHeaderState extends State<SiteHeader> {
 
   @override
   void dispose() {
-    // Remove overlays without calling setState
     _shopDropdownOverlay?.remove();
     _shopDropdownOverlay = null;
     _printShackDropdownOverlay?.remove();
@@ -54,7 +49,6 @@ class _SiteHeaderState extends State<SiteHeader> {
   void _removeShopDropdown() {
     _shopDropdownOverlay?.remove();
     _shopDropdownOverlay = null;
-    // Don't call setState during dispose
     if (mounted) {
       setState(() => _shopHover = false);
     }
@@ -63,7 +57,6 @@ class _SiteHeaderState extends State<SiteHeader> {
   void _removePrintShackDropdown() {
     _printShackDropdownOverlay?.remove();
     _printShackDropdownOverlay = null;
-    // Don't call setState during dispose
     if (mounted) {
       setState(() => _tpsHover = false);
     }
@@ -81,14 +74,12 @@ class _SiteHeaderState extends State<SiteHeader> {
         onTap: _removeMobileMenu,
         child: Stack(
           children: [
-            // Transparent overlay to catch clicks outside
             Positioned.fill(
               child: Container(color: Colors.transparent),
             ),
-            // Dropdown menu
             Positioned(
               right: 16,
-              top: 120, // Below header
+              top: 120,
               width: 220,
               child: Material(
                 elevation: 8,
@@ -117,7 +108,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                       ),
                     ),
                     const Divider(height: 1),
-                    // Shop submenu
                     ExpansionTile(
                       title: const Text(
                         'Shop',
@@ -200,7 +190,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                       ],
                     ),
                     const Divider(height: 1),
-                    // Print Shack submenu
                     ExpansionTile(
                       title: const Text(
                         'The Printing Shack',
@@ -286,7 +275,8 @@ class _SiteHeaderState extends State<SiteHeader> {
   }
 
   void _showShopDropdown(BuildContext context) {
-    // Collection items matching collections_page.dart (without personalisation)
+    /// Collection items for the shop dropdown menu
+    /// Matches categories from collections_page.dart (excludes personalisation)
     final collections = [
       {'title': 'Signature', 'slug': 'signature'},
       {'title': 'Sale', 'slug': 'sale'},
@@ -357,7 +347,6 @@ class _SiteHeaderState extends State<SiteHeader> {
   }
 
   void _showPrintShackDropdown(BuildContext context) {
-    // Print Shack dropdown options
     final options = [
       {'title': 'About', 'route': '/printshack/about'},
       {'title': 'Personalisation', 'route': '/personalise'},
@@ -375,7 +364,6 @@ class _SiteHeaderState extends State<SiteHeader> {
             Positioned.fill(
               child: Container(color: Colors.transparent),
             ),
-            // Dropdown menu
             Positioned(
               width: 220,
               child: CompositedTransformFollower(
@@ -421,13 +409,14 @@ class _SiteHeaderState extends State<SiteHeader> {
     Overlay.of(context).insert(_printShackDropdownOverlay!);
   }
 
+  /// Handles search icon clicks:
+  /// - Single click: Toggle search box
+  /// - Double click (< 500ms): Navigate to search page
   void _handleSearchIconClick() {
     final now = DateTime.now();
 
-    // Check if this is a double click (within 500ms)
     if (_lastSearchClick != null &&
         now.difference(_lastSearchClick!).inMilliseconds < 500) {
-      // Double click - navigate to search page
       setState(() {
         _showSearchBox = false;
         _searchClickCount = 0;
@@ -435,12 +424,10 @@ class _SiteHeaderState extends State<SiteHeader> {
       });
       _navigate(context, '/search');
     } else {
-      // Single click - toggle search box
       setState(() {
         _showSearchBox = !_showSearchBox;
         _lastSearchClick = now;
         if (_showSearchBox) {
-          // Focus the search box when it appears
           Future.delayed(const Duration(milliseconds: 100), () {
             _searchFocusNode.requestFocus();
           });
@@ -452,10 +439,8 @@ class _SiteHeaderState extends State<SiteHeader> {
   void _performQuickSearch() {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
-      // Navigate to search page with query parameter
       final uri = Uri(path: '/search', queryParameters: {'q': query});
       _navigate(context, uri.toString());
-      // Clear the search box after navigating
       setState(() {
         _showSearchBox = false;
         _searchController.clear();
@@ -496,7 +481,6 @@ class _SiteHeaderState extends State<SiteHeader> {
     return _currentLocation(context) == route;
   }
 
-  // helper to render nav text buttons with hover/active styles
   Widget _navButton(
     String label,
     bool hover,
@@ -616,7 +600,6 @@ class _SiteHeaderState extends State<SiteHeader> {
       color: Colors.white,
       child: Column(
         children: [
-          // Top banner
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: isMobile ? 8 : 12),
@@ -630,14 +613,12 @@ class _SiteHeaderState extends State<SiteHeader> {
               ),
             ),
           ),
-          // Main header
           Expanded(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 16),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Left: Logo
                   Align(
                     alignment: Alignment.centerLeft,
                     child: GestureDetector(
@@ -660,7 +641,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                       ),
                     ),
                   ),
-                  // Center: nav buttons (shown only on wide screens)
                   if (isWideNav)
                     Align(
                       alignment: Alignment.center,
@@ -674,12 +654,10 @@ class _SiteHeaderState extends State<SiteHeader> {
                             () => _goHome(context),
                             active: _isHome(context),
                           ),
-                          // Shop button with dropdown and arrow
                           CompositedTransformTarget(
                             link: _shopLayerLink,
                             child: _shopButtonWithArrow(),
                           ),
-                          // Print Shack button with dropdown and arrow
                           CompositedTransformTarget(
                             link: _printShackLayerLink,
                             child: _printShackButtonWithArrow(),
@@ -701,7 +679,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                         ],
                       ),
                     ),
-                  // Right: Icons group
                   Align(
                     alignment: Alignment.centerRight,
                     child: ConstrainedBox(
@@ -709,7 +686,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Search icon with expandable text field (desktop only)
                           if (_showSearchBox && !isMobile) ...[
                             SizedBox(
                               width: 200,
@@ -767,7 +743,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                                 minHeight: isMobile ? 32 : 40),
                             onPressed: _handleSearchIconClick,
                           ),
-                          // User account icon with auth state
                           Consumer<AuthService>(
                             builder: (context, authService, child) {
                               return PopupMenuButton<String>(
@@ -841,7 +816,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                               );
                             },
                           ),
-                          // Shopping bag with badge
                           Consumer<CartRepository>(
                             builder: (context, cartRepo, child) {
                               final itemCount = cartRepo.itemCount;
@@ -888,7 +862,6 @@ class _SiteHeaderState extends State<SiteHeader> {
                               );
                             },
                           ),
-                          // Hamburger menu - only show on mobile
                           if (!isWideNav)
                             IconButton(
                               icon: Icon(Icons.menu,
@@ -907,7 +880,6 @@ class _SiteHeaderState extends State<SiteHeader> {
               ),
             ),
           ),
-          // Mobile search box overlay
           if (_showSearchBox && isMobile)
             Container(
               width: double.infinity,
@@ -977,14 +949,14 @@ class SiteFooter extends StatelessWidget {
 
     // enlarged font sizes
     const headingStyle = TextStyle(
-      fontSize: 18, // was 16
+      fontSize: 18,
       fontWeight: FontWeight.w700,
       color: Colors.black,
       letterSpacing: .6,
     );
     const bodyStyle = TextStyle(
-      fontSize: 15, // was 13
-      height: 1.5, // was 1.4
+      fontSize: 15,
+      height: 1.5,
       color: Colors.black87,
     );
 
@@ -1052,9 +1024,7 @@ class SiteFooter extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: Colors.grey[50],
-      // left-shift: reduce left padding, keep right padding larger
-      padding:
-          const EdgeInsets.fromLTRB(20, 48, 40, 48), // was symmetric 40 / 32
+      padding: const EdgeInsets.fromLTRB(20, 48, 40, 48),
       child: isWide
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1080,7 +1050,7 @@ class SiteFooter extends StatelessWidget {
                     ),
                   ],
                 )),
-                const SizedBox(width: 36), // was 32
+                const SizedBox(width: 36),
                 const Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1118,7 +1088,7 @@ class SiteFooter extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40), // was 32
+                const SizedBox(height: 40),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

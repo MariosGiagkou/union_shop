@@ -8,7 +8,8 @@ class Order {
   final List<CartItem> items;
   final double total;
   final DateTime orderDate;
-  final String status; // 'pending', 'processing', 'completed', 'cancelled'
+  /// Order lifecycle: 'pending' -> 'processing' -> 'completed' or 'cancelled'
+  final String status;
 
   Order({
     required this.orderId,

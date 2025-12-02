@@ -25,6 +25,8 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
+  /// Handles both sign-in and sign-up based on _isSignUp state
+  /// Shows error messages on failure, redirects to home on success
   Future<void> _handleAuth() async {
     if (!_formKey.currentState!.validate()) return;
 

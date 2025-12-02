@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:union_shop/repositories/cart_repository.dart';
 
 class ProductPage extends StatefulWidget {
+  /// Optional overrides for product details (passed via navigation)
+  /// Used when navigating from product cards with pre-loaded data
   final String? titleOverride;
   final String? priceOverride;
   final String? imageUrlOverride;
@@ -41,6 +43,8 @@ class _ProductPageState extends State<ProductPage> {
   String _selectedColor = _colorOptions.first;
 
   // Add: helper to detect clothing-like titles
+  /// Determines if product is clothing by checking title keywords
+  /// Used to show/hide size and color options
   bool _isClothingTitle(String title) {
     final t = title.toLowerCase();
     return t.contains('hoodie') ||

@@ -34,6 +34,8 @@ class CartRepository extends ChangeNotifier {
     Map<String, dynamic>? selectedOptions,
   }) {
     // Check if item already exists in cart
+    /// Check if identical item already exists (same product + same options)
+    /// This allows same product with different sizes/colors to be separate items
     final existingIndex = _cartItems.indexWhere(
       (item) =>
           item.productId == productId &&
@@ -134,6 +136,8 @@ class CartRepository extends ChangeNotifier {
   }
 
   /// Helper method to compare selectedOptions maps
+  /// Compares two option maps to determine if they're identical
+  /// Handles null cases and performs deep equality check
   bool _areOptionsEqual(
       Map<String, dynamic>? options1, Map<String, dynamic>? options2) {
     if (options1 == null && options2 == null) return true;
@@ -148,14 +152,8 @@ class CartRepository extends ChangeNotifier {
 
   /// Save cart to persistent storage (for future implementation)
   /// This could use shared_preferences or local database
-  Future<void> saveCart() async {
-    // TODO: Implement persistent storage
-    // Example: Save _cartItems.map((item) => item.toMap()).toList() to SharedPreferences
-  }
+  Future<void> saveCart() async {}
 
   /// Load cart from persistent storage (for future implementation)
-  Future<void> loadCart() async {
-    // TODO: Implement loading from persistent storage
-    // Example: Load from SharedPreferences and convert back to CartItem objects
-  }
+  Future<void> loadCart() async {}
 }

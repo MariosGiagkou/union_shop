@@ -15,6 +15,7 @@ class OrderHistoryPage extends StatelessWidget {
     final authService = Provider.of<AuthService>(context);
     final orderService = Provider.of<OrderService>(context, listen: false);
 
+    /// Redirect to sign-in if user is not authenticated
     if (!authService.isSignedIn) {
       return Scaffold(
         body: Column(
@@ -56,6 +57,7 @@ class OrderHistoryPage extends StatelessWidget {
           const SiteHeader(),
           Expanded(
             child: StreamBuilder<List<Order>>(
+              /// Real-time stream of user's orders from Firestore
               stream: orderService.getUserOrders(authService.currentUser!.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

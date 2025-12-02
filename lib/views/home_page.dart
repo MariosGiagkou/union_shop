@@ -23,11 +23,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             const SiteHeader(),
-
-            // HERO SECTION WITH AUTO-ROTATING CAROUSEL
             const HeroCarousel(),
-
-            // PRODUCTS SECTION
             Container(
               color: Colors.white,
               child: Padding(
@@ -85,6 +81,8 @@ class HomePage extends StatelessWidget {
 
                           // Helpers to convert DB price representations into doubles
                           // and format them as UI strings like '£12.34'.
+                          /// Converts various price formats from Firestore to doubles
+                          /// Handles: doubles, ints, strings like "£14.99" or "14.99"
                           double? _toDouble(dynamic raw) {
                             if (raw == null) return null;
                             if (raw is double) return raw;
@@ -116,9 +114,6 @@ class HomePage extends StatelessWidget {
                             return '£0.00';
                           }
 
-                          // StreamBuilder that reads products and arranges them into
-                          // sections: ESSENTIAL RANGE (discounted items),
-                          // SIGNATURE RANGE and PORTSMOUTH collection (regular items).
                           final productSection = StreamBuilder<
                               QuerySnapshot<Map<String, dynamic>>>(
                             stream: _productsStream(),
@@ -140,7 +135,6 @@ class HomePage extends StatelessWidget {
                                 );
                               }
 
-                              // Convert documents into ProductCard widgets
                               final allCards = <Widget>[];
                               for (final d in docs) {
                                 final data = d.data();
@@ -222,6 +216,8 @@ class HomePage extends StatelessWidget {
                                 }
                               }
 
+                              /// Builds a pair of products side-by-side on wide screens,
+                              /// or stacked vertically on narrow screens
                               Widget buildPairFromList(
                                   List<Widget> list, int aIdx, int bIdx,
                                   {double verticalGap = 48}) {
@@ -907,7 +903,6 @@ class _ProductCardState extends State<ProductCard> {
       return 'sale';
     }
 
-    // Default to signature collection
     return 'signature';
   }
 
