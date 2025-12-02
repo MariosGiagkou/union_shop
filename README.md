@@ -4,8 +4,7 @@ A comprehensive e-commerce Flutter application built for the University of Ports
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)
 ![Firebase](https://img.shields.io/badge/Firebase-Integrated-orange.svg)
-![Test Coverage](https://img.shields.io/badge/Coverage-60%25+-green.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 
 ## ✨ Key Features
 
