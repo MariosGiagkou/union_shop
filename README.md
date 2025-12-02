@@ -263,19 +263,6 @@ flutter test test/views/home_page_tests/home_page_test.dart
 flutter test --platform chrome
 ```
 
-### View Coverage Report
-
-```bash
-# Generate HTML coverage report
-genhtml coverage/lcov.info -o coverage/html
-
-# Open coverage report (Windows)
-start coverage/html/index.html
-
-# Open coverage report (macOS/Linux)
-open coverage/html/index.html
-```
-
 
 
 ### Test Structure
@@ -361,15 +348,6 @@ testWidgets('displays products from Firestore', (tester) async {
   expect(find.text('Test Product'), findsOneWidget);
 });
 ```
-
-#### Pages Using Dependency Injection
-
-| Page | Injected Service | Coverage Achieved |
-|------|------------------|-------------------|
-| `collections_page.dart` | `FirebaseFirestore?` | 60.4% |
-| `search_page.dart` | `FirebaseFirestore?` | 76.8% |
-| `personalise_page.dart` | `FirebaseFirestore?` | 60.3% |
-| `home_page.dart` | `FirebaseFirestore?` | 59.7% |
 
 #### Benefits
 
@@ -533,32 +511,11 @@ union_shop/
 
 
 
-### For Educational Use
-
-If you're a student learning Flutter:
-1. Fork this repository
-2. Experiment with the code
-3. Reference it in your own projects
-4. **Do not** submit this as your own coursework (academic integrity!)
-
-
 ## 👨‍💻 Author
-
-**Marios Giagkou**  
-GitHub: [@MariosGiagkou](https://github.com/MariosGiagkou)
-
-## 🙏 Acknowledgments
-
-- University of Portsmouth Student Union for project requirements
-- Flutter team for excellent documentation
-- Firebase team for comprehensive backend services
-- Course instructors for guidance and support
-
 ## 📞 Contact Info
 
-1. Check existing [GitHub Issues](https://github.com/MariosGiagkou/union_shop/issues)
-2. Review the [Flutter documentation](https://flutter.dev/docs)
-3. Consult [Firebase documentation](https://firebase.google.com/docs)
+1. https://github.com/MariosGiagkou
+2. Gmail:Mariosyiangou99@gmail.com
 
 ---
 
