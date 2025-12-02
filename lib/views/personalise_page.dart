@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:union_shop/repositories/cart_repository.dart';
 
 class PersonalisePage extends StatefulWidget {
-  const PersonalisePage({super.key});
+  final FirebaseFirestore? firestore;
+
+  const PersonalisePage({super.key, this.firestore});
 
   @override
   State<PersonalisePage> createState() => _PersonalisePageState();
@@ -208,11 +210,13 @@ class _PersonalisePageState extends State<PersonalisePage> {
 
   @override
   Widget build(BuildContext context) {
+    final firestore = widget.firestore ?? FirebaseFirestore.instance;
+
     return PopScope(
       canPop: true,
       child: Scaffold(
         body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: FirebaseFirestore.instance
+          stream: firestore
               .collection('products')
               .doc('personalise')
               .snapshots(),
