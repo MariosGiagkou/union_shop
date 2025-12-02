@@ -36,8 +36,6 @@ A comprehensive e-commerce Flutter application built for the University of Ports
 ### 🎯 Advanced UI/UX
 - **Auto-Rotating Hero Carousel**: Smooth product showcase with timer
 - **Smooth Animations**: Page transitions and hover effects
-- **Dark Theme Elements**: Consistent brand colors (#4d2963 purple theme)
-- **Loading States**: Skeleton screens and progress indicators
 - **Error Handling**: User-friendly error messages and fallbacks
 
 ## 📋 Prerequisites
