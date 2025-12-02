@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:union_shop/views/personalise_page.dart';
-import 'package:union_shop/repositories/cart_repository.dart';
-import 'package:union_shop/services/auth_service.dart';
 import 'package:union_shop/models/layout.dart';
 import '../../helpers/test_helpers.dart';
 
