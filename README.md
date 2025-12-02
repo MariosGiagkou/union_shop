@@ -511,7 +511,7 @@ union_shop/
 ## 👨‍💻 Author
 ## 📞 Contact Info
 
-1. https://github.com/MariosGiagkou
+1. GitHub:https://github.com/MariosGiagkou
 2. Gmail:Mariosyiangou99@gmail.com
 
 ---
