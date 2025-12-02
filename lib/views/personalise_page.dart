@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:union_shop/models/layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:union_shop/repositories/cart_repository.dart';
 
 class PersonalisePage extends StatefulWidget {
   const PersonalisePage({super.key});
@@ -36,6 +38,49 @@ class _PersonalisePageState extends State<PersonalisePage> {
     if (_selectedPersonalisation == 'Two Lines of Text') return 2;
     if (_selectedPersonalisation == 'Three Lines of Text') return 3;
     return 0; // For logo options, no text input needed
+  }
+
+  void _addToCart(
+      BuildContext context, String title, double price, String imageUrl) {
+    final cartRepo = Provider.of<CartRepository>(context, listen: false);
+
+    // Build customization text
+    final customizationLines = <String>[];
+    if (_getNumberOfLines() >= 1 && _line1Controller.text.isNotEmpty) {
+      customizationLines.add(_line1Controller.text);
+    }
+    if (_getNumberOfLines() >= 2 && _line2Controller.text.isNotEmpty) {
+      customizationLines.add(_line2Controller.text);
+    }
+    if (_getNumberOfLines() >= 3 && _line3Controller.text.isNotEmpty) {
+      customizationLines.add(_line3Controller.text);
+    }
+
+    // Build selected options map for personalization
+    final selectedOptions = <String, dynamic>{
+      'Personalisation Type': _selectedPersonalisation,
+      if (customizationLines.isNotEmpty)
+        'Custom Text': customizationLines.join(' | '),
+    };
+
+    // Add to cart
+    cartRepo.addItem(
+      productId: title.toLowerCase().replaceAll(' ', '-'),
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      quantity: _quantity,
+      selectedOptions: selectedOptions.isNotEmpty ? selectedOptions : null,
+    );
+
+    // Show confirmation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Added $_quantity x $title to cart'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: const Color(0xFF4d2963),
+      ),
+    );
   }
 
   void placeholderCallbackForButtons() {
@@ -548,7 +593,13 @@ class _PersonalisePageState extends State<PersonalisePage> {
                             height: 44,
                             child: ElevatedButton(
                               key: const Key('product:add-to-cart'),
-                              onPressed: placeholderCallbackForButtons,
+                              onPressed: () {
+                                final actualPrice = discountPrice != null
+                                    ? _parsePrice(discountPrice)
+                                    : _parsePrice(price);
+                                _addToCart(
+                                    context, title, actualPrice, imageUrl);
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF4d2963),
                                 foregroundColor: Colors.white,
