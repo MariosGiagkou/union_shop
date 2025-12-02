@@ -15,6 +15,7 @@ import 'package:union_shop/views/cart_page.dart';
 import 'package:union_shop/views/order_history_page.dart';
 import 'package:union_shop/repositories/cart_repository.dart';
 import 'package:union_shop/services/auth_service.dart';
+import 'package:union_shop/services/order_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -127,6 +128,7 @@ class UnionShopApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => CartRepository()),
         ChangeNotifierProvider(create: (context) => AuthService()),
+        Provider(create: (context) => OrderService()),
       ],
       child: MaterialApp.router(
         title: 'Union Shop',

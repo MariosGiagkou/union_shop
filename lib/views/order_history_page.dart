@@ -13,7 +13,7 @@ class OrderHistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-    final orderService = OrderService();
+    final orderService = Provider.of<OrderService>(context, listen: false);
 
     if (!authService.isSignedIn) {
       return Scaffold(
