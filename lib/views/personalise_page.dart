@@ -72,15 +72,6 @@ class _PersonalisePageState extends State<PersonalisePage> {
       quantity: _quantity,
       selectedOptions: selectedOptions.isNotEmpty ? selectedOptions : null,
     );
-
-    // Show confirmation
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Added $_quantity x $title to cart'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: const Color(0xFF4d2963),
-      ),
-    );
   }
 
   void placeholderCallbackForButtons() {
