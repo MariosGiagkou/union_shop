@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/search_page.dart';
 import '../../helpers/test_helpers.dart';
