@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:union_shop/views/sign_in.dart';
-import '../helpers/test_helpers.dart';
+import '../../helpers/test_helpers.dart';
 
 void main() {
   group('SignInPage', () {
